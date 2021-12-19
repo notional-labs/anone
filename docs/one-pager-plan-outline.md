@@ -1,7 +1,7 @@
 # Anone engineering plan outline
 
 # Phases outline
-1. test - net 1: super safe basic functional chain
+1. __Testnet 1__: super safe basic functional chain
 * __WHY?__: the tasks in this phase are very familiar with the team. We can still ICO on schedule in case test - net 2 fails to meet deadline.
 * __GOAL__: basic functionalities on cosmos eco-system
     * integrate one to keplr wallet.
@@ -12,7 +12,7 @@
     * add airdrop for one1 address
     * custom configuration
 
-2. test - net 2: etherum and NFT integration
+2. __Testnet 2__: etherum and NFT integration
 * __WHY?__: this phase is for adding and testing new features
 * __GENERAL GOAL__: this chain version must resemble real mainnet
 * __ETHERUM GOAL__: add support for etherum
