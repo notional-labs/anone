@@ -1,1 +1,34 @@
 //Your custom styles here
+$rich-blue:#4A68BC;
+$light-blue: #7C9AEE;
+$toxic-green: #13FF00;
+$teal: #3B9189;
+
+.sp-sidebar {
+  background-color: #000!important;
+  color: #fff;
+}
+
+.sp-sidebar a {
+  color: $rich-blue;
+}
+.sp-sidebar .sp-link-icon {
+  color: $rich-blue;
+}
+sp-link-icon__text { color:$rich-blue!important;}
+
+.logo {
+  width:100%;
+}
+
+//.sp-fill {
+//  color: white;
+//  background: black;
+//}
+
+a {
+  color: $rich-blue;
+}
+a:hover {
+  color: $light-blue;
+}
