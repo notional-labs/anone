@@ -15,7 +15,20 @@ $teal: #3B9189;
 .sp-sidebar .sp-link-icon {
   color: $rich-blue;
 }
-sp-link-icon__text { color:$rich-blue!important;}
+.sp-link-icon__text { color:$rich-blue!important;}
+.sp-link-icon a {
+ color:$rich-blue;
+}
+.sp-icon {
+  color:$rich-blue;
+}
+
+.sp-link-icon a:hover {
+  color:$light-blue;
+  .sp-icon {
+    color:$light-blue;
+  }
+}
 
 .logo {
   width:100%;
