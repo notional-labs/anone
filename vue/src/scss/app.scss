@@ -1,1 +1,65 @@
 //Your custom styles here
+$rich-blue:#4A68BC;
+$light-blue: #7C9AEE;
+$toxic-green: #77fa4c;
+$teal: #3B9189;
+
+
+.sp-sidebar {
+  background-color: #000!important;
+  color: #fff;
+}
+
+.sp-fill {
+  background: #000;
+}
+
+h3 {
+  color: $toxic-green;
+  font-family: Helvetica, sans-serif;
+  font-weight:100;
+  text-transform: uppercase;
+}
+
+.sp-button.sp-button-primary {
+  background: $toxic-green;
+  border: 0.2rem solid darken($toxic-green, 30%);
+  color: #111;
+}
+
+.sp-sidebar a {
+  color: $rich-blue;
+}
+.sp-sidebar .sp-link-icon {
+  color: $rich-blue;
+}
+.sp-link-icon__text { color:$rich-blue!important;}
+.sp-link-icon a {
+ color:$rich-blue;
+}
+.sp-icon {
+  color:$rich-blue;
+}
+
+.sp-link-icon a:hover {
+  color:$light-blue;
+  .sp-icon {
+    color:$light-blue;
+  }
+}
+
+.logo {
+  width:100%;
+}
+
+//.sp-fill {
+//  color: white;
+//  background: black;
+//}
+
+a {
+  color: $rich-blue;
+}
+a:hover {
+  color: $light-blue;
+}
