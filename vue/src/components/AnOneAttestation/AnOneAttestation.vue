@@ -6,7 +6,7 @@
         In order to link your NFT collection on Ethereum to your ONE address, you'll need to sign a single transaction on the ethereum chain.  It's just a few clicks and it will associate your ONE account with your Ethereum wallet.
         (Requires Metamask plugin)
       </p>
-      <AnButton href="#" type="primary" v-on:click="handleSign">Link Eth Address to <span>{{currentAccount}}</span></AnButton>
+      <AnButton href="#" type="primary" v-on:click="handleSign">Link Eth and ONE Address</AnButton>
       <span>(Will Open Metamask)</span>
     </div>
   </div>
