@@ -3,16 +3,11 @@ module github.com/notional-labs/anone
 go 1.16
 
 require (
-	github.com/cespare/cp v1.1.1 // indirect
-	github.com/cosmos/cosmos-sdk v0.44.3
-	github.com/cosmos/ibc-go v1.2.2
-	github.com/deckarep/golang-set v1.7.1 // indirect
+	github.com/cosmos/cosmos-sdk v0.44.5
+	github.com/cosmos/ibc-go/v2 v2.0.2
 	github.com/gogo/protobuf v1.3.3
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/hashicorp/go-uuid v1.0.2 // indirect
-	github.com/prometheus/tsdb v0.9.1 // indirect
-	github.com/rjeczalik/notify v0.9.2 // indirect
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
