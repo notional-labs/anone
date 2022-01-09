@@ -6,33 +6,54 @@ KEYRING="test"
 MONIKER="localtestnet"
 KEYALGO="eth_secp256k1"
 
-# validate dependencies are installed
-command -v jq > /dev/null 2>&1 || { echo >&2 "jq not installed. More info: https://stedolan.github.io/jq/download/"; exit 1; }
-
-# install anoned if not exist
-command -v anoned > /dev/null 2>&1 || { echo >&1 "installing anoned"; cd cmd/anoned; go install; }
-
-anoned config keyring-backend $KEYRING
-anoned config chain-id $CHAINID
-
-# determine if user wants to recorver or create new
+# retrieve all args
+WILL_RECOVER=0
+WILL_INSTALL=0
 # $# is to check number of arguments
-if [ $# -eq 0 ]; 
+if [ $# -gt 0 ];
 then
-    anoned keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO
-else
     # $@ is for getting list of arguments
     for arg in "$@"; do
         case $arg in
         --recover)
-            anoned keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover
-            shift # Remove --skip-verification from `$@`
+            WILL_RECOVER=1
+            shift
+            ;;
+        --install)
+            WILL_INSTALL=1
+            shift
             ;;
         *)
             echo >&2 "wrong argument somewhere"; exit 1;
             ;;
         esac
     done
+fi
+
+# validate dependencies are installed
+command -v jq > /dev/null 2>&1 || { echo >&2 "jq not installed. More info: https://stedolan.github.io/jq/download/"; exit 1; }
+
+# install anoned if not exist
+if [ $WILL_INSTALL -eq 0 ];
+then 
+    command -v anoned > /dev/null 2>&1 || { echo >&1 "installing anoned"; cd cmd/anoned; go install; }
+else
+    echo >&1 "installing anoned"
+    rm $HOME/go/bin/anoned
+    rm -rf $HOME/.anone*
+    cd cmd/anoned
+    go install
+fi
+
+anoned config keyring-backend $KEYRING
+anoned config chain-id $CHAINID
+
+# determine if user wants to recorver or create new
+if [ $WILL_RECOVER -eq 0 ];
+then
+    anoned keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO
+else
+    anoned keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover
 fi
 
 # init chain

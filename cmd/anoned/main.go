@@ -28,7 +28,6 @@ func main() {
 		ethermintclient.ValidateChainID(
 			genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
 		),
-		ethermintclient.KeyCommands(app.DefaultNodeHome),
 	)
 
 	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
