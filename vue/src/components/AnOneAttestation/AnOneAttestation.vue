@@ -15,6 +15,9 @@
 import { defineComponent } from 'vue';
 import {ethers} from 'ethers';
 import AnButton from '../AnButton/AnButton'
+import ABI from './anone_abi.json';
+
+const ANONE_ADDRESS = '0x197fc873b3e498b7ca8fac410f466515ceec600b';
 
 const verifyMessage = async ({ message, address, signature }) => {
   try {
@@ -70,12 +73,28 @@ const handleSign = async (e) => {
   }
 };
 
+const checkNFT = async (address) => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  let contract = new ethers.Contract(ANONE_ADDRESS, ABI, provider);
+  const listOfNFTs = await contract.tokensOfOwner(address);
+  console.log(listOfNFTs);
+  if(listOfNFTs && listOfNFTs.length > 0) {
+    return true;
+  }
+  return false;
+}
+
 
 
 export default defineComponent({
   name: 'AnOneAttestation',
   components: {
     AnButton,
+  },
+  data: function () {
+    return {
+      hasNFT: false
+    }
   },
   methods: {
     handleSign: async function  (e) {
@@ -91,6 +110,9 @@ export default defineComponent({
         console.log("HAS SIG", sig);
         //setSignatures([...signatures, sig]);
       }
+    },
+    checkOwnership: async function (address) {
+        this.hasNFT = await checkNFT(address);
     }
   },
   beforeCreate: function () {
