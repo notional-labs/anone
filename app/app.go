@@ -91,10 +91,15 @@ import (
 	anonemodulekeeper "github.com/notional-labs/anone/x/anone/keeper"
 	anonemoduletypes "github.com/notional-labs/anone/x/anone/types"
 
+	// unnamed import of statik for swagger UI support
+	_ "github.com/tharsis/ethermint/client/docs/statik"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	"github.com/tharsis/ethermint/app/ante"
 	srvflags "github.com/tharsis/ethermint/server/flags"
+	ethermint "github.com/tharsis/ethermint/types"
 	"github.com/tharsis/ethermint/x/evm"
+	evmrest "github.com/tharsis/ethermint/x/evm/client/rest"
 	evmkeeper "github.com/tharsis/ethermint/x/evm/keeper"
 	evmtypes "github.com/tharsis/ethermint/x/evm/types"
 
@@ -262,9 +267,10 @@ func New(
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		anonemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		evmtypes.StoreKey, feemarkettypes.StoreKey,
+		evmtypes.StoreKey,
+		feemarkettypes.StoreKey,
 	)
-	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
+	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 
 	app := &App{
@@ -293,7 +299,7 @@ func New(
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
-		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
+		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), ethermint.ProtoAccount, maccPerms,
 	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
@@ -433,9 +439,10 @@ func New(
 		upgradetypes.ModuleName, capabilitytypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
 		feegrant.ModuleName,
+		evmtypes.ModuleName,
 	)
 
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName)
+	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName, evmtypes.ModuleName, feemarkettypes.ModuleName)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -590,6 +597,9 @@ func (app *App) GetSubspace(moduleName string) paramstypes.Subspace {
 // API server.
 func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
+
+	evmrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
+
 	rpc.RegisterRoutes(clientCtx, apiSvr.Router)
 	// Register legacy tx routes.
 	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)

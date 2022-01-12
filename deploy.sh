@@ -1,10 +1,13 @@
 #!/bin/bash
 
 KEY="test"
-CHAINID="anoned_1711_1"
+CHAINID="anoned_1711-1"
 KEYRING="test"
 MONIKER="localtestnet"
 KEYALGO="eth_secp256k1"
+LOGLEVEL="info"
+# to trace evm
+TRACE="--trace"
 
 # retrieve all args
 WILL_RECOVER=0
@@ -24,7 +27,7 @@ then
             shift
             ;;
         *)
-            echo >&2 "wrong argument somewhere"; exit 1;
+            printf >&2 "wrong argument somewhere"; exit 1;
             ;;
         esac
     done
@@ -56,8 +59,20 @@ else
     anoned keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover
 fi
 
+echo >&1 "\n"
+
 # init chain
 anoned init $MONIKER --chain-id $CHAINID
+
+# Change parameter token denominations to uone
+cat $HOME/.anone/config/genesis.json | jq '.app_state["evm"]["params"]["evm_denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
+cat $HOME/.anone/config/genesis.json | jq '.app_state["staking"]["params"]["bond_denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
+cat $HOME/.anone/config/genesis.json | jq '.app_state["crisis"]["constant_fee"]["denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
+cat $HOME/.anone/config/genesis.json | jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
+cat $HOME/.anone/config/genesis.json | jq '.app_state["mint"]["params"]["mint_denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
+
+# Set gas limit in genesis
+cat $HOME/.anone/config/genesis.json | jq '.consensus_params["block"]["max_gas"]="10000000"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
 
 # Allocate genesis accounts (cosmos formatted addresses)
 anoned add-genesis-account $KEY 100000000000000000000000000uone --keyring-backend $KEYRING
@@ -70,10 +85,6 @@ anoned collect-gentxs
 
 # Run this to ensure everything worked and that the genesis file is setup correctly
 anoned validate-genesis
-
-if [[ $1 == "pending" ]]; then
-  echo "pending mode is on, please wait for the first block committed."
-fi
 
 # Start the node (remove the --pruning=nothing flag if historical queries are not needed)
 anoned start --pruning=nothing --evm.tracer=json $TRACE --log_level $LOGLEVEL --minimum-gas-prices=0.0001uone --json-rpc.api eth,txpool,personal,net,debug,web3,miner
