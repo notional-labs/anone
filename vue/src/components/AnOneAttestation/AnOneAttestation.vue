@@ -8,6 +8,12 @@
       </p>
       <AnButton href="#" type="primary" v-on:click="handleSign">Link Eth and ONE Address</AnButton>
       <span>(Will Open Metamask)</span>
+      <div v-if="hasNFT">
+        <h4>NFT Ids:</h4>
+        <p>
+          {{NFTs.toString()}}
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -49,7 +55,8 @@ const signMessage = async ({ setError, message }) => {
     return {
       message,
       signature,
-      address
+      ethAddress: address,
+      oneAddress: message
     };
   } catch (err) {
     setError(err.message);
@@ -57,33 +64,21 @@ const signMessage = async ({ setError, message }) => {
 };
 
 
-const handleSign = async (e) => {
-  console.log("Clicked the button")
-  e.preventDefault();
-
-
-  //setError();
-  const sig = await signMessage({
-    setError: (e) => console.log,
-    message: "MESSAGe"
-  });
-  if (sig) {
-    console.log("HAS SIG", sig);
-    //setSignatures([...signatures, sig]);
-  }
-};
-
 const checkNFT = async (address) => {
+  console.log("Checking NFT");
+  // console.log(ANONE_ADDRESS);
+  // console.log(ABI);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   let contract = new ethers.Contract(ANONE_ADDRESS, ABI, provider);
   const listOfNFTs = await contract.tokensOfOwner(address);
   console.log(listOfNFTs);
   if(listOfNFTs && listOfNFTs.length > 0) {
-    return true;
+    return listOfNFTs;
   }
-  return false;
+  return [];
 }
 
+window.checkNFT = checkNFT;
 
 
 export default defineComponent({
@@ -93,7 +88,8 @@ export default defineComponent({
   },
   data: function () {
     return {
-      hasNFT: false
+      hasNFT: false,
+      NFTs: []
     }
   },
   methods: {
@@ -108,12 +104,16 @@ export default defineComponent({
       });
       if (sig) {
         console.log("HAS SIG", sig);
-        //setSignatures([...signatures, sig]);
+        const {ethAddress} = sig;
+        console.log(ethAddress)
+        const NFTs  = await checkNFT(ethAddress);
+        console.log(NFTs)
+        if(NFTs && NFTs.length) {
+          this.hasNFT = true;
+          this.NFTs = NFTs
+        }
       }
     },
-    checkOwnership: async function (address) {
-        this.hasNFT = await checkNFT(address);
-    }
   },
   beforeCreate: function () {
     console.log("create")
