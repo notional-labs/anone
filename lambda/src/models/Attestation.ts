@@ -4,4 +4,5 @@ export interface IAttestation {
     oneAddress:string,
     NFTs: string[],
     signature: string
+    added?: Date | string
 }

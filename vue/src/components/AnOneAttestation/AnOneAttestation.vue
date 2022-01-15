@@ -1,22 +1,25 @@
 <template>
   <div class="sp-component">
     <div class="sp-box sp-shadow">
-      <h2>Link your Ethereum Account</h2>
-      <p>
-        In order to link your NFT collection on Ethereum to your ONE address, you'll need to sign a single transaction on the ethereum chain.  It's just a few clicks and it will associate your ONE account with your Ethereum wallet.
-        (Requires Metamask plugin)
-      </p>
-      <AnButton href="#" type="primary" v-on:click="handleSign">Link Eth and ONE Address</AnButton>
-      <span>(Will Open Metamask)</span>
-      <div v-if="hasNFT">
-        <h4>NFT Ids:</h4>
+      <div v-if="!attestationError && !attested">
+        <h2>Link your Ethereum Account</h2>
         <p>
-          {{NFTs.toString()}}
+          In order to link your NFT collection on Ethereum to your ONE address, you'll need to sign a single transaction on the ethereum chain.  It's just a few clicks and it will associate your ONE account with your Ethereum wallet.
+          (Requires Metamask plugin)
         </p>
+
+        <AnButton href="#" type="primary" v-on:click="handleSign">Link Eth and ONE Address</AnButton>
+        <span>(Will Open Metamask)</span>
       </div>
+      <div v-if="attested">
+        <h2>Attestation recorded!</h2>
+        <p>{{NFTs.toString()}}</p>
+      </div>
+      <div v-if="attestationError">{{attestationError}}</div>
     </div>
   </div>
 </template>
+
 <script>
 import { defineComponent } from 'vue';
 import {ethers} from 'ethers';
@@ -24,7 +27,7 @@ import AnButton from '../AnButton/AnButton'
 import ABI from './anone_abi.json';
 
 const ANONE_ADDRESS = '0x197fc873b3e498b7ca8fac410f466515ceec600b';
-
+const LAMBDA_URL =  'https://4s3eso3uye.execute-api.ap-southeast-1.amazonaws.com/default/ANONE-ATTESTATION'
 const verifyMessage = async ({ message, address, signature }) => {
   try {
     const signerAddr = await ethers.utils.verifyMessage(message, signature);
@@ -89,11 +92,13 @@ export default defineComponent({
   data: function () {
     return {
       hasNFT: false,
-      NFTs: []
+      NFTs: [],
+      attested: false,
+      attestationError: false
     }
   },
   methods: {
-    handleSign: async function  (e) {
+    handleSign:  async function(e) {
       console.log("Clicked the button")
       e.preventDefault();
 
@@ -114,7 +119,7 @@ export default defineComponent({
         }
         sig.NFTs = NFTs;
       }
-      fetch('http://localhost:8080/api/testing/attest', {
+      fetch(LAMBDA_URL, {
         method: 'POST',
         mode: "no-cors",
         headers: {
@@ -125,7 +130,11 @@ export default defineComponent({
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(sig)
       }).then((response) => {
+        this.attested = true;
         console.log(response)
+      }).catch(e=>{
+        console.log(e);
+        this.attestationError = "Attestation Failed."
       })
     },
   },

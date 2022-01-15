@@ -1,12 +1,13 @@
 import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
-import mongoose, {Connection, Error} from 'mongoose';
+import mongoose, {Connection, Error, Model} from 'mongoose';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-var-requires
 require('mongoose-long')(mongoose);
 
-import {ATTESTATION_COLLECTION, AttestationSchema} from "./models/mongo/AttestationModel";
+import {AttestationModel, AttestationSchema} from "./models/mongo/AttestationModel";
 dotenv.config();
 import {MongoAttestationService} from "./service/MongoAttestationService";
+import {IAttestation} from "./models/Attestation";
 
 let conn:Promise<Connection> | Connection;
 let connection: Connection;
@@ -15,6 +16,7 @@ const uri = process.env.MONGODB_URI as string; //
 if(!uri) {
     throw new Error("No mongo uri");
 }
+let model: Model<AttestationModel>
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);
 mongoose.set('useFindAndModify', false);
@@ -24,9 +26,14 @@ const handleAttestation= async (connection:Connection, event:any) => {
     return null;
 }
 
+/**
+ * AWS config for handler function should be 'dist/handler.handler'
+ * @param event
+ * @param context
+ */
 export const handler = async function(event: any, context:any) {
     console.log("Calling attestation lambda handler");
-    // console.log(`connecting to mongo at: ${uri}`);
+    console.log(`connecting to mongo at: ${uri}`);
     // console.log(event);
     // console.log(context);
     // Make sure to add this so you can re-use `conn` between function calls.
@@ -51,39 +58,51 @@ export const handler = async function(event: any, context:any) {
 
         // `await`ing connection after assigning to the `conn` variable
         // to avoid multiple function calls creating new connections
-        await conn;
+        await conn
         console.log("Mongo connection established");
         connection = conn as Connection;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        connection.model(ATTESTATION_COLLECTION, AttestationSchema, ATTESTATION_COLLECTION);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        model = connection.model("User", AttestationSchema);
         console.log("Models constructed");
     }
     console.log("Handling event", event);
 
-    //console.log('Received event:', JSON.stringify(event, null, 2));
-
     let response;
-    let statusCode = '200';
+    let statusCode = 200;
     const headers = {
         'Content-Type': 'application/json',
     };
+    let body = ""
     try {
-        const service = new MongoAttestationService();
-        response = await service.writeAttestation(event.body)
+        console.log("Building Service")
+        const service = new MongoAttestationService(model);
+        let body = event.body;
+        try {
+            body = JSON.parse(event.body);
+        } catch(e) {
+            console.log("event body is either already an object or malformed.");
+        }
+        console.log("Handling request", body);
+        response = await service.writeAttestation(body)
+        console.log("Request handled successfully.", response)
+        body = "Attestation successful";
+
     } catch(err) {
         console.log(err);
-        statusCode = '400'
-
+        statusCode = 400
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        response = err.message
+        body = err.message
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return
     return {
         statusCode,
-        body: response,
-        headers,
-    };
-
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        body,
+        isBase64Encoded: false,
+        headers
+    }
 }
 
 

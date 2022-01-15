@@ -1,7 +1,6 @@
 import {Schema, Date, model} from 'mongoose';
 import {IAttestation} from "../Attestation";
 
-export const ATTESTATION_COLLECTION = 'attestations';
 
 export interface AttestationModel extends IAttestation {
     _id: string,
