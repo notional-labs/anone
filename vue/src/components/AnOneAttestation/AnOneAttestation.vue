@@ -34,7 +34,6 @@ const verifyMessage = async ({ message, address, signature }) => {
     if (signerAddr !== address) {
       return false;
     }
-
     return true;
   } catch (err) {
     console.log(err);
@@ -129,12 +128,22 @@ export default defineComponent({
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(sig)
-      }).then((response) => {
-        this.attested = true;
-        console.log(response)
+      }).then(async (response) => {
+          console.log(response);
+          if(!response.ok) {
+            return response.text().then(text=>{
+              console.log(text);
+              throw new Error(text || "Attestation error. Did you already record your wallet?")
+            });
+          } else {
+            return response.json();
+          }
+      }).then(response=> {
+          this.attested = true;
+          console.log(response)
       }).catch(e=>{
         console.log(e);
-        this.attestationError = "Attestation Failed."
+        this.attestationError = e.message;
       })
     },
   },
