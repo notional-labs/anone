@@ -15,7 +15,7 @@
         <h2>Attestation recorded!</h2>
         <p>{{NFTs.toString()}}</p>
       </div>
-      <div v-if="attestationError">{{attestationError}}</div>
+      <div v-if="attestationError"><h4>{{attestationError}}</h4></div>
     </div>
   </div>
 </template>
