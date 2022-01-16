@@ -1,4 +1,8 @@
 vue/node_modules
 vue/dist
 release/
+<<<<<<< HEAD
 .env
+=======
+debug.txt
+>>>>>>> ethermint-imlementation

@@ -19,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
@@ -68,14 +67,14 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/cosmos/ibc-go/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/modules/core/02-client"
-	ibcporttypes "github.com/cosmos/ibc-go/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/modules/core/keeper"
+	"github.com/cosmos/ibc-go/v2/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v2/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v2/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v2/modules/core"
+	ibcclient "github.com/cosmos/ibc-go/v2/modules/core/02-client"
+	ibcporttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
 	"github.com/spf13/cast"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmjson "github.com/tendermint/tendermint/libs/json"
@@ -91,7 +90,22 @@ import (
 	anonemodule "github.com/notional-labs/anone/x/anone"
 	anonemodulekeeper "github.com/notional-labs/anone/x/anone/keeper"
 	anonemoduletypes "github.com/notional-labs/anone/x/anone/types"
+
+	// unnamed import of statik for swagger UI support
+	_ "github.com/tharsis/ethermint/client/docs/statik"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+	"github.com/tharsis/ethermint/app/ante"
+	srvflags "github.com/tharsis/ethermint/server/flags"
+	ethermint "github.com/tharsis/ethermint/types"
+	"github.com/tharsis/ethermint/x/evm"
+	evmrest "github.com/tharsis/ethermint/x/evm/client/rest"
+	evmkeeper "github.com/tharsis/ethermint/x/evm/keeper"
+	evmtypes "github.com/tharsis/ethermint/x/evm/types"
+
+	"github.com/tharsis/ethermint/x/feemarket"
+	feemarketkeeper "github.com/tharsis/ethermint/x/feemarket/keeper"
+	feemarkettypes "github.com/tharsis/ethermint/x/feemarket/types"
 )
 
 const (
@@ -143,6 +157,8 @@ var (
 		vesting.AppModuleBasic{},
 		anonemodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
+		evm.AppModuleBasic{},
+		feemarket.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -154,6 +170,7 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		evmtypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -210,6 +227,10 @@ type App struct {
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
+	// Ethermint keepers
+	EvmKeeper       *evmkeeper.Keeper
+	FeeMarketKeeper feemarketkeeper.Keeper
+
 	AnoneKeeper anonemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
@@ -246,8 +267,10 @@ func New(
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		anonemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
+		evmtypes.StoreKey,
+		feemarkettypes.StoreKey,
 	)
-	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
+	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 
 	app := &App{
@@ -276,7 +299,7 @@ func New(
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
-		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
+		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), ethermint.ProtoAccount, maccPerms,
 	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
@@ -308,7 +331,20 @@ func New(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
+	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
+
 	// ... other modules keepers
+	// Create Ethermint keepers
+	app.FeeMarketKeeper = feemarketkeeper.NewKeeper(
+		appCodec, keys[feemarkettypes.StoreKey], app.GetSubspace(feemarkettypes.ModuleName),
+	)
+
+	// Create Ethermint keepers
+	app.EvmKeeper = evmkeeper.NewKeeper(
+		appCodec, keys[evmtypes.StoreKey], tkeys[evmtypes.TransientKey], app.GetSubspace(evmtypes.ModuleName),
+		app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.FeeMarketKeeper,
+		tracer,
+	)
 
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
@@ -390,6 +426,9 @@ func New(
 		transferModule,
 		anoneModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
+		// Ethermint app modules
+		evm.NewAppModule(app.EvmKeeper, app.AccountKeeper),
+		feemarket.NewAppModule(app.FeeMarketKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -400,9 +439,10 @@ func New(
 		upgradetypes.ModuleName, capabilitytypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
 		feegrant.ModuleName,
+		evmtypes.ModuleName,
 	)
 
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName)
+	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName, evmtypes.ModuleName, feemarkettypes.ModuleName)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -425,6 +465,8 @@ func New(
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
+		// Ethermint modules
+		evmtypes.ModuleName, feemarkettypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -440,18 +482,12 @@ func New(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
-		},
+	// use Ethermint's custom AnteHandler
+	anteHandler := ante.NewAnteHandler(
+		app.AccountKeeper, app.BankKeeper, app.EvmKeeper, app.FeeGrantKeeper, app.IBCKeeper.ChannelKeeper,
+		app.FeeMarketKeeper,
+		encodingConfig.TxConfig.SignModeHandler(),
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
@@ -561,6 +597,9 @@ func (app *App) GetSubspace(moduleName string) paramstypes.Subspace {
 // API server.
 func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
+
+	evmrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
+
 	rpc.RegisterRoutes(clientCtx, apiSvr.Router)
 	// Register legacy tx routes.
 	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
@@ -613,6 +652,9 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(anonemoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
+	// ethermint subspaces
+	paramsKeeper.Subspace(evmtypes.ModuleName)
+	paramsKeeper.Subspace(feemarkettypes.ModuleName)
 
 	return paramsKeeper
 }
