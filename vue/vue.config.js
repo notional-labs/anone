@@ -17,7 +17,7 @@ module.exports = {
         new NodePolyfillPlugin(),
         new webpack.DefinePlugin({
           __lambda__: lambda
-        })
+        }),
     ],
   },
 }
