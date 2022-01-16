@@ -1,6 +1,5 @@
 <template>
     <div class="sp-wallet" v-if="depsLoaded">
-        <SpButton type="primary" v-on:click="useMetamask">Use Metamask</SpButton>
         <SpButton type="primary" v-on:click="useKeplr">Use Keplr</SpButton>
     </div>
 </template>
@@ -74,6 +73,8 @@ export default defineComponent({
                     });
 
                     await window.keplr.enable(process.env.VUE_APP_CHAIN_ID)
+                    const offlineSigner = window.getOfflineSigner(process.env.VUE_APP_CHAIN_ID)
+                    await this.$store.dispatch('common/wallet/connectWithKeplr', offlineSigner)
                 }catch (e){
                     console.error(e)
                 }

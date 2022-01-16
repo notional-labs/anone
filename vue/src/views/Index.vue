@@ -22,6 +22,7 @@ export default {
   },
   computed: {
     address() {
+      console.log(this.$store.getters['common/wallet/address'])
       return this.$store.getters['common/wallet/address']
     },
   },
