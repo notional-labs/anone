@@ -12,6 +12,7 @@ TRACE="--trace"
 # retrieve all args
 WILL_RECOVER=0
 WILL_INSTALL=0
+WILL_CONTINUE=0
 # $# is to check number of arguments
 if [ $# -gt 0 ];
 then
@@ -26,11 +27,23 @@ then
             WILL_INSTALL=1
             shift
             ;;
+        --continue)
+            WILL_CONTINUE=1
+            shift
+            ;;
         *)
             printf >&2 "wrong argument somewhere"; exit 1;
             ;;
         esac
     done
+fi
+
+# continue running if everything is configured
+if [ $WILL_CONTINUE -eq 1 ];
+then
+    # Start the node (remove the --pruning=nothing flag if historical queries are not needed)
+    anoned start --pruning=nothing --evm.tracer=json $TRACE --log_level $LOGLEVEL --minimum-gas-prices=0.0001uone --json-rpc.api eth,txpool,personal,net,debug,web3,miner
+    exit 1;
 fi
 
 # validate dependencies are installed
