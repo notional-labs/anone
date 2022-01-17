@@ -1,0 +1,122 @@
+installing anoned
+- name: test
+  type: local
+  address: one1guw9arnffta3kgsjg28awcpxtg5pyn9s7w2huw
+  pubkey: '{"@type":"/ethermint.crypto.v1.ethsecp256k1.PubKey","key":"AusfAMoMQFT7epzbBLvjZi5IgVOf+DFqjxfYWDoTbnpf"}'
+  mnemonic: ""
+
+
+
+File at /home/vinh/.anone/config/genesis.json is a valid genesis file
+Params configuration = {uone true true [] {0 0 true 0 0x0000000000000000000000000000000000000000000000000000000000000000 0 0 0 0 0 0 0 0 0}} 
+t=2022-01-12T18:08:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709583 t="835.276µs"
+t=2022-01-12T18:08:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709584 t="745.13µs"
+t=2022-01-12T18:08:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709585 t="775.283µs"
+t=2022-01-12T18:08:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709586 t="753.449µs"
+t=2022-01-12T18:09:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709587 t="315.133µs"
+t=2022-01-12T18:09:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709588 t="839.725µs"
+t=2022-01-12T18:09:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709589 t="801.766µs"
+t=2022-01-12T18:09:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709590 t="773.366µs"
+t=2022-01-12T18:09:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709591 t="943.351µs"
+t=2022-01-12T18:09:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709592 t="963.258µs"
+t=2022-01-12T18:10:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709593 t="660.596µs"
+t=2022-01-12T18:10:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709594 t="296.178µs"
+t=2022-01-12T18:10:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709595 t="378.036µs"
+t=2022-01-12T18:10:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709596 t="744.09µs"
+t=2022-01-12T18:10:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709597 t="693.452µs"
+t=2022-01-12T18:10:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709598 t="754.379µs"
+t=2022-01-12T18:11:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709599 t="746.926µs"
+t=2022-01-12T18:11:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709600 t="755.705µs"
+t=2022-01-12T18:11:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709601 t="720.433µs"
+t=2022-01-12T18:11:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709602 t="694.319µs"
+t=2022-01-12T18:11:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709603 t="275.738µs"
+t=2022-01-12T18:11:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709604 t="325.944µs"
+t=2022-01-12T18:12:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709605 t="289.563µs"
+t=2022-01-12T18:12:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709606 t="310.504µs"
+t=2022-01-12T18:12:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709607 t="293.289µs"
+t=2022-01-12T18:12:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709608 t="655.336µs"
+t=2022-01-12T18:12:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709609 t="717.692µs"
+t=2022-01-12T18:12:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709610 t="310.243µs"
+t=2022-01-12T18:13:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709611 t="781.153µs"
+t=2022-01-12T18:13:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709612 t="289µs"
+t=2022-01-12T18:13:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709613 t="289.484µs"
+t=2022-01-12T18:13:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709614 t="277.063µs"
+t=2022-01-12T18:13:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709615 t="343.537µs"
+t=2022-01-12T18:13:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709616 t="286.942µs"
+t=2022-01-12T18:14:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709617 t="775.397µs"
+t=2022-01-12T18:14:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709618 t="741.961µs"
+t=2022-01-12T18:14:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709619 t="788.262µs"
+t=2022-01-12T18:14:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709620 t="307.135µs"
+t=2022-01-12T18:14:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709621 t="740.955µs"
+t=2022-01-12T18:14:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709622 t="794.316µs"
+t=2022-01-12T18:15:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709623 t="326.045µs"
+t=2022-01-12T18:15:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709624 t="763.354µs"
+t=2022-01-12T18:15:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709625 t="308.064µs"
+t=2022-01-12T18:15:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709626 t="315.52µs"
+t=2022-01-12T18:15:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709627 t="293.506µs"
+t=2022-01-12T18:15:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709628 t="367.231µs"
+t=2022-01-12T18:16:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709629 t="811.829µs"
+t=2022-01-12T18:16:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709630 t="810.437µs"
+t=2022-01-12T18:16:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709631 t="866.298µs"
+t=2022-01-12T18:16:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709632 t="383.85µs"
+t=2022-01-12T18:16:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709633 t="298.869µs"
+t=2022-01-12T18:16:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709634 t="314.446µs"
+t=2022-01-12T18:17:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709635 t="768.133µs"
+t=2022-01-12T18:17:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709636 t="788.652µs"
+t=2022-01-12T18:17:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709637 t="725.339µs"
+t=2022-01-12T18:17:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709638 t="799.715µs"
+t=2022-01-12T18:17:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709639 t="794.204µs"
+t=2022-01-12T18:17:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709640 t="725.298µs"
+t=2022-01-12T18:18:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709641 t="772.277µs"
+t=2022-01-12T18:18:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709642 t="777.254µs"
+t=2022-01-12T18:18:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709643 t="307.718µs"
+t=2022-01-12T18:18:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709644 t="335.213µs"
+t=2022-01-12T18:18:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709645 t="301.055µs"
+t=2022-01-12T18:18:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709646 t="384.54µs"
+t=2022-01-12T18:19:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709647 t="288.631µs"
+t=2022-01-12T18:19:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709648 t="298.167µs"
+t=2022-01-12T18:19:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709649 t="317.751µs"
+t=2022-01-12T18:19:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709650 t="818.208µs"
+t=2022-01-12T18:19:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709651 t="382.19µs"
+t=2022-01-12T18:19:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709652 t="292.04µs"
+t=2022-01-12T18:20:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709653 t="457.999µs"
+t=2022-01-12T18:20:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709654 t="314.609µs"
+t=2022-01-12T18:20:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709655 t="796.141µs"
+t=2022-01-12T18:20:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709656 t="770.817µs"
+t=2022-01-12T18:20:27+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709657 t="315.232µs"
+t=2022-01-12T18:20:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709658 t="282.54µs"
+t=2022-01-12T18:20:45+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709659 t="750.975µs"
+t=2022-01-12T18:20:47+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709660 t="743.407µs"
+t=2022-01-12T18:20:54+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709661 t="337.233µs"
+t=2022-01-12T18:21:04+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709662 t="813.615µs"
+t=2022-01-12T18:21:05+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709663 t="800.609µs"
+t=2022-01-12T18:21:07+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709664 t="765.497µs"
+t=2022-01-12T18:21:14+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709665 t="437.973µs"
+t=2022-01-12T18:21:24+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709666 t="288.294µs"
+t=2022-01-12T18:21:25+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709667 t="330.244µs"
+t=2022-01-12T18:21:27+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709668 t="324.201µs"
+t=2022-01-12T18:21:34+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709669 t="752.653µs"
+eth_getBalance address = 0x471C5E8e694AfB1b2212428FD760265A28124cb0 
+eth_getBalance blockNum = 0 
+evm keeper validateAddress = 0x471C5E8e694AfB1b2212428FD760265A28124cb0 
+evm keeper parsed address = 0x471C5E8e694AfB1b2212428FD760265A28124cb0 
+cosmos address = one1guw9arnffta3kgsjg28awcpxtg5pyn9s7w2huw 
+evm denom = uone 
+eth_getBalance balance = 99999000000000000000000000 
+t=2022-01-12T18:21:40+0700 lvl=dbug msg="Served eth_getBalance"  conn=127.0.0.1:58194 reqid=1                t=1.084262ms
+t=2022-01-12T18:21:44+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709670 t="290.536µs"
+t=2022-01-12T18:21:45+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709671 t="760.743µs"
+t=2022-01-12T18:21:47+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709672 t="857.295µs"
+t=2022-01-12T18:21:48+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709673 t="307.486µs"
+t=2022-01-12T18:21:53+0700 lvl=dbug msg="Served eth_blockNumber" conn=127.0.0.1:57884 reqid=6937591070709675 t="347.925µs"
+t=2022-01-12T18:21:53+0700 lvl=dbug msg="Served net_version"     conn=127.0.0.1:58206 reqid=8531656686946297 t="30.327µs"
+eth_getBalance address = 0x471C5E8e694AfB1b2212428FD760265A28124cb0 
+eth_getBalance blockNum = 141 
+evm keeper validateAddress = 0x471C5E8e694AfB1b2212428FD760265A28124cb0 
+evm keeper parsed address = 0x471C5E8e694AfB1b2212428FD760265A28124cb0 
+cosmos address = one1guw9arnffta3kgsjg28awcpxtg5pyn9s7w2huw 
+evm denom = uone 
+eth_getBalance balance = 99999000000000000000000000 
+t=2022-01-12T18:21:53+0700 lvl=dbug msg="Served eth_getBalance"  conn=127.0.0.1:58206 reqid=8531656686946298 t="603.529µs"
+t=2022-01-12T18:21:53+0700 lvl=dbug msg="Served eth_getBlockByNumber" conn=127.0.0.1:57884 reqid=8531656686946299 t=1.137582ms
+t=2022-01-12T18:21:53+0700 lvl=dbug msg="Served eth_blockNumber"      conn=127.0.0.1:57884 reqid=1cae515f-f763-4488-a9da-6fc8dcea14e7 t="445.792µs"
