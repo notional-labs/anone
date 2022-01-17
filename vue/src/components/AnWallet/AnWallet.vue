@@ -24,8 +24,6 @@ export default defineComponent({
 
             if (this._depsLoaded) {
                 try {
-                    console.log(process.env.VUE_APP_CHAIN_ID)
-
                     await window.keplr.experimentalSuggestChain({
                         chainId: process.env.VUE_APP_CHAIN_ID,
                         chainName: process.env.VUE_APP_CHAIN_NAME,
