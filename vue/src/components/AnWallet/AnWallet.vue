@@ -32,7 +32,7 @@ export default defineComponent({
                         rpc: process.env.VUE_APP_API_TENDERMINT,
                         rest: process.env.VUE_APP_API_COSMOS,
                         bip44: {
-                            coinType: 60,
+                            coinType: parseInt(process.env.VUE_APP_COIN_TYPE),
                         },
                         bech32Config: {
                             bech32PrefixAccAddr: process.env.VUE_APP_ADDRESS_PREFIX,
@@ -46,7 +46,7 @@ export default defineComponent({
                             { 
                                 coinDenom: "ONE", 
                                 coinMinimalDenom: "uone", 
-                                coinDecimals: 18, 
+                                coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL), 
                                 coinGeckoId: "fuck", 
                             }, 
                         ],
@@ -54,17 +54,17 @@ export default defineComponent({
                             {
                                 coinDenom: "ONE",
                                 coinMinimalDenom: "uone",
-                                coinDecimals: 18,
+                                coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL),
                                 coinGeckoId: "fuck",
                             },
                         ],
                         stakeCurrency: {
                             coinDenom: "ONE",
                             coinMinimalDenom: "uone",
-                            coinDecimals: 18,
+                            coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL),
                             coinGeckoId: "fuck",
                         },
-                        coinType: 60,
+                        coinType: parseInt(process.env.VUE_APP_COIN_TYPE),
                         gasPriceStep: {
                             low: 0.01,
                             average: 0.025,

@@ -1,10 +1,10 @@
 window.keplr.experimentalSuggestChain({
-    chainId: "anoned_1711-1",
+    chainId: "anoned-1",
     chainName: "Anone Test Net",
     rpc: "http://127.0.0.1:26657",
     rest: "http://127.0.0.1:1317",
     bip44: {
-        coinType: 60,
+        coinType: 118,
     },
     bech32Config: {
         bech32PrefixAccAddr: "one",
@@ -18,7 +18,7 @@ window.keplr.experimentalSuggestChain({
         { 
             coinDenom: "ONE", 
             coinMinimalDenom: "uone", 
-            coinDecimals: 18, 
+            coinDecimals: 6, 
             coinGeckoId: "fuck", 
         }, 
     ],
@@ -26,17 +26,17 @@ window.keplr.experimentalSuggestChain({
         {
             coinDenom: "ONE",
             coinMinimalDenom: "uone",
-            coinDecimals: 18,
+            coinDecimals: 6,
             coinGeckoId: "fuck",
         },
     ],
     stakeCurrency: {
         coinDenom: "ONE",
         coinMinimalDenom: "uone",
-        coinDecimals: 18,
+        coinDecimals: 6,
         coinGeckoId: "fuck",
     },
-    coinType: 60,
+    coinType: 118,
     gasPriceStep: {
         low: 0.01,
         average: 0.025,

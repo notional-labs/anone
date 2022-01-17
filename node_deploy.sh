@@ -1,14 +1,11 @@
 #!/bin/bash
 
 KEY="test"
-CHAINID="anoned_1711-1"
+CHAINID="anoned-1"
 KEYRING="test"
 MONIKER="localtestnet"
 KEYALGO="secp256k1"
-# KEYALGO="eth_secp256k1"
 LOGLEVEL="info"
-# to trace evm
-TRACE="--trace"
 
 # retrieve all args
 WILL_RECOVER=0
@@ -43,7 +40,7 @@ fi
 if [ $WILL_CONTINUE -eq 1 ];
 then
     # Start the node (remove the --pruning=nothing flag if historical queries are not needed)
-    anoned start --pruning=nothing --evm.tracer=json $TRACE --log_level $LOGLEVEL --minimum-gas-prices=0.0001uone --json-rpc.api eth,txpool,personal,net,debug,web3,miner
+    anoned start --pruning=nothing --log_level $LOGLEVEL --minimum-gas-prices=0.0001uone
     exit 1;
 fi
 
@@ -79,7 +76,6 @@ echo >&1 "\n"
 anoned init $MONIKER --chain-id $CHAINID
 
 # Change parameter token denominations to uone
-cat $HOME/.anone/config/genesis.json | jq '.app_state["evm"]["params"]["evm_denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
 cat $HOME/.anone/config/genesis.json | jq '.app_state["staking"]["params"]["bond_denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
 cat $HOME/.anone/config/genesis.json | jq '.app_state["crisis"]["constant_fee"]["denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
 cat $HOME/.anone/config/genesis.json | jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="uone"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
@@ -101,4 +97,4 @@ anoned collect-gentxs
 anoned validate-genesis
 
 # Start the node (remove the --pruning=nothing flag if historical queries are not needed)
-anoned start --pruning=nothing --evm.tracer=json $TRACE --log_level $LOGLEVEL --minimum-gas-prices=0.0001uone --json-rpc.api eth,txpool,personal,net,debug,web3,miner
+anoned start --pruning=nothing --log_level $LOGLEVEL --minimum-gas-prices=0.0001uone
