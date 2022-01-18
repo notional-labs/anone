@@ -118,6 +118,9 @@ export default defineComponent({
         }
         sig.NFTs = NFTs;
       }
+
+      console.log(JSON.stringify(sig))
+
       fetch(LAMBDA_URL, {
         method: 'POST',
         mode: "no-cors",

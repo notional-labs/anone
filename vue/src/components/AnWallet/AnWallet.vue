@@ -42,23 +42,23 @@ export default defineComponent({
                         },
                         currencies: [ 
                             { 
-                                coinDenom: "ONE", 
-                                coinMinimalDenom: "uone", 
+                                coinDenom: "AN1", 
+                                coinMinimalDenom: "uan1", 
                                 coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL), 
                                 coinGeckoId: "fuck", 
                             }, 
                         ],
                         feeCurrencies: [
                             {
-                                coinDenom: "ONE",
-                                coinMinimalDenom: "uone",
+                                coinDenom: "AN1",
+                                coinMinimalDenom: "uan1",
                                 coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL),
                                 coinGeckoId: "fuck",
                             },
                         ],
                         stakeCurrency: {
-                            coinDenom: "ONE",
-                            coinMinimalDenom: "uone",
+                            coinDenom: "AN1",
+                            coinMinimalDenom: "uan1",
                             coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL),
                             coinGeckoId: "fuck",
                         },
