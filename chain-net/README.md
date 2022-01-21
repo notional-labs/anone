@@ -1,0 +1,1 @@
+This is where we store related files to mainnet, testnet
