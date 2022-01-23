@@ -380,6 +380,12 @@ func New(
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibchost.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
+	// register wasm gov proposal types
+	enabledProposals := GetEnabledProposals()
+	if len(enabledProposals) != 0 {
+		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.wasmKeeper, enabledProposals))
+	}
+
 	// Create Transfer Keepers
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec, keys[ibctransfertypes.StoreKey], app.GetSubspace(ibctransfertypes.ModuleName),
@@ -436,12 +442,6 @@ func New(
 		supportedFeatures,
 		wasmOpts...,
 	)
-	// register wasm gov proposal types
-	// problem here because govRouter is sealed, cannot add route handler
-	enabledProposals := GetEnabledProposals()
-	if len(enabledProposals) != 0 {
-		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.wasmKeeper, enabledProposals))
-	}
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
