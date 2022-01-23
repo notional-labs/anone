@@ -24,5 +24,6 @@ replace (
 	github.com/CosmWasm/wasmd => github.com/cosmoscontracts/wasmd v1.0.0-juno6
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
+	github.com/tendermint/spm => github.com/notional-labs/spm v0.1.8-0.20211212065431-201f33f1cf2d
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

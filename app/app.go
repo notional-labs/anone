@@ -1,13 +1,14 @@
 package app
 
 import (
-	"github.com/cosmos/cosmos-sdk/x/authz"
-	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -436,6 +437,7 @@ func New(
 		wasmOpts...,
 	)
 	// register wasm gov proposal types
+	// problem here because govRouter is sealed, cannot add route handler
 	enabledProposals := GetEnabledProposals()
 	if len(enabledProposals) != 0 {
 		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.wasmKeeper, enabledProposals))
