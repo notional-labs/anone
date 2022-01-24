@@ -94,15 +94,15 @@ export const handler = async function(event: any, context:any) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         body = err.message
+        return {
+            statusCode,
+            body,
+            isBase64Encoded:false,
+            headers
+        }
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return
-    return {
-        statusCode,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        body,
-        isBase64Encoded: false,
-        headers
-    }
+    return body;
 }
 
 
