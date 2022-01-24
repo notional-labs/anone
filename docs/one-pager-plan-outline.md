@@ -1,5 +1,8 @@
 # Anone engineering plan outline
 
+# Requirements:
+1. Have to point out where we can collaborate with Marco's content creator team (what content?)
+
 # Phases outline
 1. __Testnet 1__: super safe basic functional chain
 * __WHY?__: the tasks in this phase are very familiar with the team. We can still ICO on schedule in case test - net 2 fails to meet deadline.
@@ -21,11 +24,19 @@
     * add airdrop testing for eth-format address
 
 * __NFT GOAL__: add support for NFT functionality
+	* (We can collaborate on this part?)
     * implement NFT functionality
+    * NFT marketplace?
 
-3. test - net 3: for further change to test - net 2 if exists
+3. __Testnet 3__: for further change to test - net 2 if exists
 
 # Timeline estimation
+
+__Total time__: 3 months
+
+1. __Testnet 1__: 1 month
+2. __Testnet 2__: 1.5 month (1 month and 2 weeks)
+3. __Reserve time__: 0.5 month (2 weeks)
 
 # Team member estimation
 
