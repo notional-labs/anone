@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KEY="test"
-CHAINID="anoned-1"
+CHAINID="anone-testnet-1"
 KEYRING="test"
 MONIKER="localtestnet"
 KEYALGO="secp256k1"
