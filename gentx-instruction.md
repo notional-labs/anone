@@ -41,6 +41,6 @@ Genesis transaction written to "~/.anone/config/gentx/gentx-e4987c1bfc4c1135ddfd
 ```
 Copy the gentx file to your local anone repo, use the below command exactly as is
 ```
-cp ~/.anone/config/gentx/* networks/testnet-1/gentxs
+cp ~/.anone/config/gentx/* networks/anone-testnet-1/gentxs
 ```
 Submit a Pull Request with your gentx file
