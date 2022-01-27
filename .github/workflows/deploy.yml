@@ -32,6 +32,8 @@ jobs:
         restore-keys: npm-
 
     - name: Build the web
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
       run: |
         cd vue
         npm ci --ignore-scripts
