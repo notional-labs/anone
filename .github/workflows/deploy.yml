@@ -1,32 +1,49 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Deploy - Test
+name: Deploy
 
 on:
   push:
-    branches: [ master, wasm-import ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+        node-version: [17.x]
+    
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Use Node.js
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: ls -a
-    - run: npm run build --if-present
-    - run: npm test
+        
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: npm-${{ hashFiles('package-lock.json') }}
+        restore-keys: npm-
+
+    - name: Build the web
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
+      run: |
+        cd vue
+        npm ci --ignore-scripts
+        npm run build
+    
+    - name: Transfer /dist folder to server
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: vue/dist
+        remote: /root/dist
+        host: 49.12.223.158
+        username: root
+        password: 1
