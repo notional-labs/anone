@@ -33,4 +33,4 @@ jobs:
         ls -a
         npm install 
         npm run build
-        npm test
+        npm serve
