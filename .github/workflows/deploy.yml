@@ -30,8 +30,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Go to the web folder
       run: |
-	cd vue
-	ls -a
-	npm install 
-	npm run build
-	npm test
+        cd vue
+        ls -a
+        npm install 
+        npm run build
+        npm test
