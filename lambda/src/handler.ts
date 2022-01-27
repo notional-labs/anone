@@ -33,7 +33,7 @@ const handleAttestation= async (connection:Connection, event:any) => {
  */
 export const handler = async function(event: any, context:any) {
     console.log("Calling attestation lambda handler");
-    console.log(`connecting to mongo at: ${uri}`);
+    // console.log(`connecting to mongo at: ${uri}`);
     // console.log(event);
     // console.log(context);
     // Make sure to add this so you can re-use `conn` between function calls.
@@ -86,7 +86,9 @@ export const handler = async function(event: any, context:any) {
         console.log("Handling request", body);
         response = await service.writeAttestation(body)
         console.log("Request handled successfully.", response)
-        body = "Attestation successful";
+        body = {
+            message: "Attestation successful"
+        };
 
     } catch(err) {
         console.log(err);
@@ -96,7 +98,7 @@ export const handler = async function(event: any, context:any) {
         body = err.message
         return {
             statusCode,
-            body,
+            body: JSON.stringify(body),
             isBase64Encoded:false,
             headers
         }

@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="container">
-      <AnOneWelcome />
       <template v-if="address">
         <AnOneAttestation />
       </template>
+      <AnOneWelcome />
       <SpTokenSend :address="address" :refresh="true" />
       <SpTransferList :address="address" />
     </div>
