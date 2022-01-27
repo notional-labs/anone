@@ -38,12 +38,13 @@ jobs:
     - name: Compress /dist
       run: |
         cd vue
-        ls -a
+        tar -zcvf dist.tar.gz /dist
 
-#    - name: Transfer /dist folder to server
-#      uses: appleboy/scp-action@master
-#      with:
-#        host: 49.12.223.158
-#        username: root
-#        key: ${{ secrets.KEY }}
-#        source: ""
+    - name: Transfer /dist folder to server
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: vue/dist
+        remote: /root/dist
+        host: 49.12.223.158
+        username: root
+        password: 1
