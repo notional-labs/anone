@@ -35,11 +35,6 @@ jobs:
         npm run build
         ls -a
     
-    - name: Compress /dist
-      run: |
-        cd vue
-        tar -zcvf dist.tar.gz /dist
-
     - name: Transfer /dist folder to server
       uses: garygrossgarten/github-action-scp@release
       with:
