@@ -2,7 +2,7 @@
   <div class="sp-component sp-welcome">
     <div class="sp-box sp-shadow">
       <div class="sp-welcome__header">
-        <h2>Welcome to Another-1</h2>
+        <h2>Welcome to Another-1, this is the demo text for deployment test</h2>
       </div>
       <p>
         Text
