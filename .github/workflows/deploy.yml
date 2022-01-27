@@ -27,10 +27,23 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Go to the web folder
+
+    - name: Build the web
+      run: |
+        cd vue
+        npm install 
+        npm run build
+        ls -a
+    
+    - name: Compress /dist
       run: |
         cd vue
         ls -a
-        npm install 
-        npm run build
-        npm run serve
+
+#    - name: Transfer /dist folder to server
+#      uses: appleboy/scp-action@master
+#      with:
+#        host: 49.12.223.158
+#        username: root
+#        key: ${{ secrets.KEY }}
+#        source: ""
