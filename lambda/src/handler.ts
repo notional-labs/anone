@@ -27,8 +27,6 @@ mongoose.set('useFindAndModify', false);
  */
 export const handler = async function(event: any, context:any) {
     console.log("Calling attestation lambda handler");
-    console.log(event);
-    console.log(context);
     if(event.requestContext.http.method == 'GET') {
         return {
             "statusCode": 200,
