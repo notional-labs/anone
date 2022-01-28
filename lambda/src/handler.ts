@@ -7,7 +7,6 @@ require('mongoose-long')(mongoose);
 import {AttestationModel, AttestationSchema} from "./models/mongo/AttestationModel";
 dotenv.config();
 import {MongoAttestationService} from "./service/MongoAttestationService";
-import {IAttestation} from "./models/Attestation";
 
 let conn:Promise<Connection> | Connection;
 let connection: Connection;
@@ -21,11 +20,6 @@ mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);
 mongoose.set('useFindAndModify', false);
 
-// eslint-disable-next-line @typescript-eslint/require-await
-const handleAttestation= async (connection:Connection, event:any) => {
-    return null;
-}
-
 /**
  * AWS config for handler function should be 'dist/handler.handler'
  * @param event
@@ -33,6 +27,19 @@ const handleAttestation= async (connection:Connection, event:any) => {
  */
 export const handler = async function(event: any, context:any) {
     console.log("Calling attestation lambda handler");
+    console.log(event);
+    console.log(context);
+    if(event.requestContext.http.method == 'GET') {
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "isBase64Encoded": false,
+
+            "body": JSON.stringify({message: "OK"})
+        }
+    }
     // console.log(`connecting to mongo at: ${uri}`);
     // console.log(event);
     // console.log(context);
@@ -68,43 +75,36 @@ export const handler = async function(event: any, context:any) {
     }
     console.log("Handling event", event);
 
-    let response;
-    let statusCode = 200;
-    const headers = {
-        'Content-Type': 'application/json',
-    };
-    let body = ""
     try {
         console.log("Building Service")
         const service = new MongoAttestationService(model);
-        let body = event.body;
-        try {
-            body = JSON.parse(event.body);
-        } catch(e) {
-            console.log("event body is either already an object or malformed.");
-        }
+        const body = JSON.parse(event.body);
         console.log("Handling request", body);
-        response = await service.writeAttestation(body)
+        const response = await service.writeAttestation(body)
         console.log("Request handled successfully.", response)
-        body = {
-            message: "Attestation successful"
-        };
-
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "isBase64Encoded": false,
+            "body": JSON.stringify({message: "Successful Attestation"})
+        }
     } catch(err) {
         console.log(err);
-        statusCode = 400
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        body = err.message
+        const body = err.message
         return {
-            statusCode,
+            statusCode: 400,
             body: JSON.stringify(body),
             isBase64Encoded:false,
-            headers
+            headers: {
+                'Content-Type': 'application/json',
+            }
         }
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return
-    return body;
 }
 
 

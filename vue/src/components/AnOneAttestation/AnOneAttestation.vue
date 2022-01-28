@@ -118,35 +118,31 @@ export default defineComponent({
         }
         sig.NFTs = NFTs;
       }
+      try {
+        const response = await fetch(LAMBDA_URL, {
+          method: 'POST',
+          mode: "no-cors",
+          cache: 'no-cache',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(sig)
+        })
 
-      fetch(LAMBDA_URL, {
-        method: 'POST',
-        mode: "no-cors",
-        headers: {
-          'Content-Type': 'application/json'
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(sig)
-      }).then(async (response) => {
-          console.log(response);
-          if(!response.ok) {
-            return response.text().then(text=>{
-              console.log(text);
-              throw new Error(text || "Attestation error. Did you already record your wallet?")
-            });
-          } else {
-            return response.json();
-          }
-      }).then(response=> {
-          this.attested = true;
-          console.log(response)
-      }).catch(e=>{
+        console.log(response);
+        if (!response.ok) {
+          console.log(response.json())
+          throw new Error(text || "Attestation error. Did you already record your wallet?")
+        } else {
+
+        }
+        this.attested = true;
+      } catch(e) {
         console.log(e);
         this.attestationError = e.message;
-      })
-    },
+      }
   },
   beforeCreate: function () {
     console.log("create")
