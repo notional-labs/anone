@@ -180,6 +180,7 @@ export default defineComponent({
     activeWallet: function () {
       return this.$store.state.common.wallet.activeWallet
     },
-  },
+  }
+  }
 })
 </script>
