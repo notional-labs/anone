@@ -134,15 +134,13 @@ export default defineComponent({
         console.log(response);
         if (!response.ok) {
           console.log(response.json())
-          throw new Error(text || "Attestation error. Did you already record your wallet?")
-        } else {
-
+          throw new Error("Attestation error. Did you already record your wallet?")
         }
         this.attested = true;
       } catch(e) {
         console.log(e);
         this.attestationError = e.message;
-      }
+      };
   },
   beforeCreate: function () {
     console.log("create")
@@ -179,8 +177,8 @@ export default defineComponent({
     },
     activeWallet: function () {
       return this.$store.state.common.wallet.activeWallet
-    },
-  }
-  }
+    }
+  },
+  },
 })
 </script>
