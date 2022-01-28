@@ -9,7 +9,7 @@
         </p>
 
         <AnButton href="#" type="primary" v-on:click="handleSign">Link Eth and ONE Address</AnButton>
-        <span>(Will Open Metamask)</span>
+        <span>(Will Open Metamask) v2</span>
       </div>
       <div v-if="attested">
         <h2>Attestation recorded!</h2>
