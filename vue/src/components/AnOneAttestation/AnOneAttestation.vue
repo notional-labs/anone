@@ -25,6 +25,10 @@ import { defineComponent } from 'vue';
 import {ethers} from 'ethers';
 import AnButton from '../AnButton/AnButton'
 import ABI from './anone_abi.json';
+import axios from 'axios';
+
+axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 const ANONE_ADDRESS = '0x197fc873b3e498b7ca8fac410f466515ceec600b';
 const LAMBDA_URL =  'https://4s3eso3uye.execute-api.ap-southeast-1.amazonaws.com/default/ANONE-ATTESTATION'
@@ -119,23 +123,24 @@ export default defineComponent({
         sig.NFTs = NFTs;
       }
       try {
-        const response = await fetch(LAMBDA_URL, {
-          method: 'POST',
-          mode: "no-cors",
-          cache: 'no-cache',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow', // manual, *follow, error
-          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          body: JSON.stringify(sig)
+        const response  = await axios( {
+          url: LAMBDA_URL,
+          withCredentials: false,
+          data: JSON.stringify(sig)
         })
+        // const response = await fetch(LAMBDA_URL, {
+        //   method: 'POST',
+        //   mode: "no-cors",
+        //   cache: 'no-cache',
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   redirect: 'follow', // manual, *follow, error
+        //   referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //   body: JSON.stringify(sig)
+        // })
 
         console.log(response);
-        if (!response.ok) {
-          console.log(response.json())
-          throw new Error("Attestation error. Did you already record your wallet?")
-        }
         this.attested = true;
       } catch(e) {
         console.log(e);

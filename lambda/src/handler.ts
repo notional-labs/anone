@@ -1,5 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import AWS from 'aws-sdk';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import dotenv from 'dotenv';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import mongoose, {Connection, Error, Model} from 'mongoose';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-var-requires
 require('mongoose-long')(mongoose);
@@ -27,11 +33,12 @@ mongoose.set('useFindAndModify', false);
  */
 export const handler = async function(event: any, context:any) {
     console.log("Calling attestation lambda handler");
-    if(event.requestContext.http.method == 'GET') {
+    if(event.requestContext.http.method == 'GET' || event.requestContext.http.method == 'OPTIONS') {
         return {
             "statusCode": 200,
             "headers": {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*'
             },
             "isBase64Encoded": false,
 
@@ -83,7 +90,8 @@ export const handler = async function(event: any, context:any) {
         return {
             "statusCode": 200,
             "headers": {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*'
             },
             "isBase64Encoded": false,
             "body": JSON.stringify({message: "Successful Attestation"})
@@ -99,6 +107,7 @@ export const handler = async function(event: any, context:any) {
             isBase64Encoded:false,
             headers: {
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }
         }
     }
