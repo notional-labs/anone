@@ -8,7 +8,7 @@
           (Requires Metamask plugin)
         </p>
 
-        <AnButton href="#" type="primary" v-on:click="handleSign">Link Eth and ONE Address</AnButton>
+        <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to ONE Address</AnButton>
         <span>(Will Open Metamask) v2</span>
       </div>
       <div v-if="attested">

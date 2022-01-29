@@ -1,6 +1,6 @@
 <template>
     <div class="sp-wallet" v-if="depsLoaded">
-        <SpButton type="primary" v-on:click="useKeplr">Use Keplr</SpButton>
+        <SpButton type="primary" v-on:click="useKeplr">Connect Keplr</SpButton>
     </div>
 </template>
 <script>
@@ -13,7 +13,7 @@ export default defineComponent({
             return this._depsLoaded
         }
     },
-    methods: { 
+    methods: {
         useKeplr: async function () {
             console.log("adding wallet")
 
@@ -40,13 +40,13 @@ export default defineComponent({
                             bech32PrefixConsAddr: process.env.VUE_APP_ADDRESS_PREFIX + "valcons",
                             bech32PrefixConsPub: process.env.VUE_APP_ADDRESS_PREFIX + "valconspub",
                         },
-                        currencies: [ 
-                            { 
-                                coinDenom: "AN1", 
-                                coinMinimalDenom: "uan1", 
-                                coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL), 
-                                coinGeckoId: "fuck", 
-                            }, 
+                        currencies: [
+                            {
+                                coinDenom: "AN1",
+                                coinMinimalDenom: "uan1",
+                                coinDecimals: parseInt(process.env.VUE_APP_COIN_DECIMAL),
+                                coinGeckoId: "fuck",
+                            },
                         ],
                         feeCurrencies: [
                             {
