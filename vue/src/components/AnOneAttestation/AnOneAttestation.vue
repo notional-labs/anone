@@ -9,7 +9,7 @@
         </p>
 
         <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to ONE Address</AnButton>
-        <span>(Will Open Metamask) v2</span>
+        <span>(Will Open Metamask)</span>
       </div>
       <div v-if="attested">
         <h2>Attestation recorded!</h2>
