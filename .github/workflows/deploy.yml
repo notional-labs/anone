@@ -45,5 +45,5 @@ jobs:
         local: vue/dist
         remote: /root/dist
         host: 49.12.223.158
-        username: root
-        password: 1
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
