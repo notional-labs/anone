@@ -43,7 +43,7 @@ jobs:
       uses: garygrossgarten/github-action-scp@release
       with:
         local: vue/dist
-        remote: /root/dist
-        host: 65.108.65.6
+        remote: /root/anone
+        host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
