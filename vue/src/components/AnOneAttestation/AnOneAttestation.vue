@@ -8,7 +8,7 @@
           (Requires Metamask plugin)
         </p>
 
-        <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to ONE Address</AnButton>
+        <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
         <span>(Will Open Metamask)</span>
       </div>
       <div v-if="attested">
@@ -184,11 +184,7 @@ export default defineComponent({
       return this._depsLoaded
     },
     currentAccount: function () {
-      if (this._depsLoaded) {
         return this.$store.getters['common/wallet/address']
-      } else {
-        return null
-      }
     },
     activeWallet: function () {
       return this.$store.state.common.wallet.activeWallet
