@@ -127,6 +127,7 @@ export default defineComponent({
         const response  = await axios( {
           url: LAMBDA_URL,
           method: 'post',
+          mode: 'no-cors',
           withCredentials: false,
           data: JSON.stringify(sig)
         })

@@ -33,12 +33,14 @@ mongoose.set('useFindAndModify', false);
  */
 export const handler = async function(event: any, context:any) {
     console.log("Calling attestation lambda handler");
-    if(event.requestContext.http.method == 'GET') {
+    if(event.requestContext.http.method == 'GET' || event.requestContext.http.method == 'OPTIONS') {
         return {
             "statusCode": 200,
             "headers": {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
             },
             "isBase64Encoded": false,
 
@@ -91,7 +93,9 @@ export const handler = async function(event: any, context:any) {
             "statusCode": 200,
             "headers": {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
             },
             "isBase64Encoded": false,
             "body": JSON.stringify({message: "Successful Attestation"})
