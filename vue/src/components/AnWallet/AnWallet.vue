@@ -1,6 +1,7 @@
 <template>
     <div class="sp-wallet" v-if="depsLoaded">
-        <SpButton type="primary" v-on:click="useKeplr">Connect Keplr</SpButton>
+
+        <SpButton type="primary" v-on:click="useKeplr"><span v-if="address">Connected</span><span v-if="!address">Connect Keplr</span></SpButton>
     </div>
 </template>
 <script>
@@ -11,7 +12,10 @@ export default defineComponent({
     computed: {
         depsLoaded: function () {
             return this._depsLoaded
-        }
+        },
+        address() {
+          return this.$store.getters['common/wallet/address']
+        },
     },
     methods: {
         useKeplr: async function () {
@@ -93,5 +97,6 @@ export default defineComponent({
             }
         }
     },
+
 })
 </script>
