@@ -4,3 +4,4 @@ release/
 .env
 debug.txt
 .DS_Store
+.idea
