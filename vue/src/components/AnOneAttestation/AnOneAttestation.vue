@@ -126,6 +126,7 @@ export default defineComponent({
       try {
         const response  = await axios( {
           url: LAMBDA_URL,
+          method: 'post',
           withCredentials: false,
           data: JSON.stringify(sig)
         })
