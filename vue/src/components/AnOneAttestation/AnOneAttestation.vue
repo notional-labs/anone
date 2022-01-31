@@ -111,11 +111,11 @@ export default defineComponent({
           setError: (e) => console.log,
           message: this.currentAccount,
         })
+        console.log("Metamask", sig)
       } catch (e) {
         throw new Error('Cannot sign with metamask')
       }
       if (sig) {
-        console.log('HAS SIG', sig)
         const { ethAddress } = sig
         console.log(ethAddress)
         const NFTs = await checkNFT(ethAddress)
