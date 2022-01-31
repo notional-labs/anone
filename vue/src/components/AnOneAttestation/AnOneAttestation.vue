@@ -12,7 +12,7 @@
         <span>(Will Open Metamask)</span>
       </div>
       <div v-if="attested">
-        <h2>Attestation recorded!</h2>
+        <h2>{{ this.attestationMsg }}</h2>
         <p>{{NFTs.toString()}}</p>
       </div>
       <div v-if="attestationError"><h4>{{attestationError}}</h4></div>
@@ -97,7 +97,8 @@ export default defineComponent({
       hasNFT: false,
       NFTs: [],
       attested: false,
-      attestationError: false
+      attestationError: false,
+      attestationMsg: false
     }
   },
   methods: {
@@ -142,6 +143,7 @@ export default defineComponent({
 
         console.log(response);
         this.attested = true;
+        this.attestationMsg = response.data.message;
       } catch(e) {
         console.log(e);
         this.attestationError = e.message;
