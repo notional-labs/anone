@@ -27,7 +27,7 @@ import AnWallet from '@/components/AnWallet/AnWallet'
 export default {
   components: {
     Sidebar,
-    AnWallet
+    AnWallet,
   },
   data() {
     return {

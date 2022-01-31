@@ -12,13 +12,13 @@
 </template>
 
 <script>
-import AnOneWelcome from "@/components/AnOneWelcome/AnOneWelcome";
-import AnOneAttestation from "@/components/AnOneAttestation/AnOneAttestation";
+import AnOneWelcome from '@/components/AnOneWelcome/AnOneWelcome'
+import AnOneAttestation from '@/components/AnOneAttestation/AnOneAttestation'
 export default {
   name: 'Index',
   components: {
     AnOneWelcome,
-    AnOneAttestation
+    AnOneAttestation,
   },
   computed: {
     address() {

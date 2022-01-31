@@ -1,8 +1,8 @@
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const path = require('path')
-const webpack = require('webpack');
+const webpack = require('webpack')
 
-const lambda =  process.env.LAMBDA || 'http://localhost:8080/api/testing/attest'
+const lambda = process.env.LAMBDA || 'http://localhost:8080/api/testing/attest'
 
 module.exports = {
   transpileDependencies: true,
@@ -14,10 +14,10 @@ module.exports = {
       },
     },
     plugins: [
-        new NodePolyfillPlugin(),
-        new webpack.DefinePlugin({
-          __lambda__: lambda
-        })
+      new NodePolyfillPlugin(),
+      new webpack.DefinePlugin({
+        __lambda__: lambda,
+      }),
     ],
   },
 }
