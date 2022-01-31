@@ -117,23 +117,20 @@ export default defineComponent({
           message: this.currentAccount,
         })
         console.log("Metamask", sig)
-      } catch (e) {
-        throw new Error('Cannot sign with metamask')
-      }
-      if (sig) {
-        const { ethAddress } = sig
-        console.log(ethAddress)
-        const NFTs = await checkNFT(ethAddress)
-        console.log(NFTs)
-        if (NFTs && NFTs.length) {
-          this.hasNFT = true
-          this.NFTs = NFTs
+        if (sig) {
+          const { ethAddress } = sig
+          console.log(ethAddress)
+          const NFTs = await checkNFT(ethAddress)
+          console.log(NFTs)
+          if (NFTs && NFTs.length) {
+            this.hasNFT = true
+            this.NFTs = NFTs
+          }
+          sig.NFTs = NFTs
+        } else {
+          throw new Error('Cannot sign with metamask')
         }
-        sig.NFTs = NFTs
-      } else {
-        throw new Error('Cannot sign with metamask')
-      }
-      try {
+
         const response = await axios({
           url: LAMBDA_URL,
           method: 'post',
@@ -141,18 +138,6 @@ export default defineComponent({
           withCredentials: false,
           data: sig,
         })
-        // const response = await fetch(LAMBDA_URL, {
-        //   method: 'POST',
-        //   mode: "no-cors",
-        //   cache: 'no-cache',
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   redirect: 'follow', // manual, *follow, error
-        //   referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //   body: JSON.stringify(sig)
-        // })
-
         console.log(response)
         this.attested = true
         this.attestationMsg = response.data.message
@@ -160,7 +145,6 @@ export default defineComponent({
         console.log(e)
         this.attestationError = e.message
       }
-    },
   },
   beforeCreate: function () {
     console.log('create')
@@ -171,7 +155,7 @@ export default defineComponent({
       if (!this.$store.hasModule(submod)) {
         console.log('Module ' + vuexModule + ' has not been registered!')
         this._depsLoaded = false
-        break
+        break;
       }
     }
   },
@@ -195,5 +179,5 @@ export default defineComponent({
       return this.$store.state.common.wallet.activeWallet
     },
   },
-})
+}})
 </script>
