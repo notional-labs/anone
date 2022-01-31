@@ -71,17 +71,22 @@ const signMessage = async ({ setError, message }) => {
 }
 
 const checkNFT = async (address) => {
-  console.log('Checking NFT')
-  // console.log(ANONE_ADDRESS);
-  // console.log(ABI);
-  const provider = new ethers.providers.Web3Provider(window.ethereum)
-  let contract = new ethers.Contract(ANONE_ADDRESS, ABI, provider)
-  const listOfNFTs = await contract.tokensOfOwner(address)
-  console.log(listOfNFTs)
-  if (listOfNFTs && listOfNFTs.length > 0) {
-    return listOfNFTs
+  try {
+    console.log('Checking NFT')
+    // console.log(ANONE_ADDRESS);
+    // console.log(ABI);
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    let contract = new ethers.Contract(ANONE_ADDRESS, ABI, provider)
+    const listOfNFTs = await contract.tokensOfOwner(address)
+    console.log(listOfNFTs)
+    if (listOfNFTs && listOfNFTs.length > 0) {
+      return listOfNFTs
+    }
+    return []
+  }catch(e) {
+    console.log("Could not get NFTs");
+    throw new Error("Unable to load NFTs from Smart contract");
   }
-  return []
 }
 
 window.checkNFT = checkNFT
