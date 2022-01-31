@@ -107,10 +107,14 @@ export default defineComponent({
       e.preventDefault();
 
       //setError();
-      const sig = await signMessage({
-        setError: (e) => console.log,
-        message: this.currentAccount
-      });
+      try {
+        const sig = await signMessage({
+          setError: (e) => console.log,
+          message: this.currentAccount
+        });
+      } catch(e) {
+        throw new Error("Cannot sign with metamask");
+      }
       if (sig) {
         console.log("HAS SIG", sig);
         const {ethAddress} = sig;
@@ -122,6 +126,8 @@ export default defineComponent({
           this.NFTs = NFTs
         }
         sig.NFTs = NFTs;
+      } else {
+        throw new Error("Cannot sign with metamask");
       }
       try {
         const response  = await axios( {
@@ -129,7 +135,7 @@ export default defineComponent({
           method: 'post',
           mode: 'no-cors',
           withCredentials: false,
-          data: JSON.stringify(sig)
+          data: sig
         })
         // const response = await fetch(LAMBDA_URL, {
         //   method: 'POST',

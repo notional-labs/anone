@@ -40,7 +40,7 @@ export const handler = async function(event: any, context:any) {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type'
+                'Access-Control-Allow-Headers': 'Content-Type,Access-Control-Allow-Origin'
             },
             "isBase64Encoded": false,
 
@@ -95,7 +95,7 @@ export const handler = async function(event: any, context:any) {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type'
+                'Access-Control-Allow-Headers': 'Content-Type,Access-Control-Allow-Origin'
             },
             "isBase64Encoded": false,
             "body": JSON.stringify({message: "Successful Attestation"})
