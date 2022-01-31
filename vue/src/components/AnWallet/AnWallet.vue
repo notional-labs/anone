@@ -15,7 +15,10 @@ export default defineComponent({
       return this._depsLoaded
     },
     address() {
-      return this.$store.getters['common/wallet/address']
+      if(this._depsLoaded) {
+        return this.$store.getters['common/wallet/address']
+      }
+      return null
     },
   },
   methods: {
