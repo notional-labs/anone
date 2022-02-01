@@ -5,8 +5,8 @@
       <h2>Link your Ethereum Account</h2>
       <p>
         In order to link your NFT collection on Ethereum to your ONE address, you'll need to sign a single transaction
-        on the ethereum chain. It's just a few clicks and it will associate your ONE account with your Ethereum
-        wallet. (Requires Metamask plugin)
+        on the ethereum chain. It's just a few clicks and it will associate your ONE account with your Ethereum wallet.
+        (Requires Metamask plugin)
       </p>
       <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
       <span>(Will Open Metamask)</span>
@@ -19,12 +19,11 @@
       <h4>{{ attestationError }}</h4>
     </div>
   </div>
-  </div>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import {ethers} from 'ethers'
+import { defineComponent } from 'vue'
+import { ethers } from 'ethers'
 import AnButton from '../AnButton/AnButton'
 import ABI from './anone_abi.json'
 import axios from 'axios'
@@ -34,7 +33,7 @@ axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
 
 const ANONE_ADDRESS = '0x197fc873b3e498b7ca8fac410f466515ceec600b'
 const LAMBDA_URL = 'https://4s3eso3uye.execute-api.ap-southeast-1.amazonaws.com/default/ANONE-ATTESTATION'
-const verifyMessage = async ({message, address, signature}) => {
+const verifyMessage = async ({ message, address, signature }) => {
   try {
     const signerAddr = await ethers.utils.verifyMessage(message, signature)
     if (signerAddr !== address) {
@@ -47,9 +46,9 @@ const verifyMessage = async ({message, address, signature}) => {
   }
 }
 
-const signMessage = async ({setError, message}) => {
+const signMessage = async ({ setError, message }) => {
   try {
-    console.log({message})
+    console.log({ message })
     // TODO: Verify message is a ONE address.
     if (!window.ethereum) throw new Error('Metamask not found. Please install it.')
 
@@ -73,7 +72,7 @@ const signMessage = async ({setError, message}) => {
 const checkNFT = async (address) => {
   try {
     console.log('Checking NFT')
-    console.log(ANONE_ADDRESS);
+    console.log(ANONE_ADDRESS)
     // console.log(address);
     // console.log(ABI);
     const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -85,8 +84,8 @@ const checkNFT = async (address) => {
     }
     return []
   } catch (e) {
-    console.log(e);
-    throw new Error("Cannot read NFTs from ethereum smart contract, is Metamask accidentally connected to Binance?")
+    console.log(e)
+    throw new Error('Cannot read NFTs from ethereum smart contract, is Metamask accidentally connected to Binance?')
   }
 }
 
@@ -117,10 +116,10 @@ export default defineComponent({
           setError: (e) => console.log,
           message: this.currentAccount,
         })
-        console.log("Metamask", sig)
+        console.log('Metamask', sig)
 
         if (sig) {
-          const {ethAddress} = sig
+          const { ethAddress } = sig
           console.log(ethAddress)
           const NFTs = await checkNFT(ethAddress)
           console.log(NFTs)

@@ -15,7 +15,7 @@ export default defineComponent({
       return this._depsLoaded
     },
     address() {
-      if(this._depsLoaded) {
+      if (this._depsLoaded) {
         return this.$store.getters['common/wallet/address']
       }
       return null
