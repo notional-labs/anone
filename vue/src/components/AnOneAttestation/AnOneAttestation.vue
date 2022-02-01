@@ -13,7 +13,7 @@
       </div>
       <div v-if="attested">
         <h2>{{ this.attestationMsg }}</h2>
-        <p><span v-if="NFTs.length">Found NFT Ids: {{ NFTs.toString() }}</span></p>
+        <p><span v-if="NFTs.length">NFT Token IDs: {{ NFTs.toString() }}</span></p>
       </div>
       <div v-if="attestationError">
         <h4>{{ attestationError }}</h4>
