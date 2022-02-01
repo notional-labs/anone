@@ -1,6 +1,6 @@
 <template>
   <div v-if="initialized">
-    <SpWallet ref="wallet" v-on:dropdown-opened="$refs.menu.closeDropdown()" />
+    <AnWallet ref="wallet" v-on:dropdown-opened="$refs.menu.closeDropdown()" />
     <SpLayout>
       <template v-slot:sidebar>
         <Sidebar />
@@ -22,10 +22,12 @@ body {
 import '@starport/vue/lib/starport-vue.css'
 import './scss/app.scss'
 import Sidebar from './components/Sidebar'
+import AnWallet from '@/components/AnWallet/AnWallet'
 
 export default {
   components: {
     Sidebar,
+    AnWallet,
   },
   data() {
     return {

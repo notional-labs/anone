@@ -1,10 +1,10 @@
 <template>
   <router-link
-      :to="link"
-      v-if="link"
-      class="sp-button"
-      :class="[busy ? 'sp-button__progress' : '', 'sp-button-' + type]"
-      :disabled="disabled"
+    :to="link"
+    v-if="link"
+    class="sp-button"
+    :class="[busy ? 'sp-button__progress' : '', 'sp-button-' + type]"
+    :disabled="disabled"
   >
     <span class="sp-button__text"><slot></slot></span>
     <div class="sp-button__loading">
@@ -12,12 +12,12 @@
     </div>
   </router-link>
   <a
-      :href="href"
-      v-else-if="href"
-      class="sp-button"
-      :class="[busy ? 'sp-button__progress' : '', 'sp-button-' + type]"
-      :disabled="disabled"
-      :target="target"
+    :href="href"
+    v-else-if="href"
+    class="sp-button"
+    :class="[busy ? 'sp-button__progress' : '', 'sp-button-' + type]"
+    :disabled="disabled"
+    :target="target"
   >
     <span class="sp-button__text"><slot></slot></span>
     <div class="sp-button__loading">
@@ -25,11 +25,11 @@
     </div>
   </a>
   <button
-      type="button"
-      v-else
-      class="sp-button"
-      :class="[busy ? 'sp-button__progress' : '', 'sp-button-' + type]"
-      :disabled="disabled"
+    type="button"
+    v-else
+    class="sp-button"
+    :class="[busy ? 'sp-button__progress' : '', 'sp-button-' + type]"
+    :disabled="disabled"
   >
     <span class="sp-button__text"><slot></slot></span>
     <div class="sp-button__loading">

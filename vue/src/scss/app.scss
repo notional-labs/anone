@@ -21,6 +21,10 @@ h3 {
   text-transform: uppercase;
 }
 
+.sp-button {
+  margin-right: 1rem;
+}
+
 .sp-button.sp-button-primary {
   background: $toxic-green;
   border: 0.2rem solid darken($toxic-green, 30%);

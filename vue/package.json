@@ -5,7 +5,7 @@
   "author": "Tendermint, Inc <hello@tendermint.com>",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --mode=production",
+    "serve": "vue-cli-service serve --mode=production --fix",
     "dev": "vue-cli-service serve",
     "lint": "vue-cli-service lint",
     "build": "vue-cli-service build",
@@ -17,7 +17,9 @@
     "@cosmjs/stargate": "^0.26.1",
     "@starport/vue": "^0.1.55",
     "@starport/vuex": "^0.1.55",
+    "axios": "^0.25.0",
     "core-js": "^3.18.2",
+    "ethers": "^5.5.2",
     "vue": "^3.2.6",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"

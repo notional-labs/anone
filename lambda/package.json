@@ -1,0 +1,109 @@
+{
+  "name": "anone-att-lambda",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "ts-node build.ts && tsc --build tsconfig.prod.json",
+    "lint": "eslint . --ext .ts",
+    "start": "npm run build && node ./dist/index.js ",
+    "start:dev": "nodemon",
+    "test": "nodemon --config ./spec/nodemon.json",
+    "package": "rm -f lambda.zip && npm run build && zip -r -X lambda.zip *"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts, html",
+    "ignore": [
+      "src/public"
+    ],
+    "exec": "ts-node -r tsconfig-paths/register ./src"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {
+      "max-len": [
+        "error",
+        {
+          "code": 150
+        }
+      ],
+      "no-console": 1,
+      "no-extra-boolean-cast": 0,
+      "@typescript-eslint/restrict-plus-operands": 0,
+      "@typescript-eslint/explicit-module-boundary-types": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/no-floating-promises": 0,
+      "@typescript-eslint/no-unsafe-member-access": 0,
+      "@typescript-eslint/no-unsafe-assignment": 0
+    }
+  },
+  "eslintIgnore": [
+    "src/public/",
+    "build.ts"
+  ],
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "ethers": "^5.5.3",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^4.1.1",
+    "http-status-codes": "^2.1.4",
+    "install": "^0.13.0",
+    "jet-logger": "^1.0.2",
+    "json-stringify-safe": "^5.0.1",
+    "jsonfile": "^6.0.1",
+    "make-fetch-happen": "^8.0.13",
+    "mime-types": "^2.1.27",
+    "module-alias": "^2.2.2",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.11.15",
+    "mongoose-long": "^0.3.2",
+    "morgan": "^1.10.0",
+    "npm": "^7.6.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "tough-cookie": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/command-line-args": "^5.0.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.8",
+    "@types/find": "^0.2.1",
+    "@types/fs-extra": "^9.0.2",
+    "@types/jasmine": "^3.6.0",
+    "@types/jsonfile": "^6.0.0",
+    "@types/make-fetch-happen": "^8.0.1",
+    "@types/morgan": "^1.9.2",
+    "@types/node": "^14.14.6",
+    "@types/request": "^2.48.5",
+    "@types/request-promise": "^4.1.47",
+    "@types/supertest": "^2.0.10",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
+    "aws-sdk": "^2.799.0",
+    "eslint": "^7.14.0",
+    "find": "^0.3.0",
+    "fs-extra": "^9.0.1",
+    "jasmine": "^3.6.3",
+    "nodemon": "^2.0.6",
+    "supertest": "^6.0.0",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.5.5"
+  }
+}
