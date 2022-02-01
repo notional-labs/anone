@@ -1,22 +1,23 @@
 <template>
   <div class="sp-component">
-    classNamev class="sp-box sp-shadow"className
-    <div v-if="!attestationError && !attested">
-      <h2>Link your Ethereum Account</h2>
-      <p>
-        In order to link your NFT collection on Ethereum to your ONE address, you'll need to sign a single transaction
-        on the ethereum chain. It's just a few clicks and it will associate your ONE account with your Ethereum wallet.
-        (Requires Metamask plugin)
-      </p>
-      <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
-      <span>(Will Open Metamask)</span>
-    </div>
-    <div v-if="attested">
-      <h2>{{ this.attestationMsg }}</h2>
-      <p>{{ NFTs.toString() }}</p>
-    </div>
-    <div v-if="attestationError">
-      <h4>{{ attestationError }}</h4>
+    <div class="sp-box sp-shadow">
+      <div v-if="!attestationError && !attested">
+        <h2>Link your Ethereum Account</h2>
+        <p>
+          In order to link your NFT collection on Ethereum to your ONE address, you'll need to sign a single transaction
+          on the ethereum chain. It's just a few clicks and it will associate your ONE account with your Ethereum wallet.
+          (Requires Metamask plugin)
+        </p>
+        <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
+        <span>(Will Open Metamask)</span>
+      </div>
+      <div v-if="attested">
+        <h2>{{ this.attestationMsg }}</h2>
+        <p>{{ NFTs.toString() }}</p>
+      </div>
+      <div v-if="attestationError">
+        <h4>{{ attestationError }}</h4>
+      </div>
     </div>
   </div>
 </template>
