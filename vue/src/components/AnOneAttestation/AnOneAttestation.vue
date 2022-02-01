@@ -52,8 +52,11 @@ const signMessage = async ({ setError, message }) => {
     console.log({ message })
     // TODO: Verify message is a ONE address.
     if (!window.ethereum) throw new Error('Metamask not found. Please install it.')
-
-    await window.ethereum.send('eth_requestAccounts')
+    const unlocked = window.ethereum._metamask.isUnlocked();
+    if(!unlocked) {
+      throw new Error("Metamask is locked, please unlock and refresh")
+    }
+    await window.ethereum.request({ method: 'eth_requestAccounts' })
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const signature = await signer.signMessage(message)
@@ -86,6 +89,11 @@ const checkNFT = async (address) => {
     return []
   } catch (e) {
     console.log(e)
+    const isConnected = window.ethereum.isConnected();
+    // await ethereum.request({args: RequestArguments})
+    if(!isConnected) {
+      throw new Error("Not connected to ethereum network, cannot detect NFTs. Please reload the page")
+    }
     throw new Error('Cannot read NFTs from ethereum smart contract, is Metamask accidentally connected to Binance?')
   }
 }
@@ -102,6 +110,7 @@ export default defineComponent({
       hasNFT: false,
       NFTs: [],
       attested: false,
+      ethConnected: false,
       attestationError: false,
       attestationMsg: false,
     }
@@ -163,6 +172,16 @@ export default defineComponent({
   },
   beforeCreate: function () {
     console.log('create')
+    // handle eth events.
+    if(window.ethereum) {
+      window.ethereum.on('connect', () => {
+        this.ethConnected = true
+      })
+      window.ethereum.on('disconnect', () => {
+        this.ethConnected = false
+      })
+      window.ethereum.on('chainChanged', () => {window.location.reload()})
+    }
     const vuexModule = ['common', 'wallet']
     for (let i = 1; i <= vuexModule.length; i++) {
       const submod = vuexModule.slice(0, i)
