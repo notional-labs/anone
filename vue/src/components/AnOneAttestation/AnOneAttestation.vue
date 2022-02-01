@@ -130,7 +130,7 @@ export default defineComponent({
           }
           sig.NFTs = NFTs
         } else {
-          throw new Error('Cannot sign with metamask')
+          throw new Error('No signature from metamask')
         }
 
         const response = await axios({
