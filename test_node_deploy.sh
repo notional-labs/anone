@@ -50,12 +50,11 @@ command -v jq > /dev/null 2>&1 || { echo >&2 "jq not installed. More info: https
 # install anoned if not exist
 if [ $WILL_INSTALL -eq 0 ];
 then 
-    command -v anoned > /dev/null 2>&1 || { echo >&1 "installing anoned"; cd cmd/anoned; go install; }
+    command -v anoned > /dev/null 2>&1 || { echo >&1 "installing anoned"; make install; }
 else
     echo >&1 "installing anoned"
     rm -rf $HOME/.anone*
-    cd cmd/anoned
-    go install
+    make install
 fi
 
 anoned config keyring-backend $KEYRING
