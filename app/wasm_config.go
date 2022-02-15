@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	// DefaultJunoInstanceCost is initially set the same as in wasmd
+	// DefaultAnoneInstanceCost is initially set the same as in wasmd
 	DefaultAnOneInstanceCost uint64 = 60_000
-	// DefaultJunoCompileCost set to a large number for testing
+	// DefaultAnoneCompileCost set to a large number for testing
 	DefaultAnOneCompileCost uint64 = 100
 )
 
