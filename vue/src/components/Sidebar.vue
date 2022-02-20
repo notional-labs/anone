@@ -1,17 +1,17 @@
 <template>
   <SpSidebar v-on:sidebar-open="sidebarOpen = true" v-on:sidebar-close="sidebarOpen = false">
     <template v-slot:default>
-      <img src="/another1_logo.png" alt="Another-1" class="logo"/>
+      <img src="/another1_logo.png" alt="Another-1" class="logo" />
       <SpLinkIcon link="/" text="Dashboard" icon="Dashboard" />
-      <SpLinkIcon link="/types" text="Custom Type" icon="Form" />
-      <SpLinkIcon link="/relayers" text="Relayers" icon="Transactions" />
+      <!--      <SpLinkIcon link="/types" text="Custom Type" icon="Form" />-->
+      <!--      <SpLinkIcon link="/relayers" text="Relayers" icon="Transactions" />-->
       <div class="sp-dash"></div>
-      <SpLinkIcon href="https://github.com/tendermint/starport" target="_blank" text="Documentation" icon="Docs" />
+      <!--      <SpLinkIcon href="https://github.com/tendermint/starport" target="_blank" text="Documentation" icon="Docs" />-->
     </template>
     <template v-slot:footer>
       <SpStatusAPI :showText="sidebarOpen" />
       <SpStatusRPC :showText="sidebarOpen" />
-      <SpStatusWS :showText="sidebarOpen" />
+      <!--      <SpStatusWS :showText="sidebarOpen" />-->
       <div class="sp-text">Build: v0.3.8</div>
       <div class="sp-text">&copy; Another-1</div>
     </template>
