@@ -8,7 +8,7 @@ Then, go to Faucet channel in Discord to get your token: https://discord.com/cha
 Create a new validator:
 ```
 anoned tx staking create-validator \
-  --amount=1000000uan1 \
+  --amount=1500000000uan1 \
   --pubkey=$(anoned tendermint show-validator) \
   --moniker=<moniker> \
   --chain-id=anone-testnet-1 \
