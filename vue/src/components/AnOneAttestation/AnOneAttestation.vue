@@ -166,7 +166,8 @@ export default defineComponent({
         this.attestationMsg = response.data.message
       } catch (e) {
         console.log(e)
-        this.attestationError = e.message
+        const message = e.response ? e.response.data : e.message;
+        this.attestationError = message;
       }
     },
   },
