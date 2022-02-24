@@ -160,7 +160,7 @@ const App = () => {
                   paddingBottom: 30,
                   border: 0,
                   fontFamily: 'Roboto',
-                  borderBottom: location.pathname.includes('/accounts') ? 'solid 2px #EEC13F' : 'none',
+                  borderBottom: location.pathname.includes('/accounts') ? 'solid 2px #27e35c' : 'none',
                   lineHeight: '100%',
                   fontStyle: 'regular',
                 }}>
@@ -180,7 +180,7 @@ const App = () => {
                   paddingBottom: 30,
                   border: 0,
                   fontFamily: 'Roboto',
-                  borderBottom: location.pathname.includes('/staking') ? 'solid 2px #EEC13F' : 'none',
+                  borderBottom: location.pathname.includes('/staking') ? 'solid 2px #27e35c' : 'none',
                   lineHeight: '100%',
                   fontStyle: 'regular'
                 }}>
@@ -200,7 +200,7 @@ const App = () => {
                   paddingBottom: 30,
                   border: 0,
                   fontFamily: 'Roboto',
-                  borderBottom: location.pathname.includes('/proposals') ? 'solid 2px #EEC13F' : 'none',
+                  borderBottom: location.pathname.includes('/proposals') ? 'solid 2px #27e35c' : 'none',
                   lineHeight: '100%',
                   fontStyle: 'regular'
                 }}>
@@ -257,7 +257,7 @@ const App = () => {
         <Modal className="border-radius-20" show={show} onHide={handleClose} centered={true}>
           <Modal.Header style={{
             backgroundColor: '#4D4D4D',
-            color: '#EEC13F',
+            color: '#27e35c',
             fontFamily: 'roboto',
             fontSize: '24px',
             border: 0,

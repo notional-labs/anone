@@ -8,7 +8,7 @@ const style = {
     },
     buttonText: {
         fontSize: '24px',
-        color: '#EEC13F',
+        color: '#27e35c',
         fontFamily: 'Roboto'
     }
 }

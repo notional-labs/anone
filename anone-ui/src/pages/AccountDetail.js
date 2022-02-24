@@ -35,7 +35,7 @@ const style = {
         paddingTop: 0
     },
     asset: {
-        backgroundColor: '#EEC13F',
+        backgroundColor: '#27e35c',
         borderRadius: '30px',
         marginBottom: '20px',
         color: '#696969',
@@ -48,7 +48,7 @@ const style = {
         justifyContent: 'end',
     },
     delegation: {
-        backgroundColor: '#EEC13F',
+        backgroundColor: '#27e35c',
         borderRadius: '30px',
         marginBottom: '20px',
         color: '#bdbdbd',
@@ -196,7 +196,7 @@ const AccountDetail = ({ accounts }) => {
                 <span style={{ color: '#ffffff', fontWeight: 500 }}>
                     {' / '}
                 </span>
-                <span style={{ color: '#ED9D26' }}>
+                <span style={{ color: '#16ab40' }}>
                     {id}
                 </span>
             </div>
@@ -414,7 +414,7 @@ const AccountDetail = ({ accounts }) => {
                 <Modal show={show} onHide={handleClose} backdrop="static" >
                     <Modal.Header style={{
                         backgroundColor: '#4D4D4D',
-                        color: '#EEC13F',
+                        color: '#27e35c',
                         fontFamily: 'Roboto',
                         fontSize: '24px',
                         fontWeight: 400,

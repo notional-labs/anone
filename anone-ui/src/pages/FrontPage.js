@@ -13,7 +13,7 @@ const style = {
         paddingTop: 20,
         paddingBottom: 20,
         height: 'auto',
-        minHeight: '80vh'
+        minHeight: '70vh'
     },
     asset: {
         position: 'absolute',
@@ -32,13 +32,13 @@ const FrontPage = () => {
                     width: '40%'
                 }}>
                     <p style={{
-                        color: '#EEC13F',
+                        color: '#27e35c',
                         fontSize: '100px',
                         fontWeight: 700,
                         margin: 0,
                         height: '100px'
                     }}>
-                        DIG
+                        ANONE
                     </p>
                     <p style={{
                         color: '#FFFFFF',
@@ -54,7 +54,7 @@ const FrontPage = () => {
                         fontWeight: 10,
                         margin: 0
                     }}>
-                        Welcome to the Dig chain website.
+                        Welcome to the Anone chain website.
                     </p>
                     <p style={{
                         color: '#FFFFFF',
@@ -62,14 +62,14 @@ const FrontPage = () => {
                         fontWeight: 10,
                         margin: 0
                     }}>
-                        Have fun digging around the comunity and the validators.
+                        Let have a kick around the comunity and the validators.
                     </p>
                     
                     <a href="https://digchain.org/" target={'_blank'}>
                         <button style={{
                             border: 0,
                             borderRadius: '10px',
-                            backgroundColor: '#EEC13F',
+                            backgroundColor: '#27e35c',
                             color: '#ffffff',
                             fontSize: '24px',
                             padding: 30,
@@ -81,15 +81,15 @@ const FrontPage = () => {
                         </button>
                     </a>
                 </div>
-                <div>
+                {/* <div>
                     <Image
                         width={500}
                         src={digger}
                         preview={false}
                     />
-                </div>
+                </div> */}
             </div>
-            <div style={{
+            {/* <div style={{
                 ...style.asset,
                 top: '200px',
                 left: '800px',
@@ -145,7 +145,7 @@ const FrontPage = () => {
                     src={coin3}
                     preview={false}
                 />
-            </div>
+            </div> */}
 
         </div >
     )

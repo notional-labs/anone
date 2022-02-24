@@ -278,7 +278,7 @@ const ReDelegateModal = ({ address, type, delegation, wrapSetShow, validators })
                         textAlign: 'center',
                         marginLeft: '2em'
                     }}>
-                        DIG
+                        AN1
                     </span>
                 </div>
             </div>
@@ -331,7 +331,7 @@ const ReDelegateModal = ({ address, type, delegation, wrapSetShow, validators })
                                 textAlign: 'center',
                                 marginLeft: '2em'
                             }}>
-                                UDIG
+                                UAN1
                             </span>
                         </div>
                     </div>
@@ -367,7 +367,7 @@ const ReDelegateModal = ({ address, type, delegation, wrapSetShow, validators })
                         width: '20%',
                         height: '2.5rem',
                         fontSize: '15px',
-                        backgroundColor: '#E4BA40',
+                        backgroundColor: '#67d686',
                         color: '#ffffff',
                         fontFamily: 'Roboto'
                     }}>

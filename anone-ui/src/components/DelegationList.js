@@ -29,7 +29,7 @@ const style = {
         marginLeft: 0,
         fontFamily: 'Roboto',
         fontWeight: 300,
-        backgroundColor: '#EEC13F',
+        backgroundColor: '#27e35c',
         color: '#FFFFFF',
         padding: '2em',
         paddingTop: '1em',
@@ -222,7 +222,7 @@ const DelegationList = ({ address, type, delegations, rewards, }) => {
                 <Modal show={showWithdraw} onHide={handleCloseWithdraw} backdrop="static" >
                     <Modal.Header style={{
                         backgroundColor: '#4D4D4D',
-                        color: '#EEC13F',
+                        color: '#27e35c',
                         fontFamily: 'Roboto',
                         fontSize: '24px',
                         fontWeight: 400,
@@ -244,7 +244,7 @@ const DelegationList = ({ address, type, delegations, rewards, }) => {
                 <Modal show={showRedelegate} onHide={handleCloseRedelegate} backdrop="static" >
                     <Modal.Header style={{
                         backgroundColor: '#4D4D4D',
-                        color: '#EEC13F',
+                        color: '#27e35c',
                         fontFamily: 'Roboto',
                         fontSize: '24px',
                         fontWeight: 400,
@@ -267,7 +267,7 @@ const DelegationList = ({ address, type, delegations, rewards, }) => {
                 <Modal show={showUnbonding} onHide={handleCloseUnbond} backdrop="static" >
                     <Modal.Header style={{
                         backgroundColor: '#4D4D4D',
-                        color: '#EEC13F',
+                        color: '#27e35c',
                         fontFamily: 'Roboto',
                         fontSize: '24px',
                         fontWeight: 400,

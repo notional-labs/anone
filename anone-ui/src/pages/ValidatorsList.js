@@ -137,7 +137,7 @@ const ValidatorsList = () => {
                     <span style={{ color: '#ffffff', fontWeight: 500 }}>
                         {' / '}
                     </span>
-                    <span style={{ color: '#ED9D26' }}>
+                    <span style={{ color: '#16ab40' }}>
                         Staking
                     </span>
                 </div>
@@ -152,7 +152,7 @@ const ValidatorsList = () => {
                     VALIDATOR
                 </div>
                 <div style={{
-                    backgroundColor: '#EEC13F',
+                    backgroundColor: '#27e35c',
                     borderRadius: '30px',
                     padding: 10,
                     paddingLeft: 25,
@@ -199,7 +199,7 @@ const ValidatorsList = () => {
                                                     backgroundPosition: 'center',
                                                     width: '60px',
                                                 }}>
-                                                    <Image
+                                                    {/* <Image
                                                         width={45}
                                                         src={helmet}
                                                         style={{
@@ -210,32 +210,8 @@ const ValidatorsList = () => {
                                                             marginLeft: '-30%'
                                                         }}
                                                         preview={false}
-                                                    />
+                                                    /> */}
                                                 </div>
-                                                {/* {
-                                                    setLogo ? (
-                                                        <Image
-                                                            width={70}
-                                                            src={val.logo || notFound}
-                                                            style={{
-                                                                borderRadius: '100%', marginTop: '3px', position: 'relative',
-                                                                zIndex: '2'
-                                                            }}
-                                                            preview={true}
-                                                        />
-
-                                                    ) : (
-                                                        <Image
-                                                            width={70}
-                                                            src={notFound}
-                                                            style={{
-                                                                borderRadius: '100%', marginTop: '3px', position: 'relative',
-                                                                zIndex: '2'
-                                                            }}
-                                                            preview={true}
-                                                        />
-                                                    )
-                                                } */}
 
                                                 <div style={{ marginLeft: '1rem' }} >
                                                     <div style={{ color: '#2C223E', fontSize: '24px', fontWeight: 700 }}>{val.description.moniker}</div>
@@ -250,7 +226,7 @@ const ValidatorsList = () => {
                                         <td style={{ ...style.td, textAlign: 'center' }}>{`${val.commission.commission_rates.rate * 100} %`}</td>
                                         <td style={{ ...style.td, textAlign: 'center', borderRadius: '0 30px 30px 0', color: '#ffffff' }}>
                                             <button style={{
-                                                backgroundColor: '#ED9D27',
+                                                backgroundColor: '#631bf2',
                                                 border: 'none',
                                                 borderRadius: '30px',
                                                 width: '60%',
@@ -272,7 +248,7 @@ const ValidatorsList = () => {
                     <Modal show={show} onHide={handleClose} backdrop="static" >
                         <Modal.Header style={{
                             backgroundColor: '#4D4D4D',
-                            color: '#EEC13F',
+                            color: '#27e35c',
                             fontFamily: 'Roboto',
                             fontSize: '24px',
                             fontWeight: 400,
@@ -290,7 +266,7 @@ const ValidatorsList = () => {
             </div >
         ) : (
             <div style={{ marginRight: '10rem', paddingTop: '10rem', height: '77vh' }}>
-                <PacmanLoader color={'#f0a848'} loading={loading} size={100} />
+                <PacmanLoader color={'#33d460'} loading={loading} size={100} />
             </div>
         )
     )

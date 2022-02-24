@@ -67,7 +67,7 @@ const ProposalList = () => {
                 <span style={{ color: '#ffffff', fontWeight: 500 }}>
                     {' / '}
                 </span>
-                <span style={{ color: '#ED9D26' }}>
+                <span style={{ color: '#16ab40' }}>
                     Proposals
                 </span>
             </div>

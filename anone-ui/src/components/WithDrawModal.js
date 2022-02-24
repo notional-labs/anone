@@ -202,7 +202,7 @@ const WithDrawModal = ({ address, type, validator, wrapSetShow }) => {
                                 textAlign: 'center',
                                 marginLeft: '2em'
                             }}>
-                                UDIG
+                                UAN1
                             </span>
                         </div>
                     </div>
@@ -238,7 +238,7 @@ const WithDrawModal = ({ address, type, validator, wrapSetShow }) => {
                         width: '20%',
                         height: '2.5rem',
                         fontSize: '15px',
-                        backgroundColor: '#E4BA40',
+                        backgroundColor: '#67d686',
                         color: '#ffffff',
                         fontFamily: 'Roboto'
                     }}>

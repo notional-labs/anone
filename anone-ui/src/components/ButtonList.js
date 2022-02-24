@@ -102,7 +102,7 @@ const ButtonList = ({ total, wrapSetParams, currentPage }) => {
 
                             style={{
                                 color: currentPage === index + 1 ? '#ffffff' : '#000000',
-                                backgroundColor: currentPage === index + 1 ? '#EEC13F' : 'transparent',
+                                backgroundColor: currentPage === index + 1 ? '#27e35c' : 'transparent',
                                 width: '50%',
                                 borderRadius: '50%',
                                 margin: '0.3em'
@@ -116,7 +116,7 @@ const ButtonList = ({ total, wrapSetParams, currentPage }) => {
 
                                 style={{
                                     color: currentPage === index + 1 ? '#ffffff' : '#000000',
-                                    backgroundColor: currentPage === index + 1 ? '#EEC13F' : 'transparent',
+                                    backgroundColor: currentPage === index + 1 ? '#27e35c' : 'transparent',
                                     width: '50%',
                                     borderRadius: '50%',
                                     margin: '0.3em'
@@ -130,7 +130,7 @@ const ButtonList = ({ total, wrapSetParams, currentPage }) => {
 
                             style={{
                                 color: currentPage === index + 1 ? '#ffffff' : '#000000',
-                                backgroundColor: currentPage === index + 1 ? '#EEC13F' : 'transparent',
+                                backgroundColor: currentPage === index + 1 ? '#27e35c' : 'transparent',
                                 width: '50%',
                                 borderRadius: '50%',
                                 margin: '0.3em'
@@ -143,7 +143,7 @@ const ButtonList = ({ total, wrapSetParams, currentPage }) => {
 
                             style={{
                                 color: currentPage === index + 1 ? '#ffffff' : '#000000',
-                                backgroundColor: currentPage === index + 1 ? '#EEC13F' : 'transparent',
+                                backgroundColor: currentPage === index + 1 ? '#27e35c' : 'transparent',
                                 width: '50%',
                                 borderRadius: '50%',
                                 margin: '0.3em'
@@ -156,7 +156,7 @@ const ButtonList = ({ total, wrapSetParams, currentPage }) => {
 
                             style={{
                                 color: currentPage === index + 1 ? '#ffffff' : '#000000',
-                                backgroundColor: currentPage === index + 1 ? '#EEC13F' : 'transparent',
+                                backgroundColor: currentPage === index + 1 ? '#27e35c' : 'transparent',
                                 width: '50%',
                                 borderRadius: '50%'
                             }}>{button}</span>)}

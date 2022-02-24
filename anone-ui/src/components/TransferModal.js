@@ -210,7 +210,7 @@ const TransferModal = ({ account, wrapSetShow }) => {
             <div style={style.transfer}>
                 <p style={style.formTitle}>Amount Availabe</p>
                 <p style={{ ...style.formInput, border: 'solid 1px #bdbdbd', padding: 10 }}>
-                    {parseInt(amount) / 1000000 || 0} DIG
+                    {parseInt(amount) / 1000000 || 0} AN1
                 </p>
                 <div style={{ marginBottom: '1rem', ...style.formTitle }}>Amount To Send</div>
                 <div style={{
@@ -255,7 +255,7 @@ const TransferModal = ({ account, wrapSetShow }) => {
                         textAlign: 'center',
                         marginLeft: '2em'
                     }}>
-                        DIG
+                        AN1
                     </span>
                 </div>
             </div>
@@ -308,7 +308,7 @@ const TransferModal = ({ account, wrapSetShow }) => {
                                 textAlign: 'center',
                                 marginLeft: '2em'
                             }}>
-                                UDIG
+                                UAN1
                             </span>
                         </div>
                     </div>
@@ -344,7 +344,7 @@ const TransferModal = ({ account, wrapSetShow }) => {
                         width: '20%',
                         height: '2.5rem',
                         fontSize: '15px',
-                        backgroundColor: '#E4BA40',
+                        backgroundColor: '#67d686',
                         color: '#ffffff',
                         fontFamily: 'Roboto'
                     }}>

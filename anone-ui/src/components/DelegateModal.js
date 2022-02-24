@@ -140,45 +140,6 @@ const DelegateModal = ({ validators, wrapSetter, defaultVal }) => {
                 })
             }
         }
-        else {
-            //makeSignDocDelegateMsg, makeDelegateMsg
-            // please set enviroment variable: DENOM, etc
-            //import web3
-            let web3 = await getWeb3Instance();
-            const denom = process.env.REACT_APP_DENOM
-            const chainId = process.env.REACT_APP_CHAIN_ID
-            const memo = "Love From Dev Team"
-
-            const address = delegators[selectDel].account
-            const gasLimit = parseInt(gasAmount)
-
-
-            const recipient = validators[selectVal].operator_address
-            const amount = value * 1000000
-
-            if (amount == 0) {
-                window.alert("Plese check your amount")
-                return
-            }
-            const msgDelegate = makeDelegateMsg(address, recipient, amount, denom)
-            const signDocDelegate = makeSignDocDelegateMsg(address, recipient, amount, denom)
-
-            console.log("address", address)
-
-            const UIProcessing = function () {
-                setIsDoingTx(false)
-                wrapSetter(false)
-            }
-            broadcastTransaction(address, msgDelegate, signDocDelegate, chainId, memo, gasLimit, web3, UIProcessing).then(() => {
-                // wrapSetter(false)
-                // setIsDoingTx(false)
-                // success()
-            }).catch((e) => {
-                wrapSetter(false)
-                setIsDoingTx(false)
-                error(e.message)
-            })
-        }
     }
 
     return (
@@ -206,7 +167,7 @@ const DelegateModal = ({ validators, wrapSetter, defaultVal }) => {
                 </>
                 <p style={style.formTitle}>Amount Availabe</p>
                 <p style={{ ...style.formInput, border: 'solid 1px #bdbdbd', padding: 10 }}>
-                    {parseInt(availabeAmount) / 1000000 || 0} DIG
+                    {parseInt(availabeAmount) / 1000000 || 0} AN1
                 </p>
                 <div style={{ marginBottom: '1rem', ...style.formTitle }}>Amount To Stake</div>
                 <div style={{
@@ -251,7 +212,7 @@ const DelegateModal = ({ validators, wrapSetter, defaultVal }) => {
                         textAlign: 'center',
                         marginLeft: '2em'
                     }}>
-                        DIG
+                        AN1
                     </span>
                 </div>
             </div>
@@ -304,7 +265,7 @@ const DelegateModal = ({ validators, wrapSetter, defaultVal }) => {
                                 textAlign: 'center',
                                 marginLeft: '2em'
                             }}>
-                                UDIG
+                                UAN1
                             </span>
                         </div>
                     </div>
@@ -340,7 +301,7 @@ const DelegateModal = ({ validators, wrapSetter, defaultVal }) => {
                         width: '20%',
                         height: '2.5rem',
                         fontSize: '15px',
-                        backgroundColor: '#E4BA40',
+                        backgroundColor: '#67d686',
                         color: '#ffffff',
                         fontFamily: 'Roboto'
                     }}>
