@@ -1,0 +1,22 @@
+
+.gridBox {
+    display: 'grid';
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 30px;
+    padding: 5em;
+    background-color: rgb(255, 2555, 255, 0.2);
+    border-radius: 20px;
+    padding-bottom: 7em;
+}
+
+@media screen and (max-width: 1200px) {
+    .gridBox {
+        grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+@media screen and (max-width: 750px) {
+    .gridBox {
+        grid-template-columns: repeat(1, 1fr);
+    }
+  }

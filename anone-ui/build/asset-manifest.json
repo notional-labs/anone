@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/static/css/main.c5b4d25d.chunk.css",
+    "main.js": "/static/js/main.920d7ad3.chunk.js",
+    "main.js.map": "/static/js/main.920d7ad3.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.c1fbc129.js",
+    "runtime-main.js.map": "/static/js/runtime-main.c1fbc129.js.map",
+    "static/css/2.b89bf0cb.chunk.css": "/static/css/2.b89bf0cb.chunk.css",
+    "static/js/2.f33e72df.chunk.js": "/static/js/2.f33e72df.chunk.js",
+    "static/js/2.f33e72df.chunk.js.map": "/static/js/2.f33e72df.chunk.js.map",
+    "static/js/3.de29f709.chunk.js": "/static/js/3.de29f709.chunk.js",
+    "static/js/3.de29f709.chunk.js.map": "/static/js/3.de29f709.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.b89bf0cb.chunk.css.map": "/static/css/2.b89bf0cb.chunk.css.map",
+    "static/css/main.c5b4d25d.chunk.css.map": "/static/css/main.c5b4d25d.chunk.css.map",
+    "static/js/2.f33e72df.chunk.js.LICENSE.txt": "/static/js/2.f33e72df.chunk.js.LICENSE.txt",
+    "static/media/DIG.c96bf154.png": "/static/media/DIG.c96bf154.png",
+    "static/media/coin1.c6ae9b09.png": "/static/media/coin1.c6ae9b09.png",
+    "static/media/coin2.2df75b19.png": "/static/media/coin2.2df75b19.png",
+    "static/media/coin3.79782b98.png": "/static/media/coin3.79782b98.png",
+    "static/media/digger.da74cf66.png": "/static/media/digger.da74cf66.png",
+    "static/media/index.css": "/static/media/roboto-vietnamese-400-normal.c0bec65d.woff2",
+    "static/media/metamask.719b9004.png": "/static/media/metamask.719b9004.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c1fbc129.js",
+    "static/css/2.b89bf0cb.chunk.css",
+    "static/js/2.f33e72df.chunk.js",
+    "static/css/main.c5b4d25d.chunk.css",
+    "static/js/main.920d7ad3.chunk.js"
+  ]
+}

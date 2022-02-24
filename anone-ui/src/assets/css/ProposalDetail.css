@@ -1,0 +1,38 @@
+.line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+.left {
+  width: 10%;
+  text-align: left;
+  border-top: solid 1px #8a8a8a;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.right {
+  width: 90%;
+  text-align: left;
+  border-top: solid 1px #8a8a8a;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@media screen and (max-width: 950px) {
+  .line {
+    flex-direction: column;
+  }
+  .left {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .right {
+    width: 100%;
+    text-align: left;
+  }
+}
+  
+  
