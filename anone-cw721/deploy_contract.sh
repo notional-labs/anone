@@ -32,7 +32,7 @@ CODE_ID=$(echo $RAW_LOG | jq -r .[0].events[1].attributes[0].value)
 
 echo $CODE_ID
 
-INIT='{"name": "Test NFT", "symbol": "TNFT", "minter": "one17f37pgsgrtkq48u5zwhlf6yyjews3k9nldef8q"}'
+INIT="{\"name\": \"Test NFT\", \"symbol\": \"TNFT\", \"minter\": \"$(anoned keys show $ACCOUNT -a)\"}"
 INIT_JSON=$(anoned tx wasm instantiate "$CODE_ID" "$INIT" --from "$ACCOUNT" --label "my cw20-ics20" -y --chain-id "$CHAINID" --node "$NODE" --gas 180000 --fees 100000uan1 -o json)
 
 echo "INIT_JSON = $INIT_JSON"
@@ -54,6 +54,6 @@ echo "RAW_LOG = $RAW_LOG"
 
 CONTRACT_ADDRESS=$(echo $RAW_LOG | jq -r .[0].events[0].attributes[0].value)
 
-echo $CONTRACT_ADDRESS
+echo "CONTRACT ADDRESS = $CONTRACT_ADDRESS"
 
 # anoned query wasm contract-state smart "$CONTRACT_ADDRESS" '{"list_channels": {}}' --chain-id "$CHAINID" --node "$NODE"
