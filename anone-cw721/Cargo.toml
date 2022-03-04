@@ -29,4 +29,4 @@ serde = { version = "1.0.130", default-features = false, features = ["derive"] }
 thiserror = { version = "1.0.30" }
 
 [dev-dependencies]
-cosmwasm-schema = { version = "1.0.0-beta" }
+cosmwasm-schema = { version = "1.0.0-beta3" }
