@@ -18,4 +18,5 @@ What deliverables do this task need to deliver?
 
 # IV. Task goals 
 goals that this task needs to achieve
-- [] goal here
+
+- [ ]  goal here
