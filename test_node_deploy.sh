@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KEY="test"
-CHAINID="anoned-1"
+CHAINID="anone-testnet-1"
 KEYRING="test"
 MONIKER="localtestnet"
 KEYALGO="secp256k1"
@@ -50,12 +50,11 @@ command -v jq > /dev/null 2>&1 || { echo >&2 "jq not installed. More info: https
 # install anoned if not exist
 if [ $WILL_INSTALL -eq 0 ];
 then 
-    command -v anoned > /dev/null 2>&1 || { echo >&1 "installing anoned"; cd cmd/anoned; go install; }
+    command -v anoned > /dev/null 2>&1 || { echo >&1 "installing anoned"; make install; }
 else
     echo >&1 "installing anoned"
     rm -rf $HOME/.anone*
-    cd cmd/anoned
-    go install
+    make install
 fi
 
 anoned config keyring-backend $KEYRING
@@ -81,7 +80,7 @@ cat $HOME/.anone/config/genesis.json | jq '.app_state["gov"]["deposit_params"]["
 cat $HOME/.anone/config/genesis.json | jq '.app_state["mint"]["params"]["mint_denom"]="uan1"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
 
 # Set gas limit in genesis
-cat $HOME/.anone/config/genesis.json | jq '.consensus_params["block"]["max_gas"]="10000000"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
+# cat $HOME/.anone/config/genesis.json | jq '.consensus_params["block"]["max_gas"]="10000000"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
 
 # Allocate genesis accounts (cosmos formatted addresses)
 anoned add-genesis-account $KEY 1000000000000uan1 --keyring-backend $KEYRING
@@ -96,4 +95,4 @@ anoned collect-gentxs
 anoned validate-genesis
 
 # Start the node (remove the --pruning=nothing flag if historical queries are not needed)
-anoned start --pruning=nothing --log_level $LOGLEVEL --minimum-gas-prices=0.0001uan1
+anoned start --pruning=nothing --log_level $LOGLEVEL --minimum-gas-prices=0.0001uan1 --p2p.laddr tcp://0.0.0.0:2280 --rpc.laddr tcp://0.0.0.0:2281 --grpc.address 0.0.0.0:2282 --grpc-web.address 0.0.0.0:2283
