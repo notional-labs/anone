@@ -1,12 +1,14 @@
 #!/bin/bash
 
-NODE="tcp://localhost:2281"
-ACCOUNT="test"
+#NODE="tcp://localhost:2281"
+NODE="http://65.108.128.139:2281"
+#ACCOUNT="test"
+ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
 CONTRACT_DIR="artifacts/anone_cw721.wasm"
 SLEEP_TIME="15s"
 
-RES=$(anoned tx wasm store "$CONTRACT_DIR" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 875000uan1)
+RES=$(anoned tx wasm store "$CONTRACT_DIR" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 875000uan1 -y --output json)
 echo $RES
 
 if [ "$(echo $RES | jq -r .raw_log)" != "[]" ]; then
@@ -32,8 +34,8 @@ CODE_ID=$(echo $RAW_LOG | jq -r .[0].events[1].attributes[0].value)
 
 echo $CODE_ID
 
-INIT='{"name": "Test NFT", "symbol": "TNFT", "minter": "one148jjeqllq9u5fnl6ur700kdhauwdkyshgas55r"}'
-INIT_JSON=$(anoned tx wasm instantiate "$CODE_ID" "$INIT" --from "$ACCOUNT" --label "my cw20-ics20" -y --chain-id "$CHAINID" --node "$NODE" --gas 180000 --fees 100000uan1 -o json)
+INIT="{\"name\": \"Anone NFT Contract\", \"symbol\": \"ANONE_NFT\", \"minter\": \"$(anoned keys show $ACCOUNT -a)\"}"
+INIT_JSON=$(anoned tx wasm instantiate "$CODE_ID" "$INIT" --from "$ACCOUNT" --label "anone-cw721" -y --chain-id "$CHAINID" --node "$NODE" --gas 180000 --fees 100000uan1 -o json)
 
 echo "INIT_JSON = $INIT_JSON"
 
@@ -54,6 +56,6 @@ echo "RAW_LOG = $RAW_LOG"
 
 CONTRACT_ADDRESS=$(echo $RAW_LOG | jq -r .[0].events[0].attributes[0].value)
 
-echo $CONTRACT_ADDRESS
+echo "CONTRACT ADDRESS = $CONTRACT_ADDRESS"
 
 # anoned query wasm contract-state smart "$CONTRACT_ADDRESS" '{"list_channels": {}}' --chain-id "$CHAINID" --node "$NODE"
