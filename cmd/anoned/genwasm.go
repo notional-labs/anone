@@ -38,6 +38,7 @@ func GetWasmCmdOptions() []cosmoscmd.Option {
 			wasm.AddModuleInitFlags(startCmd)
 		}),
 		cosmoscmd.AddSubCmd(AddGenesisWasmMsgCmd(app.DefaultNodeHome)),
+		cosmoscmd.AddSubCmd(AddGenesisGravityMsgCmd(app.DefaultNodeHome)),
 	)
 
 	return options

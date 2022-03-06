@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/CosmWasm/wasmd v0.20.0
+	github.com/Gravity-Bridge/Gravity-Bridge/module v1.4.1
 	github.com/cosmos/cosmos-sdk v0.45.0
 	github.com/cosmos/ibc-go/v2 v2.0.2
 	github.com/gogo/protobuf v1.3.3
