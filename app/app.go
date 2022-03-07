@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -215,8 +214,8 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		wasm.ModuleName: 				{authtypes.Burner},
-		gravitytypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
+		wasm.ModuleName:         {authtypes.Burner},
+		gravitytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	}
 )
 
@@ -276,7 +275,7 @@ type App struct {
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 	wasmKeeper       wasm.Keeper
 	scopedWasmKeeper capabilitykeeper.ScopedKeeper
-	gravityKeeper gravitykeeper.Keeper
+	gravityKeeper    gravitykeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -346,9 +345,11 @@ func New(
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
-	app.BankKeeper = bankkeeper.NewBaseKeeper(
+	bankBaseKeeper := bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
 	)
+	app.BankKeeper = bankBaseKeeper
+
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
 	)
@@ -369,12 +370,11 @@ func New(
 
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
-	fmt.Print(keys);
 	app.gravityKeeper = gravitykeeper.NewKeeper(
 		keys[gravitytypes.StoreKey],
 		app.GetSubspace(gravitytypes.ModuleName),
 		appCodec,
-		&bankkeeper.BaseKeeper{},
+		&bankBaseKeeper,
 		&app.StakingKeeper,
 		&app.SlashingKeeper,
 		&app.DistrKeeper,
@@ -529,6 +529,7 @@ func New(
 		minttypes.ModuleName,
 		upgradetypes.ModuleName,
 		paramstypes.ModuleName,
+		gravitytypes.ModuleName,
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
@@ -536,7 +537,6 @@ func New(
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
 		wasm.ModuleName,
-		gravitytypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -552,6 +552,7 @@ func New(
 		minttypes.ModuleName,
 		upgradetypes.ModuleName,
 		paramstypes.ModuleName,
+		gravitytypes.ModuleName,
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
@@ -559,7 +560,6 @@ func New(
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
 		wasm.ModuleName,
-		gravitytypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -580,6 +580,7 @@ func New(
 		minttypes.ModuleName,
 		upgradetypes.ModuleName,
 		paramstypes.ModuleName,
+		gravitytypes.ModuleName,
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
@@ -588,7 +589,6 @@ func New(
 		anonemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		wasm.ModuleName,
-		gravitytypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -623,6 +623,8 @@ func New(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
+
+	gravitykeeper.RegisterProposalTypes()
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
