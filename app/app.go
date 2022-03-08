@@ -1,6 +1,7 @@
 package app
 
 import (
+	// "fmt"
 	"io"
 	"net/http"
 	"os"
@@ -650,7 +651,6 @@ func New(
 	app.ScopedTransferKeeper = scopedTransferKeeper
 	// this line is used by starport scaffolding # stargate/app/beforeInitReturn
 	app.scopedWasmKeeper = scopedWasmKeeper
-
 	return app
 }
 
@@ -659,6 +659,14 @@ func (app *App) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+	validators := app.gravityKeeper.StakingKeeper.GetBondedValidatorsByPower(ctx)
+	deligator := app.gravityKeeper.StakingKeeper.GetValidatorDelegations(ctx, validators[0].GetOperator())[0].DelegatorAddress
+	ethAddress, err := gravitytypes.NewEthAddress("0x159BA6999C7602956d691A54CFaa93563EC8d16B")
+	if err != nil {
+
+	}
+	app.gravityKeeper.SetEthAddressForValidator(ctx, validators[0].GetOperator(), *ethAddress)
+	app.gravityKeeper.SetOrchestratorValidator(ctx, validators[0].GetOperator(), sdk.AccAddress(deligator))
 	return app.mm.BeginBlock(ctx, req)
 }
 
