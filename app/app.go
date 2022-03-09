@@ -29,6 +29,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
+	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -192,6 +195,7 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		anonemodule.AppModuleBasic{},
+		authzmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		wasm.AppModuleBasic{},
 	)
@@ -253,6 +257,7 @@ type App struct {
 	CrisisKeeper     crisiskeeper.Keeper
 	UpgradeKeeper    upgradekeeper.Keeper
 	ParamsKeeper     paramskeeper.Keeper
+	AuthzKeeper      authzkeeper.Keeper
 	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
@@ -301,6 +306,7 @@ func New(
 		anonemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		wasm.StoreKey,
+		authzkeeper.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -363,7 +369,7 @@ func New(
 	app.StakingKeeper = *stakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
-
+	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
 	// ... other modules keepers
 
 	// Create IBC Keeper
@@ -485,6 +491,7 @@ func New(
 		anoneModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
+		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -507,6 +514,7 @@ func New(
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
+		authz.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
@@ -530,6 +538,7 @@ func New(
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		authz.ModuleName,
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
 		wasm.ModuleName,
@@ -557,6 +566,7 @@ func New(
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		authz.ModuleName,
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
