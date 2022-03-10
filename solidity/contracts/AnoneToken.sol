@@ -10,9 +10,11 @@ contract AnoneToken is ERC20, Ownable {
     constructor(
         string memory name,
         string memory symbol,
-        uint8 decimals
+        uint8 decimals,
+        uint256 initialSupply
     ) public ERC20(name, symbol) {
         _decimals = decimals;
+        _mint(msg.sender, initialSupply);
     }
 
     function decimals() public view virtual override returns (uint8) {

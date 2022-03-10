@@ -10,7 +10,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment): Pr
 
   await deploy('AnoneToken', {
     from: deployer,
-    args: ["Another One Token", "AN1", 18],
+    args: ["Another One Token", "AN1", 18, '1000000000000000000000'], // initial 1000 AN1
     log: true,
   });
 };
