@@ -88,7 +88,7 @@
 
     <!-- STATES: Market -->
     <div class="market" v-if="currentState == MARKET">
-      <h3>Market</h3>
+      <h3>NFT Marketplace</h3>
 
       <div class="market-items" v-if="nfts.market">
         <div v-if="!nfts.market.tokens.length">
@@ -103,9 +103,9 @@
             <div class="card" v-for="(token, i) in nfts.market.tokens" :key="i">
               <img class="card-img-top" :src="token.image" v-if="token.image" />
               <div class="card-body">
-                <h5 class="card-title" v-if="token.name">{{ token.name }}</h5>
+                <h5 class="card-title" v-if="token.name"><strong>Name:</strong> {{ token.name }}</h5>
                 <p class="card-text" v-if="token.description">
-                  {{ token.description }}
+                  <strong>Description:</strong> {{ token.description }}
                 </p>
                 <div class="id" v-if="token.id">
                   <p><strong>Token ID:</strong> {{ token.id }}</p>
@@ -741,7 +741,7 @@ export default {
       // Refresh NFT market to get last minted ID
       // (Tx. might still fail if multiple users try to mint in the same block)
       this.loadNfts();
-      let token_id_to_mint = Number(this.nfts.market.tokens[this.nfts.market.tokens.length - 1]) + 1;
+      let token_id_to_mint = this.nfts.market.tokens.length ? Number(this.nfts.market.tokens[this.nfts.market.tokens.length - 1]) + 1 : 1;
       // Prepare Tx
       let entrypoint = {
         mint: {

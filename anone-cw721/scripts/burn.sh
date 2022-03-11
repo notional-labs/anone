@@ -1,7 +1,8 @@
 #!/bin/bash
 
 NODE="http://65.108.128.139:2281"
-ACCOUNT="Developer"
+#ACCOUNT="Developer"
+ACCOUNT="wallet-test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="15s"
 CONTRACT="one1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrq9jdqcm"
