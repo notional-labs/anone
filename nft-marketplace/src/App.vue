@@ -645,7 +645,7 @@ export default {
         let resolvedMetadata = data;
         resolvedMetadata.id = id;
         this.nfts.market.tokens[i] = resolvedMetadata;
-        // console.log('Data resolution', this.nfts.market.tokens);
+        //console.log('Data resolution', this.nfts.market.tokens);
       }
     },
     getTokenMeta: async function (tokenId = false) {
@@ -741,12 +741,11 @@ export default {
       // Refresh NFT market to get last minted ID
       // (Tx. might still fail if multiple users try to mint in the same block)
       this.loadNfts();
-      // console.log('this.nfts.market', this.nfts.market);
-
+      let token_id_to_mint = Number(this.nfts.market.tokens[this.nfts.market.tokens.length - 1]) + 1;
       // Prepare Tx
       let entrypoint = {
         mint: {
-          token_id: String(this.nfts.market.tokens.length),
+          token_id: String(token_id_to_mint),
           owner: this.accounts[0].address,
           token_uri: this.metadata.uri,
           extension: null, // XXX: null prop?
