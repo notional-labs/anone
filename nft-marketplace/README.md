@@ -23,7 +23,7 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-### fix error "The template root requires exactly one element.eslint-plugin-vue" in file .Vue
+### Fix error "The template root requires exactly one element.eslint-plugin-vue" in file .vue
 You can solve this by doing: 
 ```
 F1>Preferences:Open Settings (JSON)
