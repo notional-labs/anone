@@ -238,8 +238,9 @@
                   @click="transferring.tokenId = token.id"
                   v-if="transferring.tokenId !== token.id"
                 >
-                  Send
+                  Ownership
                 </button>
+               
                 <button
                   class="btn btn-danger btn-cancel"
                   @click="transferring.tokenId = null"
@@ -270,7 +271,7 @@
                     :name="'nft_transfer_' + i"
                     class="form-control"
                     type="text"
-                    placeholder=""
+                    placeholder="Enter your recipient address"
                   />
                   <button
                     class="btn btn-primary btn-send"
@@ -282,6 +283,16 @@
                     @click="handleTransfer()"
                   >
                     Send
+                  </button>
+                  <button
+                    class="btn btn-primary btn-burn"
+                    :disabled="
+                      !transferring.tokenId ||
+                      isSending
+                    "
+                    @click="handleBurn()"
+                  >
+                    Burn
                   </button>
                 </div>
               </div>
@@ -383,6 +394,7 @@ export default {
     selectedOwner: null,
     isMinting: false,
     isSending: false,
+    isBurning: false,
     nfts: {
       user: null,
       market: null,
@@ -741,7 +753,8 @@ export default {
       // Refresh NFT market to get last minted ID
       // (Tx. might still fail if multiple users try to mint in the same block)
       this.loadNfts();
-      let token_id_to_mint = this.nfts.market.tokens.length ? Number(this.nfts.market.tokens[this.nfts.market.tokens.length - 1]) + 1 : 1;
+      let token_id_to_mint = this.nfts.market.tokens.length > 0 ? Number(this.nfts.market.tokens[this.nfts.market.tokens.length - 1].id) + 1 : Number(1);
+
       // Prepare Tx
       let entrypoint = {
         mint: {
@@ -874,6 +887,22 @@ export default {
       );
     },
 
+    handleBurn: async function () {
+      if (
+        !this.transferring.tokenId ||
+        this.isBurning
+      ) {
+        console.warn(
+          "Nothing to burn (check token ID)",
+          this.transferring
+        );
+        return;
+      }
+      await this.burnNft(
+        this.transferring.tokenId
+      );
+    },
+
     transferNft: async function (recipient = null, tokenId = null) {
       // SigningCosmWasmClient.execute: async (senderAddress, contractAddress, msg, fee, memo = "", funds)
       if (!this.accounts) {
@@ -936,6 +965,69 @@ export default {
         this.loading.msg = "";
       }
     },
+    burnNft: async function (tokenId = null) {
+      // SigningCosmWasmClient.execute: async (senderAddress, contractAddress, msg, fee, memo = "", funds)
+      if (!this.accounts) {
+        console.warn("Error getting user", this.accounts);
+        return;
+      } else if (!this.accounts.length) {
+        console.warn("Error getting user", this.accounts);
+        return;
+      } else if (!tokenId) {
+        console.warn(
+          "Nothing to burn (check token ID)",
+          { token_id: tokenId }
+        );
+        return;
+      }
+
+      // Prepare Tx
+      let entrypoint = {
+        burn: {
+          token_id: tokenId,
+        },
+      };
+      this.isBurning = true;
+      this.loading = {
+        status: true,
+        msg: "Burning NFT with Token ID: " + tokenId + "...",
+      };
+      let txFee = calculateFee(300000, this.gas.price); // XXX TODO: Fix gas estimation (https://github.com/cosmos/cosmjs/issues/828)
+      // Send Tx
+      try {
+        let tx = await this.wasmClient.execute(
+          this.accounts[0].address,
+          this.contract,
+          entrypoint,
+          txFee
+        );
+        console.log("Burn NFT Tx", tx);
+        this.loading.status = false;
+        this.loading.msg = "";
+        this.isBurning = false;
+
+        // Update Logs
+        if (tx.logs) {
+          if (tx.logs.length) {
+            this.logs.unshift({
+              transfer: tx.logs,
+              timestamp: new Date().getTime(),
+            });
+            console.log("Logs Updated", this.logs);
+          }
+        }
+        // Refresh NFT collections and balances
+        await this.loadNfts();
+        if (this.accounts.length) {
+          await this.getBalances();
+        }
+      } catch (e) {
+        console.warn("Error executing burn NFT", e);
+        this.loading.status = false;
+        this.loading.msg = "";
+      }
+    }
+    
   },
   computed: {
     myNfts: function () {
@@ -1072,6 +1164,7 @@ div.minting-form div {
 }
 .btn,
 .btn-send,
+.btn-burn,
 .btn-cancel {
   margin-left: 0;
 }
