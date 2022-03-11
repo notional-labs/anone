@@ -222,9 +222,9 @@
           <div class="card" v-for="(token, i) in myNfts" :key="i">
             <img class="card-img-top" :src="token.image" v-if="token.image" />
             <div class="card-body">
-              <h5 class="card-title" v-if="token.name">{{ token.name }}</h5>
+              <h5 class="card-title" v-if="token.name"><strong>Name:</strong> {{ token.name }}</h5>
               <p class="card-text" v-if="token.description">
-                {{ token.description }}
+                <strong>Description:</strong> {{ token.description }}
               </p>
               <div class="id" v-if="token.id">
                 <p><strong>Token ID:</strong> {{ token.id }}</p>
