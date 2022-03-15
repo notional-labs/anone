@@ -13,10 +13,11 @@ fn main() {
     let mut out_dir = current_dir().unwrap();
     out_dir.push("schema");
     create_dir_all(&out_dir).unwrap();
+    out_dir.push("schema");
     remove_schemas(&out_dir).unwrap();
 
     export_schema(&schema_for!(InstantiateMsg), &out_dir);
-    export_schema_with_title(&schema_for!(ExecuteMsg), &out_dir, "ExecuteMsg");
+    export_schema_with_title(&schema_for!(ExecuteMsg<Extension>), &out_dir, "ExecuteMsg");
     export_schema(&schema_for!(QueryMsg), &out_dir);
     export_schema_with_title(
         &schema_for!(AllNftInfoResponse<Extension>),
