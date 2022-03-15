@@ -5,6 +5,7 @@ pub use cw721_base::{ContractError, InstantiateMsg, MintMsg, MinterResponse, Que
 
 use crate::metadata::{Metadata, Trait};
 
+
 pub type Extension = Option<Metadata>;
 type Cw721MetadataContract<'a> = cw721_base::Cw721Contract<'a, Extension, Empty>;
 pub type ExecuteMsg = cw721_base::ExecuteMsg<Extension>;
