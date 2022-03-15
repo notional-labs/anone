@@ -757,9 +757,9 @@ export default {
 
       // Prepare Tx
       let entrypoint = {
-        mint: {
+        mint_for: {
           token_id: String(token_id_to_mint),
-          owner: this.accounts[0].address,
+          recipient: this.accounts[0].address,
           token_uri: this.metadata.uri,
           extension: null, // XXX: null prop?
         },

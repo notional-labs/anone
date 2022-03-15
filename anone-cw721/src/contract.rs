@@ -1,17 +1,18 @@
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{Binary, Deps, DepsMut, Empty, Env, MessageInfo, Response, StdResult};
 
+use cw721::Cw721Execute;
 use cw721_base::state::TokenInfo;
 pub use cw721_base::{ContractError, InstantiateMsg, MintMsg, MinterResponse, QueryMsg};
 
-use crate::metadata::{Metadata};
+use crate::metadata::Metadata;
 pub use crate::msg::{ExecuteMsg, MintForMsg};
 
 pub type Extension = Option<Metadata>;
 type Cw721MetadataContract<'a> = cw721_base::Cw721Contract<'a, Extension, Empty>;
 pub type Cw721ExecuteMsg = cw721_base::ExecuteMsg<Extension>;
 
-#[cfg_attr(not(feature = "library"), entry_point)] 
+#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
     env: Env,
@@ -29,7 +30,26 @@ pub fn execute(
     msg: ExecuteMsg<Extension>,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::Generic(Cw721ExecuteMsg) => Cw721MetadataContract::default().execute(deps, env, info, Cw721ExecuteMsg),
+        ExecuteMsg::Approve {
+            spender,
+            token_id,
+            expires,
+        } => Cw721MetadataContract::default().approve(deps, env, info, spender, token_id, expires),
+        ExecuteMsg::Revoke { spender, token_id } => Cw721MetadataContract::default().revoke(deps, env, info, spender, token_id),
+        ExecuteMsg::ApproveAll { operator, expires } => {
+            Cw721MetadataContract::default().approve_all(deps, env, info, operator, expires)
+        }
+        ExecuteMsg::RevokeAll { operator } => Cw721MetadataContract::default().revoke_all(deps, env, info, operator),
+        ExecuteMsg::TransferNft {
+            recipient,
+            token_id,
+        } => Cw721MetadataContract::default().transfer_nft(deps, env, info, recipient, token_id),
+        ExecuteMsg::SendNft {
+            contract,
+            token_id,
+            msg,
+        } => Cw721MetadataContract::default().send_nft(deps, env, info, contract, token_id, msg),
+        ExecuteMsg::Burn { token_id } => Cw721MetadataContract::default().burn(deps, env, info, token_id),
         ExecuteMsg::MintFor(msg) => execute_mint_for(deps, env, info, msg),
     }
 }
@@ -38,7 +58,7 @@ pub fn execute_mint_for(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
-    msg: MintForMsg<Extension>
+    msg: MintForMsg<Extension>,
 ) -> Result<Response, ContractError> {
     let recipient = deps.api.addr_validate(&info.sender.to_string())?;
 
@@ -49,14 +69,16 @@ pub fn execute_mint_for(
         extension: msg.extension,
     };
 
-    Cw721MetadataContract::default().tokens
-            .update(deps.storage, &msg.token_id, |old| match old {
-                Some(_) => Err(ContractError::Claimed {}),
-                None => Ok(token),
-            })?;
-            
+    Cw721MetadataContract::default().tokens.update(
+        deps.storage,
+        &msg.token_id,
+        |old| match old {
+            Some(_) => Err(ContractError::Claimed {}),
+            None => Ok(token),
+        },
+    )?;
 
-    Cw721MetadataContract::increment_tokens(&Cw721MetadataContract::default(),deps.storage)?;
+    Cw721MetadataContract::increment_tokens(&Cw721MetadataContract::default(), deps.storage)?;
 
     Ok(Response::default()
         .add_attribute("action", "mint_for")
