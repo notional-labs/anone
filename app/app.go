@@ -97,10 +97,6 @@ import (
 
 	"github.com/notional-labs/anone/docs"
 
-	anonemodule "github.com/notional-labs/anone/x/anone"
-	anonemodulekeeper "github.com/notional-labs/anone/x/anone/keeper"
-	anonemoduletypes "github.com/notional-labs/anone/x/anone/types"
-
 	//wasmd
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
@@ -194,7 +190,6 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
-		anonemodule.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		wasm.AppModuleBasic{},
@@ -267,7 +262,6 @@ type App struct {
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
-	AnoneKeeper anonemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 	wasmKeeper       wasm.Keeper
 	scopedWasmKeeper capabilitykeeper.ScopedKeeper
@@ -303,7 +297,6 @@ func New(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		anonemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		wasm.StoreKey,
 		authzkeeper.StoreKey,
@@ -441,13 +434,6 @@ func New(
 		&stakingKeeper, govRouter,
 	)
 
-	app.AnoneKeeper = *anonemodulekeeper.NewKeeper(
-		appCodec,
-		keys[anonemoduletypes.StoreKey],
-		keys[anonemoduletypes.MemStoreKey],
-	)
-	anoneModule := anonemodule.NewAppModule(appCodec, app.AnoneKeeper)
-
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -488,7 +474,6 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
-		anoneModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
@@ -517,7 +502,6 @@ func New(
 		authz.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
-		anonemoduletypes.ModuleName,
 		wasm.ModuleName,
 	)
 
@@ -540,7 +524,6 @@ func New(
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		ibctransfertypes.ModuleName,
-		anonemoduletypes.ModuleName,
 		wasm.ModuleName,
 	)
 
@@ -568,7 +551,6 @@ func New(
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		ibctransfertypes.ModuleName,
-		anonemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		wasm.ModuleName,
 	)
@@ -766,7 +748,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
-	paramsKeeper.Subspace(anonemoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(wasm.ModuleName)
 
