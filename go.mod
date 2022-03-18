@@ -3,15 +3,22 @@ module github.com/notional-labs/anone
 go 1.16
 
 require (
-	github.com/CosmWasm/wasmd v0.20.0
+	github.com/CosmWasm/wasmd v1.0.0
 	github.com/cosmos/cosmos-sdk v0.45.0
 	github.com/cosmos/ibc-go/v2 v2.0.2
+	github.com/gogo/protobuf v1.3.3
+	github.com/gorilla/mux v1.8.0
+	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/cast v1.4.1
-	github.com/spf13/cobra v1.2.1
+	github.com/spf13/cobra v1.4.0
+	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/spm v0.1.9
 	github.com/tendermint/tendermint v0.34.15
-	github.com/tendermint/tm-db v0.6.6
+	github.com/tendermint/tm-db v0.6.7
+	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa
+	google.golang.org/grpc v1.44.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 replace (
