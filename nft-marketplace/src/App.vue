@@ -103,7 +103,9 @@
             <div class="card" v-for="(token, i) in nfts.market.tokens" :key="i">
               <img class="card-img-top" :src="token.image" v-if="token.image" />
               <div class="card-body">
-                <h5 class="card-title" v-if="token.name"><strong>Name:</strong> {{ token.name }}</h5>
+                <h5 class="card-title" v-if="token.name">
+                  <strong>Name:</strong> {{ token.name }}
+                </h5>
                 <p class="card-text" v-if="token.description">
                   <strong>Description:</strong> {{ token.description }}
                 </p>
@@ -222,7 +224,9 @@
           <div class="card" v-for="(token, i) in myNfts" :key="i">
             <img class="card-img-top" :src="token.image" v-if="token.image" />
             <div class="card-body">
-              <h5 class="card-title" v-if="token.name"><strong>Name:</strong> {{ token.name }}</h5>
+              <h5 class="card-title" v-if="token.name">
+                <strong>Name:</strong> {{ token.name }}
+              </h5>
               <p class="card-text" v-if="token.description">
                 <strong>Description:</strong> {{ token.description }}
               </p>
@@ -240,7 +244,7 @@
                 >
                   Ownership
                 </button>
-               
+
                 <button
                   class="btn btn-danger btn-cancel"
                   @click="transferring.tokenId = null"
@@ -286,10 +290,7 @@
                   </button>
                   <button
                     class="btn btn-primary btn-burn"
-                    :disabled="
-                      !transferring.tokenId ||
-                      isSending
-                    "
+                    :disabled="!transferring.tokenId || isSending"
                     @click="handleBurn()"
                   >
                     Burn
@@ -348,9 +349,11 @@ import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import { AnoneTestnetInfo } from "./chain.info.anonetestnet";
 import axios from "axios";
 import ipfsClient from "./ipfs";
+import {VUE_APP_CONTRACT_ADDRESS} from './config';
 
 const RPC = AnoneTestnetInfo.rpc;
-const ContractAddress = process.env.VUE_APP_CONTRACT_ADDRESS;
+const ContractAddress = VUE_APP_CONTRACT_ADDRESS;
+console.log(ContractAddress);
 
 const IPFS_PREFIX = "ipfs://";
 const IPFS_SUFFIX = "/";
@@ -420,58 +423,49 @@ export default {
   mounted: async function () {},
   methods: {
     connectWallet: async function () {
+      await this.addWallet();
+      // Anone testnet account balances ('uan1')
+      if (this.accounts.length) {
+        await this.getBalances();
+      }
+      // User and market NFTs
+      await this.loadNfts();
+    },
+    addWallet: async function () {
       console.log("Connecting wallet...");
+      if (!window) {
+        console.warn("Error parsing window object");
+        return;
+      }
+      if (!window.keplr) {
+        alert("you have to install keplr wallet extension first");
+        return;
+      }
       try {
-        if (window) {
-          if (window["keplr"]) {
-            if (window.keplr["experimentalSuggestChain"]) {
-              await window.keplr.experimentalSuggestChain(this.chainMeta);
-              await window.keplr.enable(this.chainMeta.chainId);
-              this.offlineSigner = await window.getOfflineSigner(
-                this.chainMeta.chainId
-              );
-              this.wasmClient = await SigningCosmWasmClient.connectWithSigner(
-                this.rpc,
-                this.offlineSigner
-              );
-              this.accounts = await this.offlineSigner.getAccounts();
+        if (window.keplr["experimentalSuggestChain"]) {
+          await window.keplr.experimentalSuggestChain(this.chainMeta);
+          await window.keplr.enable(this.chainMeta.chainId);
+          this.offlineSigner = await window.getOfflineSigner(this.chainMeta.chainId);
+          this.wasmClient = await SigningCosmWasmClient.connectWithSigner(this.rpc,this.offlineSigner);
+          this.accounts = await this.offlineSigner.getAccounts();
 
-              console.log("Wallet connected", {
-                offlineSigner: this.offlineSigner,
-                wasmClient: this.wasmClient,
-                accounts: this.accounts,
-                chain: this.chainMeta,
-              });
-              // Query ref.
-              this.handlers.query =
-                this.wasmClient.queryClient.wasm.queryContractSmart;
-              // Gas
-              this.gas.price = GasPrice.fromString("0.002uan1");
-              // Debug
-              console.log("dApp Initialized", {
-                user: this.accounts[0].address,
-                client: this.wasmClient,
-                handlers: this.handlers,
-                gas: this.gas,
-              });
-
-              // Anone testnet account balances ('uan1')
-              if (this.accounts.length) {
-                await this.getBalances();
-              }
-
-              // User and market NFTs
-              await this.loadNfts();
-            } else {
-              console.warn(
-                "Error access experimental features, please update Keplr"
-              );
-            }
-          } else {
-            console.warn("Error accessing Keplr");
-          }
-        } else {
-          console.warn("Error parsing window object");
+          console.log("Wallet connected", {
+            offlineSigner: this.offlineSigner,
+            wasmClient: this.wasmClient,
+            accounts: this.accounts,
+            chain: this.chainMeta,
+          });
+          // Query ref.
+          this.handlers.query = this.wasmClient.queryClient.wasm.queryContractSmart;
+          // Gas
+          this.gas.price = GasPrice.fromString("0.002uan1");
+          // Debug
+          console.log("dApp Initialized", {
+            user: this.accounts[0].address,
+            client: this.wasmClient,
+            handlers: this.handlers,
+            gas: this.gas,
+          });
         }
       } catch (e) {
         console.error("Error connecting to wallet", e);
@@ -753,7 +747,12 @@ export default {
       // Refresh NFT market to get last minted ID
       // (Tx. might still fail if multiple users try to mint in the same block)
       this.loadNfts();
-      let token_id_to_mint = this.nfts.market.tokens.length > 0 ? Number(this.nfts.market.tokens[this.nfts.market.tokens.length - 1].id) + 1 : Number(1);
+      let token_id_to_mint =
+        this.nfts.market.tokens.length > 0
+          ? Number(
+              this.nfts.market.tokens[this.nfts.market.tokens.length - 1].id
+            ) + 1
+          : Number(1);
 
       // Prepare Tx
       let entrypoint = {
@@ -888,19 +887,11 @@ export default {
     },
 
     handleBurn: async function () {
-      if (
-        !this.transferring.tokenId ||
-        this.isBurning
-      ) {
-        console.warn(
-          "Nothing to burn (check token ID)",
-          this.transferring
-        );
+      if (!this.transferring.tokenId || this.isBurning) {
+        console.warn("Nothing to burn (check token ID)", this.transferring);
         return;
       }
-      await this.burnNft(
-        this.transferring.tokenId
-      );
+      await this.burnNft(this.transferring.tokenId);
     },
 
     transferNft: async function (recipient = null, tokenId = null) {
@@ -974,10 +965,7 @@ export default {
         console.warn("Error getting user", this.accounts);
         return;
       } else if (!tokenId) {
-        console.warn(
-          "Nothing to burn (check token ID)",
-          { token_id: tokenId }
-        );
+        console.warn("Nothing to burn (check token ID)", { token_id: tokenId });
         return;
       }
 
@@ -1026,8 +1014,7 @@ export default {
         this.loading.status = false;
         this.loading.msg = "";
       }
-    }
-    
+    },
   },
   computed: {
     myNfts: function () {

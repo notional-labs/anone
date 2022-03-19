@@ -1,0 +1,1 @@
+export const VUE_APP_CONTRACT_ADDRESS="one1ghd753shjuwexxywmgs4xz7x2q732vcnkm6h2pyv9s6ah3hylvrqpl7u37";
