@@ -77,7 +77,7 @@
               <strong v-if="!isNaN(account.balance.amount)">Balance:</strong
               >&nbsp;
               <span v-if="!isNaN(account.balance.amount)"
-                >{{ parseInt(account.balance.amount) / 100000 }}
+                >{{ parseInt(account.balance.amount) / 1000000 }}
                 {{ chainMeta.currencies[0].coinDenom }}</span
               >
             </div>
@@ -811,6 +811,7 @@ export default {
         console.warn("Error executing mint tx", e);
         this.loading.status = false;
         this.loading.msg = "";
+        this.isMinting = false;
       }
     },
     getBalances: async function () {
