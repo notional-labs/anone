@@ -954,6 +954,7 @@ export default {
         console.warn("Error executing NFT transfer", e);
         this.loading.status = false;
         this.loading.msg = "";
+        this.isSending = false;
       }
     },
     burnNft: async function (tokenId = null) {
@@ -1013,6 +1014,7 @@ export default {
         console.warn("Error executing burn NFT", e);
         this.loading.status = false;
         this.loading.msg = "";
+        this.isBurning = false;
       }
     },
   },
