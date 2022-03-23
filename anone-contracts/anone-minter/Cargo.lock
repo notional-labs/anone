@@ -14,7 +14,9 @@ dependencies = [
  "cw721",
  "schemars",
  "serde",
+ "sg-std",
  "sg721",
+ "thiserror",
  "url",
 ]
 

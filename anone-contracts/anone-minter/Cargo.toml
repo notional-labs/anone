@@ -1,10 +1,15 @@
 [package]
 name = "anone-minter"
+description = "Contract minter collection for Anone project"
 version = "0.1.0"
 edition = "2021"
 author = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com"]
+repository = "https://github.com/notional-labs/anone"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 cosmwasm-std = { version = "1.0.0-beta5" }
@@ -14,6 +19,9 @@ cw2 = "0.12.1"
 cw-utils = "0.12.1"
 schemars = "0.8"
 serde = { version = "1.0", default-features = false, features = ["derive"] }
+thiserror = { version = "1.0" }
 url = "2.2.0"
 cw721 = "0.12.0"
 sg721 = "0.8.2"
+sg-std = "0.8.1"
+
