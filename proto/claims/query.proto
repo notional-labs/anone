@@ -3,28 +3,95 @@ package notionallabs.anone.claims;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "claims/claim_record.proto";
 import "claims/params.proto";
+
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/notional-labs/anone/x/claims/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/notionallabs/anone/claims/params";
-  }
   // this line is used by starport scaffolding # 2
+  rpc ModuleAccountBalance(QueryModuleAccountBalanceRequest)
+      returns (QueryModuleAccountBalanceResponse) {
+    option (google.api.http).get =
+        "/anone/claim/module_account_balance";
+  }
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/anone/claim/params";
+  }
+  rpc ClaimRecord(QueryClaimRecordRequest) returns (QueryClaimRecordResponse) {
+    option (google.api.http).get =
+        "/anone/claim/claim_record/{address}";
+  }
+  rpc ClaimableForAction(QueryClaimableForActionRequest)
+      returns (QueryClaimableForActionResponse) {
+    option (google.api.http).get =
+        "/anone/claim/claimable_for_action/{address}/{action}";
+  }
+  rpc TotalClaimable(QueryTotalClaimableRequest)
+      returns (QueryTotalClaimableResponse) {
+    option (google.api.http).get =
+        "/anone/claim/total_claimable/{address}";
+  }
 }
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryModuleAccountBalanceRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryModuleAccountBalanceResponse {
+  // params defines the parameters of the module.
+  repeated cosmos.base.v1beta1.Coin moduleAccountBalance = 1 [
+    (gogoproto.moretags) = "yaml:\"coins\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
+// QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  // params defines the parameters of the module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-// this line is used by starport scaffolding # 3
+message QueryClaimRecordRequest {
+  string address = 1 [ (gogoproto.moretags) = "yaml:\"sender\"" ];
+}
+
+message QueryClaimRecordResponse {
+  ClaimRecord claim_record = 1 [
+    (gogoproto.moretags) = "yaml:\"claim_record\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryClaimableForActionRequest {
+  string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
+  Action action = 2 [ (gogoproto.moretags) = "yaml:\"action\"" ];
+}
+
+message QueryClaimableForActionResponse {
+  repeated cosmos.base.v1beta1.Coin coins = 1 [
+    (gogoproto.moretags) = "yaml:\"coins\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message QueryTotalClaimableRequest {
+  string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
+}
+
+message QueryTotalClaimableResponse {
+  repeated cosmos.base.v1beta1.Coin coins = 1 [
+    (gogoproto.moretags) = "yaml:\"coins\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}

@@ -2,13 +2,30 @@ syntax = "proto3";
 package notionallabs.anone.claims;
 
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "claims/params.proto";
-// this line is used by starport scaffolding # genesis/proto/import
+import "claims/claim_record.proto";
 
 option go_package = "github.com/notional-labs/anone/x/claims/types";
 
 // GenesisState defines the claims module's genesis state.
 message GenesisState {
-  Params params = 1 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
+  // balance of the claim module's account
+  cosmos.base.v1beta1.Coin module_account_balance = 1 [
+    (gogoproto.moretags) = "yaml:\"module_account_balance\"",
+    (gogoproto.nullable) = false
+  ];
+
+  // params defines all the parameters of the module.
+  Params params = 2 [
+    (gogoproto.moretags) = "yaml:\"params\"",
+    (gogoproto.nullable) = false
+  ];
+
+  // list of claim records, one for every airdrop recipient
+  repeated ClaimRecord claim_records = 3 [
+    (gogoproto.moretags) = "yaml:\"claim_records\"",
+    (gogoproto.nullable) = false
+  ];
 }
