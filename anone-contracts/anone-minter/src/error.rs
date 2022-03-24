@@ -48,9 +48,6 @@ pub enum ContractError {
     #[error("BeforeGenesisTime")]
     BeforeGenesisTime {},
 
-    #[error("WhitelistAlreadyStarted")]
-    WhitelistAlreadyStarted {},
-
     #[error("InvalidStartTime {0} < {1}")]
     InvalidStartTime(Timestamp, Timestamp),
 
@@ -59,9 +56,6 @@ pub enum ContractError {
 
     #[error("Invalid base token URI (must be an IPFS URI)")]
     InvalidBaseTokenURI {},
-
-    #[error("address not on whitelist: {addr}")]
-    NotWhitelisted { addr: String },
 
     #[error("Minting has not started yet")]
     BeforeMintStartTime {},
