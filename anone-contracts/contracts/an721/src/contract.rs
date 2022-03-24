@@ -126,3 +126,88 @@ fn query_config(deps: Deps) -> StdResult<CollectionInfoResponse> {
         royalty_info: royalty_info_res,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use crate::state::CollectionInfo;
+    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
+    use cosmwasm_std::{coins, from_binary, Decimal};
+    //use sg_std::NATIVE_DENOM;
+    use crate::NATIVE_DENOM;
+
+    #[test]
+    fn proper_initialization_no_royalties() {
+        let mut deps = mock_dependencies();
+        let collection = String::from("collection0");
+
+        let msg = InstantiateMsg {
+            name: collection,
+            symbol: String::from("BOBO"),
+            minter: String::from("minter"),
+            collection_info: CollectionInfo {
+                creator: String::from("creator"),
+                description: String::from("Stargaze Monkeys"),
+                image: "https://example.com/image.png".to_string(),
+                external_link: Some("https://example.com/external.html".to_string()),
+                royalty_info: None,
+            },
+        };
+        let info = mock_info("creator", &coins(CREATION_FEE, NATIVE_DENOM));
+
+        // make sure instantiate has the burn messages
+        let res = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
+        assert_eq!(2, res.messages.len());
+
+        // let's query the collection info
+        let res = query(deps.as_ref(), mock_env(), QueryMsg::CollectionInfo {}).unwrap();
+        let value: CollectionInfoResponse = from_binary(&res).unwrap();
+        assert_eq!("https://example.com/image.png", value.image);
+        assert_eq!("Stargaze Monkeys", value.description);
+        assert_eq!(
+            "https://example.com/external.html",
+            value.external_link.unwrap()
+        );
+        assert_eq!(None, value.royalty_info);
+    }
+
+    #[test]
+    fn proper_initialization_with_royalties() {
+        let mut deps = mock_dependencies();
+        let creator = String::from("creator");
+        let collection = String::from("collection0");
+
+        let msg = InstantiateMsg {
+            name: collection,
+            symbol: String::from("BOBO"),
+            minter: String::from("minter"),
+            collection_info: CollectionInfo {
+                creator: String::from("creator"),
+                description: String::from("Stargaze Monkeys"),
+                image: "https://example.com/image.png".to_string(),
+                external_link: Some("https://example.com/external.html".to_string()),
+                royalty_info: Some(RoyaltyInfoResponse {
+                    payment_address: creator.clone(),
+                    share: Decimal::percent(10),
+                }),
+            },
+        };
+        let info = mock_info("creator", &coins(CREATION_FEE, NATIVE_DENOM));
+
+        // make sure instantiate has the burn messages
+        let res = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
+        assert_eq!(2, res.messages.len());
+
+        // let's query the collection info
+        let res = query(deps.as_ref(), mock_env(), QueryMsg::CollectionInfo {}).unwrap();
+        let value: CollectionInfoResponse = from_binary(&res).unwrap();
+        assert_eq!(
+            Some(RoyaltyInfoResponse {
+                payment_address: creator,
+                share: Decimal::percent(10),
+            }),
+            value.royalty_info
+        );
+    }
+}
