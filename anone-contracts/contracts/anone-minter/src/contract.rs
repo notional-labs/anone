@@ -7,7 +7,7 @@ use cosmwasm_std::{
 use cw2::set_contract_version;
 use cw721_base::{msg::ExecuteMsg as Cw721ExecuteMsg, MintMsg};
 use cw_utils::{may_pay, parse_reply_instantiate_data};
-use sg721::msg::InstantiateMsg as Sg721InstantiateMsg;
+use an721::msg::InstantiateMsg as An721InstantiateMsg;
 use url::Url;
 
 use crate::error::ContractError;
@@ -16,7 +16,7 @@ use crate::msg::{
     MintableNumTokensResponse, QueryMsg, StartTimeResponse,
 };
 use crate::state::{
-    Config, CONFIG, MINTABLE_NUM_TOKENS, MINTABLE_TOKEN_IDS, MINTER_ADDRS, SG721_ADDRESS,
+    Config, CONFIG, MINTABLE_NUM_TOKENS, MINTABLE_TOKEN_IDS, MINTER_ADDRS, AN721_ADDRESS,
 };
 use sg_std::{burn_and_distribute_fee, StargazeMsgWrapper, GENESIS_MINT_START_TIME};
 
@@ -27,7 +27,7 @@ pub type SubMsg = cosmwasm_std::SubMsg<StargazeMsgWrapper>;
 const CONTRACT_NAME: &str = "crates.io:anone-minter";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
-const INSTANTIATE_SG721_REPLY_ID: u64 = 1;
+const INSTANTIATE_AN721_REPLY_ID: u64 = 1;
 
 // governance parameters
 const MAX_TOKEN_LIMIT: u32 = 10000;
@@ -102,7 +102,7 @@ pub fn instantiate(
         admin: info.sender.clone(),
         base_token_uri: msg.base_token_uri,
         num_tokens: msg.num_tokens,
-        sg721_code_id: msg.sg721_code_id,
+        an721_code_id: msg.an721_code_id,
         unit_price: msg.unit_price,
         per_address_limit: msg.per_address_limit,
         start_time: msg.start_time,
@@ -118,19 +118,19 @@ pub fn instantiate(
     // Submessage to instantiate sg721 contract
     let sub_msgs: Vec<SubMsg> = vec![SubMsg {
         msg: WasmMsg::Instantiate {
-            code_id: msg.sg721_code_id,
-            msg: to_binary(&Sg721InstantiateMsg {
-                name: msg.sg721_instantiate_msg.name,
-                symbol: msg.sg721_instantiate_msg.symbol,
+            code_id: msg.an721_code_id,
+            msg: to_binary(&An721InstantiateMsg {
+                name: msg.an721_instantiate_msg.name,
+                symbol: msg.an721_instantiate_msg.symbol,
                 minter: env.contract.address.to_string(),
-                collection_info: msg.sg721_instantiate_msg.collection_info,
+                collection_info: msg.an721_instantiate_msg.collection_info,
             })?,
             funds: info.funds,
             admin: Some(info.sender.to_string()),
             label: String::from("Fixed price minter"),
         }
         .into(),
-        id: INSTANTIATE_SG721_REPLY_ID,
+        id: INSTANTIATE_AN721_REPLY_ID,
         gas_limit: None,
         reply_on: ReplyOn::Success,
     }];
@@ -259,7 +259,7 @@ fn _execute_mint(
     token_id: Option<u32>,
 ) -> Result<Response, ContractError> {
     let config = CONFIG.load(deps.storage)?;
-    let sg721_address = SG721_ADDRESS.load(deps.storage)?;
+    let an721_address = AN721_ADDRESS.load(deps.storage)?;
 
     let recipient_addr = match recipient {
         Some(some_recipient) => some_recipient,
@@ -324,7 +324,7 @@ fn _execute_mint(
         extension: Empty {},
     });
     let msg = CosmosMsg::Wasm(WasmMsg::Execute {
-        contract_addr: sg721_address.to_string(),
+        contract_addr: an721_address.to_string(),
         msg: to_binary(&mint_msg)?,
         funds: vec![],
     });
@@ -436,13 +436,13 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 
 fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
     let config = CONFIG.load(deps.storage)?;
-    let sg721_address = SG721_ADDRESS.load(deps.storage)?;
+    let sg721_address = AN721_ADDRESS.load(deps.storage)?;
 
     Ok(ConfigResponse {
         admin: config.admin.to_string(),
         base_token_uri: config.base_token_uri,
-        sg721_address: sg721_address.to_string(),
-        sg721_code_id: config.sg721_code_id,
+        an721_address: sg721_address.to_string(),
+        an721_code_id: config.an721_code_id,
         num_tokens: config.num_tokens,
         start_time: config.start_time,
         unit_price: config.unit_price,
@@ -484,17 +484,17 @@ fn query_mint_price(deps: Deps) -> StdResult<MintPriceResponse> {
 // Reply callback triggered from cw721 contract instantiation
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response, ContractError> {
-    if msg.id != INSTANTIATE_SG721_REPLY_ID {
+    if msg.id != INSTANTIATE_AN721_REPLY_ID {
         return Err(ContractError::InvalidReplyID {});
     }
 
     let reply = parse_reply_instantiate_data(msg);
     match reply {
         Ok(res) => {
-            SG721_ADDRESS.save(deps.storage, &Addr::unchecked(res.contract_address))?;
-            Ok(Response::default().add_attribute("action", "instantiate_sg721_reply"))
+            AN721_ADDRESS.save(deps.storage, &Addr::unchecked(res.contract_address))?;
+            Ok(Response::default().add_attribute("action", "instantiate_an721_reply"))
         }
-        Err(_) => Err(ContractError::InstantiateSg721Error {}),
+        Err(_) => Err(ContractError::InstantiateAn721Error {}),
     }
 }
 

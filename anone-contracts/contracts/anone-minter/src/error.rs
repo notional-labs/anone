@@ -51,8 +51,8 @@ pub enum ContractError {
     #[error("InvalidStartTime {0} < {1}")]
     InvalidStartTime(Timestamp, Timestamp),
 
-    #[error("Instantiate sg721 error")]
-    InstantiateSg721Error {},
+    #[error("Instantiate an721 error")]
+    InstantiateAn721Error {},
 
     #[error("Invalid base token URI (must be an IPFS URI)")]
     InvalidBaseTokenURI {},
