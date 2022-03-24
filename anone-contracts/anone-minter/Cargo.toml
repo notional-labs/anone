@@ -1,6 +1,6 @@
 [package]
 name = "anone-minter"
-description = "Contract minter collection for Anone project"
+description = "Minter contract for NFT collection of Anone project"
 version = "0.1.0"
 edition = "2021"
 author = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com"]
@@ -10,6 +10,12 @@ repository = "https://github.com/notional-labs/anone"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
+
+[features]
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+# use library feature to disable all instantiate/execute/query exports
+library = []
 
 [dependencies]
 cosmwasm-std = { version = "1.0.0-beta5" }
