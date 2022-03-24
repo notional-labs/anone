@@ -7,20 +7,18 @@ use sg721::msg::InstantiateMsg as Sg721InstantiateMsg;
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
     pub base_token_uri: String,
-    pub number_tokens: u32,
+    pub num_tokens: u32,
     pub sg721_code_id: u64,
     pub sg721_instantiate_msg: Sg721InstantiateMsg,
-    pub state_time: Timestamp,
+    pub start_time: Timestamp,
     pub per_address_limit: u32,
-    pub unit_price: Coin,
-    pub whitelist: Option<String>,
+    pub unit_price: Coin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     Mint {},
-    SetWhitelist {whitelist: String},
     UpdateStartTime(Timestamp),
     UpdatePerAddressLimit {per_address_limit: u32},
     MintTo {recipient: String},
@@ -46,8 +44,7 @@ pub struct ConfigResponse {
     pub sg721_address: String,
     pub sg721_code_id: u64,
     pub start_time: Timestamp,
-    pub unit_price: Coin,
-    pub whitelist: Option<String>,
+    pub unit_price: Coin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -63,7 +60,6 @@ pub struct StartTimeResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct MintPriceResponse {
     pub public_price: Coin,
-    pub whitelist_price: Option<Coin>,
     pub current_price: Coin,
 }
 

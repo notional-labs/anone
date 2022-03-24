@@ -22,6 +22,7 @@ serde = { version = "1.0", default-features = false, features = ["derive"] }
 thiserror = { version = "1.0" }
 url = "2.2.0"
 cw721 = "0.12.0"
+cw721-base = { version = "0.12.0", features = ["library"] }
 sg721 = "0.8.2"
 sg-std = "0.8.1"
 
