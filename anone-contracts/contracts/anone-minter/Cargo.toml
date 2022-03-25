@@ -54,5 +54,5 @@ url = "2.2.0"
 cw721 = "0.12.0"
 cw721-base = { version = "0.12.0", features = ["library"] }
 an721 = { path = "../an721", features = ["library"] }
-sg-std = "0.8.1"
+an-std = { path = "../../packages/an-std" }
 

@@ -41,4 +41,4 @@ thiserror = { version = "1.0.30" }
 url = "2.2.2"
 cw721 = "0.12.0"
 cw721-base = { version = "0.12.0", features = ["library"] }
-sg-std = "0.8.1"
+an-std = { path = "../../packages/an-std" }

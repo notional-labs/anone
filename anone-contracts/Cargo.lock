@@ -5,11 +5,21 @@ version = 3
 [[package]]
 name = "an-std"
 version = "0.1.0"
+dependencies = [
+ "cosmwasm-std",
+ "cw-utils",
+ "cw721",
+ "cw721-base",
+ "schemars",
+ "serde",
+ "thiserror",
+]
 
 [[package]]
 name = "an721"
 version = "0.1.0"
 dependencies = [
+ "an-std",
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus",
@@ -19,7 +29,6 @@ dependencies = [
  "cw721-base",
  "schemars",
  "serde",
- "sg-std",
  "thiserror",
  "url",
 ]
@@ -28,6 +37,7 @@ dependencies = [
 name = "anone-minter"
 version = "0.1.0"
 dependencies = [
+ "an-std",
  "an721",
  "cosmwasm-std",
  "cosmwasm-storage",
@@ -38,7 +48,6 @@ dependencies = [
  "cw721-base",
  "schemars",
  "serde",
- "sg-std",
  "thiserror",
  "url",
 ]
@@ -568,21 +577,6 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
-]
-
-[[package]]
-name = "sg-std"
-version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90d7662557ac09ede02afc8be547ef06bd6dbad67c549c87be978b69e5616fb3"
-dependencies = [
- "cosmwasm-std",
- "cw-utils",
- "cw721",
- "cw721-base",
- "schemars",
- "serde",
- "thiserror",
 ]
 
 [[package]]

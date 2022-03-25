@@ -18,10 +18,10 @@ use crate::msg::{
 use crate::state::{
     Config, CONFIG, MINTABLE_NUM_TOKENS, MINTABLE_TOKEN_IDS, MINTER_ADDRS, AN721_ADDRESS,
 };
-use sg_std::{burn_and_distribute_fee, StargazeMsgWrapper, GENESIS_MINT_START_TIME};
+use an_std::{burn_and_distribute_fee, AnoneMsgWrapper, GENESIS_MINT_START_TIME};
 
-pub type Response = cosmwasm_std::Response<StargazeMsgWrapper>;
-pub type SubMsg = cosmwasm_std::SubMsg<StargazeMsgWrapper>;
+pub type Response = cosmwasm_std::Response<AnoneMsgWrapper>;
+pub type SubMsg = cosmwasm_std::SubMsg<AnoneMsgWrapper>;
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:anone-minter";
@@ -115,7 +115,7 @@ pub fn instantiate(
         MINTABLE_TOKEN_IDS.save(deps.storage, token_id, &true)?;
     }
 
-    // Submessage to instantiate sg721 contract
+    // Submessage to instantiate an721 contract
     let sub_msgs: Vec<SubMsg> = vec![SubMsg {
         msg: WasmMsg::Instantiate {
             code_id: msg.an721_code_id,
@@ -276,7 +276,7 @@ fn _execute_mint(
         ));
     }
 
-    let mut msgs: Vec<CosmosMsg<StargazeMsgWrapper>> = vec![];
+    let mut msgs: Vec<CosmosMsg<AnoneMsgWrapper>> = vec![];
 
     // Create network fee msgs
     let network_fee: Uint128 = if admin_no_fee {
@@ -436,12 +436,12 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 
 fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
     let config = CONFIG.load(deps.storage)?;
-    let sg721_address = AN721_ADDRESS.load(deps.storage)?;
+    let an721_address = AN721_ADDRESS.load(deps.storage)?;
 
     Ok(ConfigResponse {
         admin: config.admin.to_string(),
         base_token_uri: config.base_token_uri,
-        an721_address: sg721_address.to_string(),
+        an721_address: an721_address.to_string(),
         an721_code_id: config.an721_code_id,
         num_tokens: config.num_tokens,
         start_time: config.start_time,
