@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "an-std"
+version = "0.1.0"
+
+[[package]]
 name = "an721"
 version = "0.1.0"
 dependencies = [
