@@ -4,7 +4,7 @@ use std::str::from_utf8;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    from_binary, to_binary, Api, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order, Pair,
+    from_binary, to_binary, Api, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order, Record,
     Response, StdError, StdResult, Uint128, WasmMsg,
 };
 use cw2::set_contract_version;
@@ -13,7 +13,7 @@ use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
 
 use crate::error::ContractError;
 use crate::msg::{BuyNft, ExecuteMsg, InstantiateMsg, QueryMsg, SellNft};
-use crate::package::{ContractInfoResponse, OfferingsResponse, Paged, QueryOfferingsResult};
+use crate::query::{ContractInfoResponse, OfferingsResponse, Paged, QueryOfferingsResult};
 use crate::state::{increment_offerings, Offering, CONTRACT_INFO, OFFERINGS};
 
 // version info for migration info
@@ -316,7 +316,7 @@ fn query_offerings(
 
 fn parse_offering(
     api: &dyn Api,
-    item: StdResult<Pair<Offering>>,
+    item: StdResult<Record<Offering>>,
 ) -> StdResult<QueryOfferingsResult> {
     item.and_then(|(k, offering)| {
         let id = from_utf8(&k)?;
