@@ -7,7 +7,7 @@ name = "an-std"
 version = "0.1.0"
 dependencies = [
  "cosmwasm-std",
- "cw-utils 0.12.1",
+ "cw-utils",
  "cw721",
  "cw721-base",
  "schemars",
@@ -23,7 +23,7 @@ dependencies = [
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus",
- "cw-utils 0.12.1",
+ "cw-utils",
  "cw2",
  "cw721",
  "cw721-base",
@@ -42,7 +42,7 @@ dependencies = [
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus",
- "cw-utils 0.12.1",
+ "cw-utils",
  "cw2",
  "cw721",
  "cw721-base",
@@ -59,14 +59,12 @@ dependencies = [
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus",
- "cw-utils 0.12.1",
  "cw2",
  "cw20",
  "cw721",
  "schemars",
  "serde",
  "thiserror",
- "url",
 ]
 
 [[package]]
@@ -225,18 +223,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cw-utils"
-version = "0.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2aa10861dc5d74400eaf0ed920b6f8fdbc36ce53840ffee1688d9757dfc9fc9f"
-dependencies = [
- "cosmwasm-std",
- "schemars",
- "serde",
- "thiserror",
-]
-
-[[package]]
 name = "cw2"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -250,12 +236,12 @@ dependencies = [
 
 [[package]]
 name = "cw20"
-version = "0.13.1"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8c18f816c73fcbb0897d2be4efeb6f1277602cc5b7acd5949a7ead20db0e682"
+checksum = "413911037f6b0106ae37ca82352f9131939ccc995aade435df47a5baf2c815f2"
 dependencies = [
  "cosmwasm-std",
- "cw-utils 0.13.1",
+ "cw-utils",
  "schemars",
  "serde",
 ]
@@ -267,7 +253,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cc5bb00baf493fc48bf05831edc3ed074731da7c1944c8521ead3df4ff08d9c7"
 dependencies = [
  "cosmwasm-std",
- "cw-utils 0.12.1",
+ "cw-utils",
  "schemars",
  "serde",
 ]
@@ -280,7 +266,7 @@ checksum = "da773ac93cae5a01a052772d65a2f377dd22933f583ef8f739d67f32ffce1b6b"
 dependencies = [
  "cosmwasm-std",
  "cw-storage-plus",
- "cw-utils 0.12.1",
+ "cw-utils",
  "cw2",
  "cw721",
  "schemars",
