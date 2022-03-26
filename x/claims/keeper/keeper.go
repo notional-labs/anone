@@ -19,7 +19,9 @@ type (
 
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
+		distrKeeper   types.DistrKeeper
 
+		// paramstore here is a subspace container used for containing params specific and privately to this module
 		paramstore paramtypes.Subspace
 	}
 )
@@ -39,7 +41,6 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-
 		cdc:           cdc,
 		storeKey:      storeKey,
 		memKey:        memKey,
