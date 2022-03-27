@@ -315,7 +315,7 @@ fn query_offerings(
 }
 
 fn parse_offering(
-    api: &dyn Api,
+    _api: &dyn Api,
     item: StdResult<Record<Offering>>,
 ) -> StdResult<QueryOfferingsResult> {
     item.and_then(|(k, offering)| {
