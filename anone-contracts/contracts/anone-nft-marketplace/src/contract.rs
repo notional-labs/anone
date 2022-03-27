@@ -197,7 +197,7 @@ fn query_offerings(
     q_size: Uint128,
 ) -> StdResult<OfferingsResponse> {
     let res: StdResult<Vec<QueryOfferingsResult>> = OFFERINGS
-        .range(deps.storage, None, None, Order::Ascending)
+        .range_raw(deps.storage, None, None, Order::Ascending)
         .map(|kv_item| parse_offering(deps.api, kv_item))
         .collect();
 
