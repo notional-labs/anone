@@ -13,4 +13,4 @@ CONTRACT="one1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrq9jdqcm"
 TOKEN_ID="$1"
 
 QUERY="{\"all_nft_info\": {\"token_id\": \"$TOKEN_ID\"}}"
-echo $(anoned query wasm contract-state smart "$CONTRACT" "$QUERY" --node "$NODE" --output json | jq --color-output -r .)
+echo $(anoned query wasm contract-state smart "$CONTRACT" "$QUERY" --node "$NODE" --output json | jq --color-output -r )
