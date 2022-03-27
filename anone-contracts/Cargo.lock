@@ -56,6 +56,7 @@ dependencies = [
 name = "anone-nft-marketplace"
 version = "0.1.0"
 dependencies = [
+ "cosmwasm-schema",
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus",
@@ -120,6 +121,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fa89fcdf8dbbe0088e663d0a814aa7368e7ebe8fb045a3a150fb5fdc2ffe3b45"
 dependencies = [
  "syn",
+]
+
+[[package]]
+name = "cosmwasm-schema"
+version = "1.0.0-beta7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "63f79866e7b2190b6b6cb06959e308183c8d9511a8530f7292073f3cddc963db"
+dependencies = [
+ "schemars",
+ "serde_json",
 ]
 
 [[package]]
