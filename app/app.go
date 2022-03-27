@@ -101,7 +101,11 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+	claim "github.com/notional-labs/anone/x/claims"
+	claimkeeper "github.com/notional-labs/anone/x/claims/keeper"
+	claimtypes "github.com/notional-labs/anone/x/claims/types"
 )
 
 var (
@@ -193,6 +197,7 @@ var (
 		authzmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		wasm.AppModuleBasic{},
+		claim.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -205,7 +210,8 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		wasm.ModuleName: {authtypes.Burner},
+		wasm.ModuleName:       {authtypes.Burner},
+		claimtypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 	}
 )
 
@@ -257,6 +263,7 @@ type App struct {
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
+	ClaimKeeper      claimkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -300,6 +307,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		wasm.StoreKey,
 		authzkeeper.StoreKey,
+		claimtypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -364,6 +372,10 @@ func New(
 	)
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
 	// ... other modules keepers
+
+	app.ClaimKeeper = *claimkeeper.NewKeeper(appCodec, keys[claimtypes.StoreKey], app.AccountKeeper,
+		app.BankKeeper, app.DistrKeeper, app.GetSubspace(claimtypes.ModuleName),
+	)
 
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
@@ -477,6 +489,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		claim.NewAppModule(appCodec, app.ClaimKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -503,6 +516,7 @@ func New(
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		wasm.ModuleName,
+		claimtypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -525,6 +539,7 @@ func New(
 		authz.ModuleName,
 		ibctransfertypes.ModuleName,
 		wasm.ModuleName,
+		claimtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -553,6 +568,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		wasm.ModuleName,
+		claimtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -750,6 +766,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(wasm.ModuleName)
+	paramsKeeper.Subspace(claimtypes.ModuleName)
 
 	return paramsKeeper
 }
