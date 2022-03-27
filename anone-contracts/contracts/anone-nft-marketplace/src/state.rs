@@ -1,5 +1,5 @@
 use crate::query::ContractInfoResponse;
-use cosmwasm_std::{CanonicalAddr, StdResult, Storage, Timestamp};
+use cosmwasm_std::{Addr, StdResult, Storage, Timestamp};
 use cw20::Cw20Coin;
 use cw_storage_plus::{Item, Map};
 use schemars::JsonSchema;
@@ -10,8 +10,8 @@ pub static CONFIG_KEY: &str = "config";
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Offering {
     pub token_id: String,
-    pub contract_addr: CanonicalAddr,
-    pub seller: CanonicalAddr,
+    pub contract_addr: Addr,
+    pub seller: Addr,
     pub list_price: Cw20Coin,
     pub listing_time: Timestamp,
 }

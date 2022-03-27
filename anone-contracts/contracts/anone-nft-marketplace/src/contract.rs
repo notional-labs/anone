@@ -66,7 +66,7 @@ pub fn execute_receive(
 
     // check for enough coins
     let transfer_cw20_msg = Cw20ExecuteMsg::Transfer {
-        recipient: deps.api.addr_humanize(&off.seller)?.into_string(),
+        recipient: (&off.seller).to_string(),
         amount: rcv_msg.amount,
     };
 
@@ -84,7 +84,7 @@ pub fn execute_receive(
     };
 
     let exec_cw721_transfer = WasmMsg::Execute {
-        contract_addr: deps.api.addr_humanize(&off.contract_addr)?.to_string(),
+        contract_addr: (&off.contract_addr).to_string(),
         msg: to_binary(&transfer_cw721_msg)?,
         funds: vec![],
     };
@@ -125,9 +125,9 @@ pub fn execute_receive_nft(
 
     // save Offering
     let off = Offering {
-        contract_addr: deps.api.addr_canonicalize(&info.sender.as_str())?,
+        contract_addr: info.sender.clone(),
         token_id: rcv_msg.token_id,
-        seller: deps.api.addr_canonicalize(&rcv_msg.sender)?,
+        seller: deps.api.addr_validate(&rcv_msg.sender.clone())?,
         list_price: msg.list_price.clone(),
         listing_time: env.block.time,
     };
@@ -152,15 +152,15 @@ pub fn execute_withdraw(
 ) -> Result<Response, ContractError> {
     // check if token_id is currently sold by the requesting address
     let off = OFFERINGS.load(deps.storage, &offering_id)?;
-    if off.seller == deps.api.addr_canonicalize(&info.sender.as_str())? {
+    if off.seller == info.sender {
         // transfer token back to original owner
         let transfer_cw721_msg = Cw721ExecuteMsg::TransferNft {
-            recipient: deps.api.addr_humanize(&off.seller)?.into_string(),
+            recipient: off.seller.clone().into_string(),
             token_id: off.token_id.clone(),
         };
 
         let exec_cw721_transfer = WasmMsg::Execute {
-            contract_addr: deps.api.addr_humanize(&off.contract_addr)?.into_string(),
+            contract_addr: off.contract_addr.clone().into_string(),
             msg: to_binary(&transfer_cw721_msg)?,
             funds: vec![],
         };
@@ -324,8 +324,8 @@ fn parse_offering(
             id: id.to_string(),
             token_id: offering.token_id,
             list_price: offering.list_price,
-            contract_addr: api.addr_humanize(&offering.contract_addr)?.to_string(),
-            seller: api.addr_humanize(&offering.seller)?.to_string(),
+            contract_addr: offering.contract_addr.clone().into_string(),
+            seller: offering.seller.clone().into_string(),
             listing_time: offering.listing_time,
         })
     })
