@@ -60,17 +60,17 @@ pub fn execute_receive(
 
     let off = OFFERINGS.load(deps.storage, &msg.offering_id)?;
 
+    // check for enough coins
     if rcv_msg.amount < off.list_price.amount {
         return Err(ContractError::InsufficientFunds {});
     }
 
-    // check for enough coins
+    // create transfer cw20 msg
     let transfer_cw20_msg = Cw20ExecuteMsg::Transfer {
         recipient: (&off.seller).to_string(),
         amount: rcv_msg.amount,
     };
 
-    // create transfer cw20 msg
     let exec_cw20_transfer = WasmMsg::Execute {
         contract_addr: info.sender.clone().into_string(),
         msg: to_binary(&transfer_cw20_msg)?,
@@ -103,7 +103,7 @@ pub fn execute_receive(
 
     Ok(Response::new()
         .add_messages(cosmos_msgs)
-        .add_attribute("method", "buy_nft")
+        .add_attribute("action", "buy_nft")
         .add_attribute("seller", off.seller.to_string())
         .add_attribute("buyer", rcv_msg.sender)
         .add_attribute("paid_price", price_string)
@@ -126,7 +126,7 @@ pub fn execute_receive_nft(
     // save Offering
     let off = Offering {
         contract_addr: info.sender.clone(),
-        token_id: rcv_msg.token_id,
+        token_id: rcv_msg.clone().token_id,
         seller: deps.api.addr_validate(&rcv_msg.sender.clone())?,
         list_price: msg.list_price.clone(),
         listing_time: env.block.time,
@@ -137,7 +137,8 @@ pub fn execute_receive_nft(
     let price_string = format!("{} {}", msg.list_price.amount, msg.list_price.address);
 
     Ok(Response::new()
-        .add_attribute("method", "sell_nft")
+        .add_message(rcv_msg.into_cosmos_msg(info.sender.clone())?)
+        .add_attribute("action", "sell_nft")
         .add_attribute("original_contract", info.sender)
         .add_attribute("seller", off.seller.to_string())
         .add_attribute("list_price", price_string)
@@ -172,7 +173,7 @@ pub fn execute_withdraw(
 
         return Ok(Response::new()
             .add_messages(cw721_transfer_cosmos_msg)
-            .add_attribute("method", "withdraw_nft")
+            .add_attribute("action", "withdraw_nft")
             .add_attribute("seller", info.sender)
             .add_attribute("offering_id", offering_id));
     }

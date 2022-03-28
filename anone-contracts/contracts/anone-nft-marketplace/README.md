@@ -17,7 +17,7 @@ anoned tx wasm execute "$CW721_CONTRACT_ADDR" '{
     "token_id": "<TOKEN_ID>",
     "msg": "BASE64_ENCODED_JSON --> { "list_price": { "address": "<INSERT_CW20_CONTRACT_ADDR>", "amount": "<INSERT_AMOUNT_WITHOUT_DENOM>" }} <--"
   }
-}'  -from "$ACCOUNT" -y --output json --gas="auto" --gas=auto --fees 875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json
+}'  --from "$ACCOUNT" -y --output json --gas="auto" --gas=auto --fees 875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json
 ```
 
 ### Withdraw CW721 Token Offering
@@ -30,7 +30,7 @@ anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" '{
   "withdraw_nft": {
     "offering_id": "<INSERT_OFFERING_ID>"
   }
-}' -from "$ACCOUNT" -y --output json --gas="auto" --gas=auto --fees 875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json
+}' --from "$ACCOUNT" -y --output json --gas="auto" --gas=auto --fees 875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json
 ```
 
 ### Buy CW721 Token
@@ -45,7 +45,7 @@ anoned tx wasm execute "$CW_20_CONTRACT_ADDR" '{
     "amount": "<INSERT_AMOUNT>",
     "msg": "BASE64_ENCODED_JSON --> { "offering_id": "<INSERT_OFFERING_ID>" } <--"
   }
-}'  -from "$ACCOUNT" -y --output json --gas="auto" --gas=auto --fees=875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json
+}'  --from "$ACCOUNT" -y --output json --gas="auto" --gas=auto --fees=875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json
 ```
 
 ### Query Offerings

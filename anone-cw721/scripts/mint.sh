@@ -34,7 +34,7 @@ EXTENSION="{
     \"name\":\"$name\"
 }"
 
-MINT="{\"mint\": {\"extension\":$EXTENSION, \"token_id\":\"$TOKEN_ID\", \"owner\": \"$(anoned keys show $OWNER -a)\", \"token_uri\": \"$TOKEN_URI\"}}"
+MINT="{\"mintt\": {\"extension\":$EXTENSION, \"token_id\":\"$TOKEN_ID\",  \"token_uri\": \"$TOKEN_URI\"}}"
 
 echo $MINT
 
