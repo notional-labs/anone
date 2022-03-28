@@ -6,7 +6,7 @@ CHAINID="anone-testnet-1"
 CONTRACT_DIR="artifacts/anone_nft_marketplace.wasm"
 SLEEP_TIME="15s"
 
-MARKETPLACE_CONTRACT_ADDR="one1vguuxez2h5ekltfj9gjd62fs5k4rl2zy5hfrncasykzw08rezpfss4pvqr"
+MARKETPLACE_CONTRACT_ADDR="one1xhcxq4fvxth2hn3msmkpftkfpw73um7s4et3lh4r8cfmumk3qsmsrx2mwr"
 CW721_CONTRACT_ADDR="one1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrq9jdqcm"
 INSERT_CW20_CONTRACT_ADDR="juno1hthjpmmjdeev6hkgvfzve0r2kvel5ca3ecr3x6y5t5r24xl4jprsy06v5d"
 INSERT_AMOUNT_WITHOUT_DENOM=500

@@ -13,7 +13,7 @@ use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
 
 use crate::error::ContractError;
 use crate::msg::{BuyNft, ExecuteMsg, InstantiateMsg, QueryMsg, SellNft};
-use crate::query::{ContractInfoResponse, OfferingsResponse, Paged, QueryOfferingsResult};
+use crate::package::{ContractInfoResponse, OfferingsResponse, Paged, QueryOfferingsResult};
 use crate::state::{increment_offerings, Offering, CONTRACT_INFO, OFFERINGS};
 
 // version info for migration info
@@ -30,10 +30,9 @@ pub fn instantiate(
     let info = ContractInfoResponse { name: msg.name };
 
     CONTRACT_INFO.save(deps.storage, &info)?;
-
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
-    Ok(Response::new().add_attribute("method", "instantiate"))
+    Ok(Response::new().add_attribute("action", "instantiate"))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]

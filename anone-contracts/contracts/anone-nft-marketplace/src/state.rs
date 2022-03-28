@@ -1,4 +1,4 @@
-use crate::query::ContractInfoResponse;
+use crate::package::ContractInfoResponse;
 use cosmwasm_std::{Addr, StdResult, Storage, Timestamp};
 use cw20::Cw20Coin;
 use cw_storage_plus::{Item, Map};

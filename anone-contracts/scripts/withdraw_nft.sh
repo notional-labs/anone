@@ -4,7 +4,7 @@ NODE="http://65.108.128.139:2281"
 ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
 
-MARKETPLACE_CONTRACT_ADDR="one1vguuxez2h5ekltfj9gjd62fs5k4rl2zy5hfrncasykzw08rezpfss4pvqr"
+MARKETPLACE_CONTRACT_ADDR="one1xhcxq4fvxth2hn3msmkpftkfpw73um7s4et3lh4r8cfmumk3qsmsrx2mwr"
 
 anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" '{
   "withdraw_nft": {

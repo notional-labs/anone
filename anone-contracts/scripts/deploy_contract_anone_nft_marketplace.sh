@@ -32,7 +32,7 @@ CODE_ID=$(echo $RAW_LOG | jq -r .[0].events[1].attributes[0].value)
 
 echo $CODE_ID
 
-INIT="{\"name\": \"Anone NFT Marketplace Contract\", \"symbol\": \"ANONE_NFT_MARKETPLACE\", \"minter\": \"$(anoned keys show $ACCOUNT -a)\"}"
+INIT="{\"name\": \"Anone NFT Marketplace Contract\"}"
 INIT_JSON=$(anoned tx wasm instantiate "$CODE_ID" "$INIT" --from "$ACCOUNT" --label "anone-cw721" -y --chain-id "$CHAINID" --node "$NODE" --gas 180000 --fees 100000uan1 -o json)
 
 echo "INIT_JSON = $INIT_JSON"
@@ -53,3 +53,5 @@ RAW_LOG=$(anoned query tx "$(echo $INIT_JSON | jq -r .txhash)" --chain-id "$CHAI
 echo "RAW_LOG = $RAW_LOG"
 
 CONTRACT_ADDRESS=$(echo $RAW_LOG | jq -r .[0].events[0].attributes[0].value)
+
+echo "CONTRACT ADDRESS = $CONTRACT_ADDRESS"
