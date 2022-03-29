@@ -338,7 +338,7 @@ fn parse_offering(
 mod tests {
     use cosmwasm_std::attr;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use crate::contract::instantiate; 
+    use crate::contract::{instantiate, execute_withdraw}; 
     use crate::msg::InstantiateMsg; 
 
     pub const ADDR1: &str = "ADDR1";
@@ -355,5 +355,13 @@ mod tests {
             res.attributes,
             vec![attr("action", "instantiate"), attr("name", "Anone NFT Marketplace")]
         )
+    }
+
+    #[test]
+    fn test_withdraw_nft() {
+        let mut deps = mock_dependencies();
+        let env = mock_env();
+        let res = execute_withdraw(deps.as_mut(), env, info , offering_id).unwrap();
+
     }
 }
