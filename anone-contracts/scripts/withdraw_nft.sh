@@ -8,6 +8,6 @@ MARKETPLACE_CONTRACT_ADDR="one1xhcxq4fvxth2hn3msmkpftkfpw73um7s4et3lh4r8cfmumk3q
 
 anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" '{
   "withdraw_nft": {
-    "offering_id": "<INSERT_OFFERING_ID>"
+    "offering_id": "1"
   }
 }' --from "$ACCOUNT" -y --output json --gas="auto" --gas=auto --fees 875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json

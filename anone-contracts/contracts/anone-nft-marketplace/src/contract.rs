@@ -32,7 +32,9 @@ pub fn instantiate(
     CONTRACT_INFO.save(deps.storage, &info)?;
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
-    Ok(Response::new().add_attribute("action", "instantiate"))
+    Ok(Response::new()
+        .add_attribute("action", "instantiate")
+        .add_attribute("name", info.name))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -136,7 +138,7 @@ pub fn execute_receive_nft(
     let price_string = format!("{} {}", msg.list_price.amount, msg.list_price.address);
 
     Ok(Response::new()
-        .add_message(rcv_msg.into_cosmos_msg(info.sender.clone())?)
+        
         .add_attribute("action", "sell_nft")
         .add_attribute("original_contract", info.sender)
         .add_attribute("seller", off.seller.to_string())
@@ -329,4 +331,29 @@ fn parse_offering(
             listing_time: offering.listing_time,
         })
     })
+}
+
+
+#[cfg(test)]
+mod tests {
+    use cosmwasm_std::attr;
+    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
+    use crate::contract::instantiate; 
+    use crate::msg::InstantiateMsg; 
+
+    pub const ADDR1: &str = "ADDR1";
+    #[test]
+    fn test_instantiate() {
+        let mut deps = mock_dependencies();
+        let env = mock_env();
+        let info = mock_info(ADDR1, &[]);
+        let msg = InstantiateMsg { name: "Anone NFT Marketplace".to_string() };
+        // Call instantiate, unwrap to assert success
+        let res = instantiate(deps.as_mut(), env, info, msg).unwrap();
+
+        assert_eq!(
+            res.attributes,
+            vec![attr("action", "instantiate"), attr("name", "Anone NFT Marketplace")]
+        )
+    }
 }
