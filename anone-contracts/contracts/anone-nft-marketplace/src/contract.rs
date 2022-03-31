@@ -45,13 +45,13 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::WithdrawNft { offering_id } => execute_withdraw(deps, env, info, offering_id),
-        ExecuteMsg::Receive(msg) => execute_receive(deps, env, info, msg),
-        ExecuteMsg::ReceiveNft(msg) => execute_receive_nft(deps, env, info, msg),
+        ExecuteMsg::WithdrawNft { offering_id } => execute_cancel_sale(deps, env, info, offering_id),
+        ExecuteMsg::Receive(msg) => execute_make_order(deps, env, info, msg),
+        ExecuteMsg::ReceiveNft(msg) => execute_create_sale(deps, env, info, msg),
     }
 }
 
-pub fn execute_receive(
+pub fn execute_make_order(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
@@ -104,7 +104,7 @@ pub fn execute_receive(
 
     Ok(Response::new()
         .add_messages(cosmos_msgs)
-        .add_attribute("action", "buy_nft")
+        .add_attribute("action", "make_order")
         .add_attribute("seller", off.seller.to_string())
         .add_attribute("buyer", rcv_msg.sender)
         .add_attribute("paid_price", price_string)
@@ -112,7 +112,7 @@ pub fn execute_receive(
         .add_attribute("contract_addr", off.contract_addr.to_string()))
 }
 
-pub fn execute_receive_nft(
+pub fn execute_create_sale(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
@@ -137,16 +137,16 @@ pub fn execute_receive_nft(
 
     let price_string = format!("{} {}", msg.list_price.amount, msg.list_price.address);
 
+    
     Ok(Response::new()
-        
-        .add_attribute("action", "sell_nft")
+        .add_attribute("action", "create_sale")
         .add_attribute("original_contract", info.sender)
         .add_attribute("seller", off.seller.to_string())
         .add_attribute("list_price", price_string)
         .add_attribute("token_id", off.token_id))
 }
 
-pub fn execute_withdraw(
+pub fn execute_cancel_sale(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
@@ -338,7 +338,7 @@ fn parse_offering(
 mod tests {
     use cosmwasm_std::attr;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use crate::contract::{instantiate, execute_withdraw}; 
+    use crate::contract::{instantiate, execute_cancel_sale}; 
     use crate::msg::InstantiateMsg; 
 
     pub const ADDR1: &str = "ADDR1";
@@ -355,13 +355,5 @@ mod tests {
             res.attributes,
             vec![attr("action", "instantiate"), attr("name", "Anone NFT Marketplace")]
         )
-    }
-
-    #[test]
-    fn test_withdraw_nft() {
-        let mut deps = mock_dependencies();
-        let env = mock_env();
-        let res = execute_withdraw(deps.as_mut(), env, info , offering_id).unwrap();
-
     }
 }
