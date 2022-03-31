@@ -3,10 +3,12 @@ package claims_test
 import (
 	"testing"
 
-	keepertest "github.com/notional-labs/anone/testutil/keeper"
+	simapp "github.com/notional-labs/anone/testutil/simapp"
 	"github.com/notional-labs/anone/x/claims"
 	"github.com/notional-labs/anone/x/claims/types"
 	"github.com/stretchr/testify/require"
+
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestGenesis(t *testing.T) {
@@ -16,9 +18,13 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	k, ctx := keepertest.ClaimsKeeper(t)
-	claims.InitGenesis(ctx, *k, genesisState)
-	got := claims.ExportGenesis(ctx, *k)
+	app := simapp.New(t.TempDir())
+
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	k := app.ClaimKeeper
+	claims.InitGenesis(ctx, k, genesisState)
+	got := claims.ExportGenesis(ctx, k)
 	require.NotNil(t, got)
 
 	// this line is used by starport scaffolding # genesis/test/assert

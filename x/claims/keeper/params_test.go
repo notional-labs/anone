@@ -3,13 +3,18 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	testkeeper "github.com/notional-labs/anone/testutil/keeper"
+	simapp "github.com/notional-labs/anone/testutil/simapp"
 	"github.com/notional-labs/anone/x/claims/types"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestGetParams(t *testing.T) {
-	k, ctx := testkeeper.ClaimsKeeper(t)
+	app := simapp.New(t.TempDir())
+
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	k := app.ClaimKeeper
 	params := types.DefaultParams()
 
 	k.SetParams(ctx, params)

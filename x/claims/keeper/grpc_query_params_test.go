@@ -4,13 +4,20 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	testkeeper "github.com/notional-labs/anone/testutil/keeper"
+	simapp "github.com/notional-labs/anone/testutil/simapp"
 	"github.com/notional-labs/anone/x/claims/types"
 	"github.com/stretchr/testify/require"
+
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestParamsQuery(t *testing.T) {
-	keeper, ctx := testkeeper.ClaimsKeeper(t)
+
+	app := simapp.New(t.TempDir())
+
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	keeper := app.ClaimKeeper
 	wctx := sdk.WrapSDKContext(ctx)
 	params := types.DefaultParams()
 	keeper.SetParams(ctx, params)
