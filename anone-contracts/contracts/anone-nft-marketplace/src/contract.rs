@@ -45,9 +45,9 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::WithdrawNft { offering_id } => execute_cancel_sale(deps, env, info, offering_id),
-        ExecuteMsg::Receive(msg) => execute_make_order(deps, env, info, msg),
-        ExecuteMsg::ReceiveNft(msg) => execute_create_sale(deps, env, info, msg),
+        ExecuteMsg::CancelSale { offering_id } => execute_cancel_sale(deps, env, info, offering_id),
+        ExecuteMsg::MakeOrder(msg) => execute_make_order(deps, env, info, msg),
+        ExecuteMsg::CreateSale(msg) => execute_create_sale(deps, env, info, msg),
     }
 }
 
@@ -174,7 +174,7 @@ pub fn execute_cancel_sale(
 
         return Ok(Response::new()
             .add_messages(cw721_transfer_cosmos_msg)
-            .add_attribute("action", "withdraw_nft")
+            .add_attribute("action", "cancel_sale")
             .add_attribute("seller", info.sender)
             .add_attribute("offering_id", offering_id));
     }

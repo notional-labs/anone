@@ -12,9 +12,9 @@ pub struct InstantiateMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
-    WithdrawNft { offering_id: String },
-    Receive(Cw20ReceiveMsg),
-    ReceiveNft(Cw721ReceiveMsg),
+    CancelSale{ offering_id: String },
+    MakeOrder(Cw20ReceiveMsg),
+    CreateSale(Cw721ReceiveMsg),
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

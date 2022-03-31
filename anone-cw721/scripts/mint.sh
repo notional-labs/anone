@@ -34,7 +34,7 @@ EXTENSION="{
     \"name\":\"$name\"
 }"
 
-MINT="{\"mintt\": {\"extension\":$EXTENSION, \"token_id\":\"$TOKEN_ID\",  \"token_uri\": \"$TOKEN_URI\"}}"
+MINT="{\"mint\": {\"extension\":$EXTENSION, \"token_id\":\"$TOKEN_ID\",  \"token_uri\": \"$TOKEN_URI\"}}"
 
 echo $MINT
 
