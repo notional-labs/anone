@@ -45,9 +45,9 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::CancelSale { offering_id } => execute_cancel_sale(deps, env, info, offering_id),
-        ExecuteMsg::MakeOrder(msg) => execute_make_order(deps, env, info, msg),
-        ExecuteMsg::CreateSale(msg) => execute_create_sale(deps, env, info, msg),
+        ExecuteMsg::WithdrawNft { offering_id } => execute_cancel_sale(deps, env, info, offering_id),
+        ExecuteMsg::Receive(msg) => execute_make_order(deps, env, info, msg),
+        ExecuteMsg::ReceiveNft(msg) => execute_create_sale(deps, env, info, msg),
     }
 }
 
@@ -127,7 +127,7 @@ pub fn execute_create_sale(
     // save Offering
     let off = Offering {
         contract_addr: info.sender.clone(),
-        token_id: rcv_msg.clone().token_id,
+        token_id: rcv_msg.token_id.clone(),
         seller: deps.api.addr_validate(&rcv_msg.sender.clone())?,
         list_price: msg.list_price.clone(),
         listing_time: env.block.time,
