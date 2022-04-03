@@ -5,7 +5,7 @@ ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="5s"
 
-MARKETPLACE_CONTRACT_ADDR="one15v8jqq6aqhsuykdgdevx3qqcj9lp4h27ypsycds4cmv6er9qv0vsc6lyx9"
+MARKETPLACE_CONTRACT_ADDR="one1lqgdq9u8zhcvwwwz3xjswactrtq6qzptmlzlh6xspl34dxq32uhqg24m03"
 CANCEL_SALE="{\"withdraw_nft\": {\"offering_id\": \"1\"}}"
 RES=$(anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" "$CANCEL_SALE" --from "$ACCOUNT" -y --output json --gas 35000000 --fees 875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json)
 echo $RES

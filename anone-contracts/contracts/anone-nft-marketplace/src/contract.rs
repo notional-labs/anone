@@ -5,7 +5,7 @@ use std::str::from_utf8;
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
     from_binary, to_binary, Api, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order, Record,
-    Response, StdError, StdResult, Uint128, WasmMsg,
+    Response, StdError, StdResult, WasmMsg,
 };
 use cw2::set_contract_version;
 use cw20::{Cw20ExecuteMsg, Cw20ReceiveMsg};
