@@ -8,3 +8,4 @@ MARKETPLACE_CONTRACT_ADDR="one1lqgdq9u8zhcvwwwz3xjswactrtq6qzptmlzlh6xspl34dxq32
 
 QUERY="{\"get_offerings\":{\"sort_listing\":\"price_lowest\"}}"
 RES=$(anoned query wasm contract-state smart "$MARKETPLACE_CONTRACT_ADDR" "$QUERY" --node "$NODE" --chain-id="$CHAINID" --output json | jq --color-output -r)
+echo $RES
