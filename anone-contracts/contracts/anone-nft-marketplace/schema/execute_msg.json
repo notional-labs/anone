@@ -5,10 +5,10 @@
     {
       "type": "object",
       "required": [
-        "cancel_sale"
+        "withdraw_nft"
       ],
       "properties": {
-        "cancel_sale": {
+        "withdraw_nft": {
           "type": "object",
           "required": [
             "offering_id"
@@ -25,10 +25,10 @@
     {
       "type": "object",
       "required": [
-        "make_order"
+        "receive"
       ],
       "properties": {
-        "make_order": {
+        "receive": {
           "$ref": "#/definitions/Cw20ReceiveMsg"
         }
       },
@@ -37,10 +37,10 @@
     {
       "type": "object",
       "required": [
-        "create_sale"
+        "receive_nft"
       ],
       "properties": {
-        "create_sale": {
+        "receive_nft": {
           "$ref": "#/definitions/Cw721ReceiveMsg"
         }
       },
