@@ -13,7 +13,7 @@ use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
 
 use crate::error::ContractError;
 use crate::msg::{BuyNft, ExecuteMsg, InstantiateMsg, QueryMsg, SellNft};
-use crate::package::{ContractInfoResponse, OfferingsResponse, Paged, QueryOfferingsResult};
+use crate::package::{ContractInfoResponse, OfferingsResponse, QueryOfferingsResult};
 use crate::state::{increment_offerings, Offering, CONTRACT_INFO, OFFERINGS};
 
 // version info for migration info
@@ -185,18 +185,14 @@ pub fn execute_cancel_sale(
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::GetOfferings {
-            sort_listing,
-            index,
-            size,
-        } => to_binary(&query_offerings(deps, &sort_listing, index, size)?),
+            sort_listing
+        } => to_binary(&query_offerings(deps, &sort_listing)?),
     }
 }
 
 fn query_offerings(
     deps: Deps,
-    sort_listing: &str,
-    q_index: Uint128,
-    q_size: Uint128,
+    sort_listing: &str
 ) -> StdResult<OfferingsResponse> {
     let res: StdResult<Vec<QueryOfferingsResult>> = OFFERINGS
         .range_raw(deps.storage, None, None, Order::Ascending)
@@ -205,14 +201,8 @@ fn query_offerings(
 
     let mut offerings_clone = res?.clone();
 
-    let index = q_index.u128() as usize;
-    let size = q_size.u128() as usize;
-
     if offerings_clone.len() == 0 {
         return Ok(OfferingsResponse {
-            total: offerings_clone.len(),
-            size: size,
-            index: index,
             offerings: offerings_clone,
         });
     }
@@ -229,14 +219,8 @@ fn query_offerings(
                 }
             });
 
-            let paged = Paged::new(&offerings_clone, size);
-            let (_, offerings_paginated) = paged.page(index).unwrap();
-
             Ok(OfferingsResponse {
-                total: offerings_clone.len(),
-                size: size,
-                index: index,
-                offerings: offerings_paginated.to_vec(),
+                offerings: offerings_clone,
             })
         }
         "price_highest" => {
@@ -250,14 +234,8 @@ fn query_offerings(
                 }
             });
 
-            let paged = Paged::new(&offerings_clone, size);
-            let (_, offerings_paginated) = paged.page(index).unwrap();
-
             Ok(OfferingsResponse {
-                total: offerings_clone.len(),
-                size: size,
-                index: index,
-                offerings: offerings_paginated.to_vec(),
+                offerings: offerings_clone,
             })
         }
         "newest_listed" => {
@@ -274,14 +252,8 @@ fn query_offerings(
                 }
             });
 
-            let paged = Paged::new(&offerings_clone, size);
-            let (_, offerings_paginated) = paged.page(index).unwrap();
-
             Ok(OfferingsResponse {
-                total: offerings_clone.len(),
-                size: size,
-                index: index,
-                offerings: offerings_paginated.to_vec(),
+                offerings: offerings_clone,
             })
         }
         "oldest_listed" => {
@@ -298,14 +270,8 @@ fn query_offerings(
                 }
             });
 
-            let paged = Paged::new(&offerings_clone, size);
-            let (_, offerings_paginated) = paged.page(index).unwrap();
-
             Ok(OfferingsResponse {
-                total: offerings_clone.len(),
-                size: size,
-                index: index,
-                offerings: offerings_paginated.to_vec(),
+                offerings: offerings_clone,
             })
         }
 

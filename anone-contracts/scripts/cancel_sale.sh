@@ -3,7 +3,7 @@
 NODE="http://65.108.128.139:2281"
 ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
-SLEEP_TIME="15s"
+SLEEP_TIME="5s"
 
 MARKETPLACE_CONTRACT_ADDR="one19vrjp7fll6a729v464wlxr8a2xqhcddc0e5f0gxkv4fcyl8n23us4mr5jv"
 CANCEL_SALE="{\"withdraw_nft\": {\"offering_id\": \"1\"}}"

@@ -35,8 +35,6 @@ pub struct BuyNft {
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     GetOfferings {
-        sort_listing: String,
-        index: Uint128,
-        size: Uint128,
+        sort_listing: String
     },
 }
