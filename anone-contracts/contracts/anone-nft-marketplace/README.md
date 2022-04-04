@@ -3,7 +3,7 @@ The Anone NFT marketplace smart contract provides a platform used for selling an
 
 ## Contract Addresses
 Contract        | Address                                       
-marketplace     | one1eyfccmjm6732k7wp4p6gdjwhxjwsvje44j0hfx8nkgrm8fs7vqfs6gp6k0 
+marketplace     | one1lqgdq9u8zhcvwwwz3xjswactrtq6qzptmlzlh6xspl34dxq32uhqg24m03 
 
 ## Sell CW721 Token
 
@@ -12,7 +12,7 @@ Puts an NFT token up for sale. The seller needs to be the owner of the token to 
 ```shell
 # Execute send_nft action to put token up for sale for specified list_price on the marketplace
 anoned tx wasm execute "$CW721_CONTRACT_ADDR" '{
-  "sell_nft": {
+  "send_nft": {
     "contract": "<MARKETPLACE_CONTRACT_ADDR>",
     "token_id": "<TOKEN_ID>",
     "msg": "BASE64_ENCODED_JSON --> { "list_price": { "address": "<INSERT_CW20_CONTRACT_ADDR>", "amount": "<INSERT_AMOUNT_WITHOUT_DENOM>" }} <--"
@@ -22,7 +22,7 @@ anoned tx wasm execute "$CW721_CONTRACT_ADDR" '{
 
 ### Withdraw CW721 Token Offering
 
-Withdraws an NFT token offering from the global offerings list and returns the NFT token back to its owner. Only the token's owner/seller can withdraw the offering. This will only work after having used `sell_nft` on a token.
+Withdraws an NFT token offering from the global offerings list and returns the NFT token back to its owner. Only the token's owner/seller can withdraw the offering. This will only work after having used `send_nft` on a token.
 
 ```shell
 # Execute withdraw_nft action to withdraw the token with the specified offering_id from the marketplace
@@ -51,7 +51,7 @@ anoned tx wasm execute "$CW_20_CONTRACT_ADDR" '{
 ### Query Offerings
 
 ```shell
-# Lists offerings sorted by lowest price, sort_listing can be one of following values (price_lowest, price_highest, newest_listed, oldest_listed), index > size (next chunk) size is defined as max chunk size
+# Lists offerings sorted by lowest price, sort_listing can be one of following values (price_lowest, price_highest, newest_listed, oldest_listed).
 
-anoned query wasm contract-state smart "$MARKETPLACE_CONTRACT_ADDR" '{"get_offerings":{"sort_listing":"price_lowest", "index": 0, "size": 5 }}' --node "$NODE" --chain-id="$CHAINID" --output json | jq --color-output -r
+anoned query wasm contract-state smart "$MARKETPLACE_CONTRACT_ADDR" '{"get_offerings":{"sort_listing":"price_lowest" }}' --node "$NODE" --chain-id="$CHAINID" --output json | jq --color-output -r
 ```
