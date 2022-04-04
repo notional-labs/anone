@@ -8,7 +8,7 @@ SLEEP_TIME="10s"
 MARKETPLACE_CONTRACT_ADDR="one1lqgdq9u8zhcvwwwz3xjswactrtq6qzptmlzlh6xspl34dxq32uhqg24m03"
 OFFERING_ID="$1"
 CANCEL_SALE="{\"withdraw_nft\": {\"offering_id\": \"$OFFERING_ID\"}}"
-RES=$(anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" "$CANCEL_SALE" --from "$ACCOUNT" -y --output json --gas 35000000 --fees 875000uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json)
+RES=$(anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" "$CANCEL_SALE" --from "$ACCOUNT" -y --output json --gas 35000000 --fees 0uan1 --node "$NODE" --chain-id="$CHAINID" -y --output json)
 echo $RES
 
 TXHASH=$(echo $RES | jq -r .txhash)

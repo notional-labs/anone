@@ -31,5 +31,5 @@ BALANCE_SENDER=$(anoned query wasm contract-state smart "$CONTRACT" "$BALANCE_S"
 BALANCE_R="{\"balance\":{\"address\":\"$RECIPIENT\"}}"
 BALANCE_RECIPIENT=$(anoned query wasm contract-state smart "$CONTRACT" "$BALANCE_R" --node "$NODE" -o json)
 
-echo "BALANCE SENDER = $BALANCE_SENDER"
-echo "BALANCE RECIPIENT = $BALANCE_RECIPIENT"
+echo "BALANCE SENDER OF $ACCOUNT = $BALANCE_SENDER"
+echo "BALANCE RECIPIENT OF $RECIPIENT = $BALANCE_RECIPIENT"
