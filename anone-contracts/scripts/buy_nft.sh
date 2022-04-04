@@ -7,12 +7,12 @@ SLEEP_TIME="10s"
 
 MARKETPLACE_CONTRACT_ADDR="one1lqgdq9u8zhcvwwwz3xjswactrtq6qzptmlzlh6xspl34dxq32uhqg24m03"
 CW20_CONTRACT_ADDR="one13v6dgzhf9nu4fzdkrc6tpvxxd8eqg546ynjep8cqvl4n27xlvf7sme7ml3"
-
+INSERT_OFFERING_ID="10"
 # This msg is BASE64_ENCODED_JSON --> { "offering_id": "<INSERT_OFFERING_ID>" } <--
-BASE64_ENCODED_JSON="IHsibGlzdF9wcmljZSI6IAogICAgeyAiYWRkcmVzcyI6ICJvbmUxcDRscXVuYXVxZ3N0dDZ5ZHN6eDU5eTNwZzJ0a2F4bG51amw5bTVsZHo3bnFjcm42dGp6cWhlNzcyeiIsCiAgICAiYW1vdW50IjogIjUwMDAifQogfQ=="
+BASE64_ENCODED_JSON="eyJvZmZlcmluZ19pZCI6ICIxMCJ9"
 
 AMOUNT="$1"
-BUY_NFT="{\"send\": {\"contract\": \"$MARKETPLACE_CONTRACT_ADDR\", \"amount\": \"$AMOUNT\", "msg": \"$BASE64_ENCODED_JSON\"}}"
+BUY_NFT="{\"send\": {\"contract\": \"$MARKETPLACE_CONTRACT_ADDR\", \"amount\": \"$AMOUNT\", \"msg\": \"$BASE64_ENCODED_JSON\"}}"
 echo $BUY_NFT
 
 # Execute send action to buy token with the specified offering_id from the marketplace

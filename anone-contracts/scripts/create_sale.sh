@@ -1,7 +1,8 @@
 #!/bin/bash
 
 NODE="http://65.108.128.139:2281"
-ACCOUNT="Developer"
+#ACCOUNT="Developer"
+ACCOUNT="one1k2x29vppqrhgsdxtkmkpspnawm229lcpec7mm3"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
@@ -12,7 +13,7 @@ AMOUNT_WITHOUT_DENOM=5000
 TOKEN_ID="$1"
 
 # This msg is BASE64_ENCODED_JSON --> { "list_price": { "address": "<INSERT_CW20_CONTRACT_ADDR>", "amount": "<INSERT_AMOUNT_WITHOUT_DENOM>" }} <--
-BASE64_ENCODED_JSON="IHsibGlzdF9wcmljZSI6IAogICAgeyAiYWRkcmVzcyI6ICJvbmUxcDRscXVuYXVxZ3N0dDZ5ZHN6eDU5eTNwZzJ0a2F4bG51amw5bTVsZHo3bnFjcm42dGp6cWhlNzcyeiIsCiAgICAiYW1vdW50IjogIjUwMDAifQogfQ=="
+BASE64_ENCODED_JSON="IHsibGlzdF9wcmljZSI6IAogICAgeyAiYWRkcmVzcyI6ICJvbmUxM3Y2ZGd6aGY5bnU0Znpka3JjNnRwdnh4ZDhlcWc1NDZ5bmplcDhjcXZsNG4yN3hsdmY3c21lN21sMyIsCiAgICAiYW1vdW50IjogIjUwMDAifQogfQ=="
 
 ALL_NFTS_QUERY="{\"all_tokens\": {}}"
 OWNER_OF=$(anoned query wasm contract-state smart "$CW721_CONTRACT_ADDR" "$ALL_NFTS_QUERY" --node "$NODE" --output json)
