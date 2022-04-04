@@ -304,7 +304,7 @@ fn parse_offering(
 mod tests {
     use cosmwasm_std::attr;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use crate::contract::{instantiate, execute_cancel_sale}; 
+    use crate::contract::{instantiate}; 
     use crate::msg::InstantiateMsg; 
 
     pub const ADDR1: &str = "ADDR1";

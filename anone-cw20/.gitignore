@@ -1,0 +1,7 @@
+# Rust build system
+target/
+artifacts/
+
+# IDE: IntelliJ IDEA
+.idea/
+*.iml
