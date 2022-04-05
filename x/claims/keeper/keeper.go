@@ -18,6 +18,7 @@ type (
 
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
+		stakingKeeper types.StakingKeeper
 		distrKeeper   types.DistrKeeper
 
 		// paramstore here is a subspace container used for containing params specific and privately to this module
@@ -30,6 +31,7 @@ func NewKeeper(
 	storeKey sdk.StoreKey,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	stakingKeeper types.StakingKeeper,
 	distrKeeper types.DistrKeeper,
 	ps paramtypes.Subspace,
 
@@ -44,6 +46,7 @@ func NewKeeper(
 		storeKey:      storeKey,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
+		stakingKeeper: stakingKeeper,
 		distrKeeper:   distrKeeper,
 		paramstore:    ps,
 	}

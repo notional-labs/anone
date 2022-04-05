@@ -173,6 +173,7 @@ func (k Keeper) GetUserTotalClaimable(ctx sdk.Context, addr sdk.AccAddress) (sdk
 // ClaimCoins remove claimable amount entry and transfer it to user's account
 func (k Keeper) ClaimCoinsForAction(ctx sdk.Context, addr sdk.AccAddress, action types.Action) (sdk.Coins, error) {
 	params := k.GetParams(ctx)
+
 	if !params.IsAirdropEnabled(ctx.BlockTime()) {
 		return sdk.Coins{}, nil
 	}
