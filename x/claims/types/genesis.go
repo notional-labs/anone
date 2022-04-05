@@ -1,5 +1,9 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
 // this line is used by starport scaffolding # genesis/types/import
 
 // DefaultIndex is the default capability global index
@@ -9,7 +13,9 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # genesis/types/default
-		Params: DefaultParams(),
+		ModuleAccountBalance: sdk.NewCoin(DefaultClaimDenom, sdk.ZeroInt()),
+		Params:               DefaultParams(),
+		ClaimRecords:         make([]ClaimRecord, 0),
 	}
 }
 
@@ -17,6 +23,13 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # genesis/types/validate
+	totalClaimable := sdk.Coins{}
+	for _, claimRecord := range gs.ClaimRecords {
+		totalClaimable = totalClaimable.Add(claimRecord.InitialClaimableAmount...)
+	}
 
-	return gs.Params.Validate()
+	if !totalClaimable.IsEqual(sdk.NewCoins(gs.ModuleAccountBalance)) {
+		return ErrIncorrectModuleAccountBalance
+	}
+	return nil
 }
