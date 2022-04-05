@@ -27,6 +27,7 @@ func CmdInitialClaim() *cobra.Command {
 			msg := types.NewMsgInitialClaim(
 				clientCtx.GetFromAddress().String(),
 			)
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
