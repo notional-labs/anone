@@ -35,6 +35,7 @@ jobs:
       env:
         NODE_OPTIONS: --openssl-legacy-provider
       run: |
+        echo ${{ secrets.WEB_SERVER }}
         cd vue
         npm ci --ignore-scripts
         npm run build
@@ -44,7 +45,7 @@ jobs:
       with:
         local: vue/dist
         remote: /root/anone.notional.ventures
-        host: ${{ secrets.HOST }}
+        host: ${{ secrets.WEB_SERVER }}
         username: ${{ secrets.USERNAME }}
         privateKey: ${{ secrets.PRIV_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
