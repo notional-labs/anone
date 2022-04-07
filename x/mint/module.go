@@ -15,10 +15,11 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/public-awesome/stargaze/v3/x/mint/client/cli"
-	"github.com/public-awesome/stargaze/v3/x/mint/client/rest"
-	"github.com/public-awesome/stargaze/v3/x/mint/keeper"
-	"github.com/public-awesome/stargaze/v3/x/mint/types"
+
+	"github.com/notional-labs/anone/x/mint/client/cli"
+	"github.com/notional-labs/anone/x/mint/client/rest"
+	"github.com/notional-labs/anone/x/mint/keeper"
+	"github.com/notional-labs/anone/x/mint/types"
 )
 
 var (
