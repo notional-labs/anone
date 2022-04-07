@@ -61,7 +61,6 @@ func genApp(withGenesis bool, invCheckPeriod uint) (*stargazeapp.App, stargazeap
 		invCheckPeriod,
 		encCdc,
 		simapp.EmptyAppOptions{},
-		nil,
 	)
 
 	originalApp := app.(*stargazeapp.App)

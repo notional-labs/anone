@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -57,6 +58,7 @@ import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
 	// "github.com/cosmos/cosmos-sdk/x/mint"
 	// mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	// minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -105,6 +107,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	//mint
