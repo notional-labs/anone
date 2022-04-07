@@ -43,7 +43,7 @@ func NewParams(
 func DefaultParams() Params {
 	return Params{
 		MintDenom:               sdk.DefaultBondDenom,
-		StartTime:               time.Now().AddDate(1, 0, 0),       // 1 year from now
+		StartTime:               time.Now().AddDate(0, 0, 0),       // from now
 		InitialAnnualProvisions: sdk.NewDec(1_000_000_000_000_000), // 1B
 		ReductionFactor:         sdk.NewDec(2).QuoInt64(3),         // 2/3
 		BlocksPerYear:           uint64(6311520),                   // 60 * 60 * 8766 / 5 = 6,311,520
