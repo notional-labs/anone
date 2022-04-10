@@ -468,7 +468,7 @@ mod tests {
             per_address_limit: 1,
             member_limit: 1000,
         };
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let res = instantiate(deps, mock_env(), info, msg).unwrap();
         assert_eq!(2, res.messages.len());
     }
@@ -490,7 +490,7 @@ mod tests {
             per_address_limit: 1,
             member_limit: 1000,
         };
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         instantiate(deps.as_mut(), mock_env(), info, msg).unwrap_err();
     }
 
@@ -501,13 +501,13 @@ mod tests {
             members: vec!["adsfsa".to_string()],
             start_time: END_TIME,
             end_time: END_TIME,
-            unit_price: coin(UNIT_AMOUNT, "not_ustars"),
+            unit_price: coin(UNIT_AMOUNT, "not_uan1"),
             per_address_limit: 1,
             member_limit: 1000,
         };
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let err = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap_err();
-        assert_eq!(err.to_string(), "InvalidDenom: not_ustars");
+        assert_eq!(err.to_string(), "InvalidDenom: not_uan1");
     }
 
     #[test]
@@ -517,11 +517,11 @@ mod tests {
             members: vec!["adsfsa".to_string()],
             start_time: END_TIME,
             end_time: END_TIME,
-            unit_price: coin(UNIT_AMOUNT, "ustars"),
+            unit_price: coin(UNIT_AMOUNT, "uan1"),
             per_address_limit: 1,
             member_limit: 3000,
         };
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let err = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap_err();
         assert_eq!(
             err.to_string(),
@@ -544,7 +544,7 @@ mod tests {
             per_address_limit: 1,
             member_limit: 1000,
         };
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let _res = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
         let res = query_config(deps.as_ref(), mock_env()).unwrap();
         assert_eq!(1, res.num_members);
@@ -560,7 +560,7 @@ mod tests {
             per_address_limit: 1,
             member_limit: 1000,
         };
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let mut deps = mock_dependencies();
         instantiate(deps.as_mut(), mock_env(), info, msg).unwrap_err();
     }
@@ -688,7 +688,7 @@ mod tests {
             per_address_limit: 1,
             member_limit: 1000,
         };
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let res = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
         assert_eq!(2, res.messages.len());
 
@@ -743,55 +743,55 @@ mod tests {
 
         // needs upgrade fee
         let msg = ExecuteMsg::IncreaseMemberLimit(1001);
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let res = execute(deps.as_mut(), mock_env(), info, msg);
         assert!(res.is_ok());
 
         // 0 upgrade fee
         let msg = ExecuteMsg::IncreaseMemberLimit(1002);
-        let info = mock_info(ADMIN, &[coin(0, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(0, "uan1")]);
         let res = execute(deps.as_mut(), mock_env(), info, msg);
         assert!(res.is_ok());
 
         // 0 upgrade fee, fails when including a fee
         // don't allow updating to the same number of memebers
         let msg = ExecuteMsg::IncreaseMemberLimit(1002);
-        let info = mock_info(ADMIN, &[coin(1, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(1, "uan1")]);
         execute(deps.as_mut(), mock_env(), info, msg).unwrap_err();
 
         // 0 upgrade fee, fails when including a fee
         let msg = ExecuteMsg::IncreaseMemberLimit(1003);
-        let info = mock_info(ADMIN, &[coin(1, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(1, "uan1")]);
         let err = execute(deps.as_mut(), mock_env(), info, msg).unwrap_err();
         assert_eq!(err.to_string(), "IncorrectCreationFee 1 < 0");
 
         // 0 upgrade fee
         let msg = ExecuteMsg::IncreaseMemberLimit(1502);
-        let info = mock_info(ADMIN, &[coin(0, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(0, "uan1")]);
         let res = execute(deps.as_mut(), mock_env(), info, msg);
         assert!(res.is_ok());
 
         // 0 upgrade fee
         let msg = ExecuteMsg::IncreaseMemberLimit(2000);
-        let info = mock_info(ADMIN, &[coin(0, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(0, "uan1")]);
         let res = execute(deps.as_mut(), mock_env(), info, msg);
         assert!(res.is_ok());
 
         // needs upgrade fee
         let msg = ExecuteMsg::IncreaseMemberLimit(2002);
-        let info = mock_info(ADMIN, &[coin(100_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(100_000_000, "uan1")]);
         let res = execute(deps.as_mut(), mock_env(), info, msg);
         assert!(res.is_ok());
 
         // needs upgrade fee
         let msg = ExecuteMsg::IncreaseMemberLimit(4002);
-        let info = mock_info(ADMIN, &[coin(200_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(200_000_000, "uan1")]);
         let res = execute(deps.as_mut(), mock_env(), info, msg);
         assert!(res.is_ok());
 
         // over MAX_MEMBERS, Invalid member limit
         let msg = ExecuteMsg::IncreaseMemberLimit(6000);
-        let info = mock_info(ADMIN, &[coin(400_000_000, "ustars")]);
+        let info = mock_info(ADMIN, &[coin(400_000_000, "uan1")]);
         let err = execute(deps.as_mut(), mock_env(), info, msg).unwrap_err();
         assert_eq!(
             err.to_string(),

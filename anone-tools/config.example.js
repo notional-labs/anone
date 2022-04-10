@@ -9,14 +9,14 @@ module.exports = {
     // The account seed phrase to use for deployment
     mnemonic:
       'enlist hip relief stomach skate base shallow young switch frequent cry park',
-    // Your STARS address
-    account: 'stars1...',
+    // Your ANONE address
+    account: 'one1...',
   
     //// API CONFIG ////
-    // The RPC endpoint for Stargaze, Castor Testnet
-    rpcEndpoint: 'https://rpc.castor-1.stargaze-apis.com/',
-    // The RPC endpoint for Stargaze, mainnet
-    // rpcEndpoint: 'https://rpc.stargaze-apis.com/',
+    // The RPC endpoint for Anone Testnet
+    rpcEndpoint: 'http://65.108.128.139:2281',
+    // The RPC endpoint for Anone mainnet
+    // rpcEndpoint: '',
     // NFT.storage endpoint
     nftStorageEndpoint: 'https://api.nft.storage',
     // NFT.storage API key
@@ -43,33 +43,33 @@ module.exports = {
     // 'https://c.tenor.com/o656qFKDzeUAAAAC/rick-astley-never-gonna-give-you-up.gif',
     // The address for royalites to go to (may be the same as `account`)
     // Comment out both below if not using royalites
-    // royaltyPaymentAddress: 'stars1...',
+    // royaltyPaymentAddress: 'one1...',
     // Royalty share: 1 = 100%, 0.1 = 10%
     // royaltyShare: '0.1',
   
     //// WHITELIST CONTRACT (OPTIONAL) ////
     // A list of whitelisted addresses that will be able to purchase the sale early
     // Comment out if not using a whilelist
-    // whitelist: ['stars1..', 'stars1...'],
+    // whitelist: ['one1..', 'one1...'],
     // The date when the whitelist only purchasing period ends and everyone can buy (in ISO format)
     // whitelistStartTime: '2022-03-11T21:00:00.000Z',
     // whitelistEndTime: '2022-03-13T21:00:00.000Z',
-    // The price (in STARS) for the whitelist (minimum 25 STARS)
+    // The price (in AN1) for the whitelist (minimum 25 AN1)
     // whitelistPrice: 50,
     // The Per Address Limit during whitelist period this can be different than the main public limit
     // whitelistPerAddressLimit: 5,
-    // The number of members in the whitelist (max 5000, each 1000 is 100 STARS)
+    // The number of members in the whitelist (max 5000, each 1000 is 100 AN1)
     // whitelistMemberLimit: 100,
     // The contract address for your whitelist contract
     // Get this after running `yarn whitelist`
-    // whitelistContract: 'stars1...',
+    // whitelistContract: 'one1...',
   
     //// MINTER CONTRACT ////
     // The base URI to be used to programatically mint tokens
     baseTokenUri: 'ipfs://...',
     // The number of tokens to mint
     numTokens: 100,
-    // The price (in STARS) for your NFTs (minimum 50 STARS)
+    // The price (in AN1) for your NFTs (minimum 50 AN1)
     unitPrice: 100,
     // The max amount of NFTs an address can mint
     perAddressLimit: 1,
@@ -79,22 +79,22 @@ module.exports = {
     startTime: '2022-03-11T21:00:00.000Z',
     // The minter contract address
     // Get this after running `yarn minter`
-    minter: 'stars1...',
-    // SG721 contract address
+    minter: 'one1...',
+    // AN721 contract address
     // Get this after running `yarn minter`
-    sg721: 'stars1...',
+    an721: 'one1...',
   
-    //// CONTRACT CODE IDs: Castor Testnet ////
-    // The code ID for sg721
-    sg721CodeId: 1,
+    //// CONTRACT CODE IDs: Anone Testnet ////
+    // The code ID for an721
+    an721CodeId: 1,
     // The code ID for the minter contract
     minterCodeId: 6,
     // The code ID for the whitelist contract
     whitelistCodeId: 3,
   
     // //// CONTRACT CODE IDs: Mainnet ////
-    // // The code ID for sg721
-    // sg721CodeId: 1,
+    // // The code ID for an721
+    // an721CodeId: 1,
     // // The code ID for the minter contract
     // minterCodeId: 2,
     // // The code ID for the whitelist contract

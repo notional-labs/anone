@@ -74,7 +74,7 @@ yarn minter --whitelist [whitelist_address]
 To add addresses to the whitelist, use:
 
 ```sh
-yarn whitelist --add [stars1..., stars2..., etc.]
+yarn whitelist --add [one1..., one2..., etc.]
 ```
 
 ## Query an721

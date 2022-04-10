@@ -5,11 +5,11 @@
 // ex: it could produce [token_id3, token_id4, token_id1, token_id5, token_id2]
 // To guarantee token_id: 100 gets airdropped to addr1, use mint_for(100, addr1)
 
-// Accepts cosmos, stars addresses.
+// Accepts cosmos, anone addresses.
 
 import { ExecuteMsg } from '@stargazezone/types/contracts/minter/execute_msg';
 import { coin, MsgExecuteContractEncodeObject } from 'cosmwasm';
-import { toStars } from '../src/utils';
+import { toAnone } from '../src/utils';
 import inquirer from 'inquirer';
 import { getClient } from '../src/client';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
@@ -21,7 +21,7 @@ import { assertIsDeliverTxSuccess } from '@cosmjs/stargate';
 
 const config = require('../config');
 // airdrop fee will cost a low fee in the next minter upgrade
-const AIRDROP_FEE = coin(0, 'ustars');
+const AIRDROP_FEE = coin(0, 'uan1');
 const MSG_AIRDROP_LIMIT = 50;
 
 async function addFile() {
@@ -56,7 +56,7 @@ async function addFile() {
 
       const validatedAddrs: Array<string> = [];
       addrs.forEach((addr) => {
-        validatedAddrs.push(toStars(addr));
+        validatedAddrs.push(toAnone(addr));
       });
       let uniqueValidatedAddrs = [...new Set(validatedAddrs)].sort();
       if (uniqueValidatedAddrs.length > MSG_AIRDROP_LIMIT) {
