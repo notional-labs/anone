@@ -1,5 +1,5 @@
 import { InstantiateMsg } from 'anone-types/contracts/anone-minter/instantiate_msg';
-import { Timestamp } from '@stargazezone/types/contracts/minter/shared-types';
+import { Timestamp } from 'anone-types/contracts/anone-minter/shared-types';
 import { coins } from 'cosmwasm';
 import inquirer from 'inquirer';
 import { getClient } from '../src/client';
