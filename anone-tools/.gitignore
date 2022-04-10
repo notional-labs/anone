@@ -1,0 +1,49 @@
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+
+# Output of 'npm pack'
+*.tgz
+
+# OS-specific files
+.DS_Store
+
+# IDE-specific
+.idea/
+
+# demo mnemonics from cli
+*.key
+
+# Code coverage
+.nyc_output/
+coverage/
+
+# Documentation builds
+/docs_deployment/
+
+# IPFS .car files
+*.car
+
+# Yarn v2
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+# We are not using yarn's deferred versioning for now (see https://yarnpkg.com/features/release-workflow)
+# !.yarn/versions
+
+# Config files
+config.js
+whitelist_addresses.csv
+airdrop_addresses.csv
+
+.env
+
+# TS
+tsconfig.tsbuildinfo
