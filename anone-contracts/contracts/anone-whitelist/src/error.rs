@@ -1,6 +1,6 @@
 use cosmwasm_std::{StdError, Timestamp};
 use cw_utils::PaymentError;
-use sg_std::FeeError;
+use an_std::FeeError;
 use thiserror::Error;
 
 #[derive(Error, Debug)]

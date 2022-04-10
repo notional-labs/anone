@@ -1,8 +1,7 @@
 [package]
 name = "whitelist"
-version = "0.10.0"
-authors = ["Shane Vitarana <s@noreply.publicawesome.com>"]
-edition = "2018"
+version = "0.1.0"
+edition = "2021"
 
 exclude = [
   # Those files are rust-optimizer artifacts. You might want to commit them for convenience but they should not be part of the source code publication.
@@ -50,7 +49,7 @@ schemars = "0.8"
 rust_decimal = { version = "1.14.3" }
 serde = { version = "1.0", default-features = false, features = ["derive"] }
 thiserror = { version = "1.0" }
-sg-std = "0.10.0"
+an-std = { path = "../../packages/an-std" }
 
 [dev-dependencies]
 cosmwasm-schema = { version = "1.0.0-beta7" }

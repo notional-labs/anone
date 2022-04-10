@@ -1,4 +1,4 @@
-pub mod fees;
+mod fees;
 mod msg;
 mod query;
 mod route;
@@ -12,7 +12,11 @@ pub use msg::{
     AnoneMsgWrapper,
 };
 
-pub use fees::burn_and_distribute_fee;
+pub type Response = cosmwasm_std::Response<AnoneMsgWrapper>;
+pub type SubMsg = cosmwasm_std::SubMsg<AnoneMsgWrapper>;
+pub type CosmosMsg = cosmwasm_std::CosmosMsg<AnoneMsgWrapper>;
+
+pub use fees::{checked_fair_burn, fair_burn, FeeError};
 pub use query::AnoneQuery;
 pub use route::AnoneRoute;
 

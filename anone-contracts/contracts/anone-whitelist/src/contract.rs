@@ -14,8 +14,8 @@ use cw_storage_plus::Bound;
 use cw_utils::{may_pay, maybe_addr, must_pay};
 use rust_decimal::prelude::ToPrimitive;
 use rust_decimal::Decimal;
-use sg_std::checked_fair_burn;
-use sg_std::{StargazeMsgWrapper, GENESIS_MINT_START_TIME, NATIVE_DENOM};
+use an_std::checked_fair_burn;
+use an_std::{AnoneMsgWrapper, GENESIS_MINT_START_TIME, NATIVE_DENOM};
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:sg-whitelist";
@@ -31,7 +31,7 @@ const MAX_PER_ADDRESS_LIMIT: u32 = 30;
 const PAGINATION_DEFAULT_LIMIT: u32 = 25;
 const PAGINATION_MAX_LIMIT: u32 = 100;
 
-type Response = cosmwasm_std::Response<StargazeMsgWrapper>;
+type Response = cosmwasm_std::Response<AnoneMsgWrapper>;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -451,7 +451,7 @@ mod tests {
         coin,
         testing::{mock_dependencies, mock_env, mock_info},
     };
-    use sg_std::NATIVE_DENOM;
+    use an_std::NATIVE_DENOM;
 
     const ADMIN: &str = "admin";
     const UNIT_AMOUNT: u128 = 100_000_000;
