@@ -22,9 +22,9 @@ pub enum ExecuteMsg {
     Mint {},
     SetWhitelist { whitelist: String },
     UpdateStartTime(Timestamp),
-    UpdatePerAddressLimit {per_address_limit: u32},
-    MintTo {recipient: String},
-    MintFor {token_id: u32, recipient: String}, 
+    UpdatePerAddressLimit { per_address_limit: u32 },
+    MintTo { recipient: String },
+    MintFor { token_id: u32, recipient: String },
     Withdraw {},
 }
 

@@ -50,6 +50,7 @@ dependencies = [
  "serde",
  "thiserror",
  "url",
+ "whitelist",
 ]
 
 [[package]]

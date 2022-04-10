@@ -3,7 +3,7 @@ use cosmwasm_std::entry_point;
 use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Empty, Env, MessageInfo, StdResult};
 use cw2::set_contract_version;
 
-use an_std::fees::burn_and_distribute_fee;
+use an_std::checked_fair_burn;
 use an_std::AnoneMsgWrapper;
 
 use crate::ContractError;
@@ -21,6 +21,7 @@ const CONTRACT_NAME: &str = "crates.io:an-721";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const CREATION_FEE: u128 = 1_000_000_000;
+const MAX_DESCRIPTION_LENGTH: u32 = 512;
 
 type Response = cosmwasm_std::Response<AnoneMsgWrapper>;
 pub type An721Contract<'a> = cw721_base::Cw721Contract<'a, Empty, AnoneMsgWrapper>;
@@ -34,7 +35,7 @@ pub fn instantiate(
 ) -> Result<Response, ContractError> {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
-    let fee_msgs = burn_and_distribute_fee(env, &info, CREATION_FEE)?;
+    let fee_msgs = checked_fair_burn(&info, CREATION_FEE)?;
 
     // cw721 instantiation
     let info = ContractInfoResponse {
@@ -51,7 +52,7 @@ pub fn instantiate(
         .save(deps.storage, &minter)?;
 
     // an721 instantiation
-    if msg.collection_info.description.len() > 256 {
+    if msg.collection_info.description.len() > MAX_DESCRIPTION_LENGTH as usize {
         return Err(ContractError::DescriptionTooLong {});
     }
 

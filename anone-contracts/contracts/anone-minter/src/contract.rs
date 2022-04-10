@@ -1,4 +1,3 @@
-use an721::msg::InstantiateMsg as An721InstantiateMsg;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
@@ -8,6 +7,7 @@ use cosmwasm_std::{
 use cw2::set_contract_version;
 use cw721_base::{msg::ExecuteMsg as Cw721ExecuteMsg, MintMsg};
 use cw_utils::{may_pay, parse_reply_instantiate_data};
+use an721::msg::InstantiateMsg as An721InstantiateMsg;
 use url::Url;
 
 use crate::error::ContractError;
@@ -18,7 +18,7 @@ use crate::msg::{
 use crate::state::{
     Config, AN721_ADDRESS, CONFIG, MINTABLE_NUM_TOKENS, MINTABLE_TOKEN_IDS, MINTER_ADDRS,
 };
-use an_std::{burn_and_distribute_fee, AnoneMsgWrapper, GENESIS_MINT_START_TIME, NATIVE_DENOM};
+use an_std::{checked_fair_burn, AnoneMsgWrapper, GENESIS_MINT_START_TIME, NATIVE_DENOM};
 use whitelist::msg::{
     ConfigResponse as WhitelistConfigResponse, HasMemberResponse, QueryMsg as WhitelistQueryMsg,
 };
@@ -171,7 +171,77 @@ pub fn execute(
             token_id,
             recipient,
         } => execute_mint_for(deps, env, info, token_id, recipient),
+        ExecuteMsg::SetWhitelist { whitelist } => {
+            execute_set_whitelist(deps, env, info, &whitelist)
+        }
+        ExecuteMsg::Withdraw {} => execute_withdraw(deps, env, info),
     }
+}
+
+pub fn execute_withdraw(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+) -> Result<Response, ContractError> {
+    let config = CONFIG.load(deps.storage)?;
+    if config.admin != info.sender {
+        return Err(ContractError::Unauthorized(
+            "Sender is not an admin".to_owned(),
+        ));
+    };
+
+    // query balance from the contract
+    let balance = deps
+        .querier
+        .query_balance(env.contract.address, NATIVE_DENOM)?;
+    if balance.amount.is_zero() {
+        return Err(ContractError::ZeroBalance {});
+    }
+
+    // send contract balance to creator
+    let send_msg = CosmosMsg::Bank(BankMsg::Send {
+        to_address: info.sender.to_string(),
+        amount: vec![balance],
+    });
+
+    Ok(Response::default()
+        .add_attribute("action", "withdraw")
+        .add_message(send_msg))
+}
+
+pub fn execute_set_whitelist(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+    whitelist: &str,
+) -> Result<Response, ContractError> {
+    let mut config = CONFIG.load(deps.storage)?;
+    if config.admin != info.sender {
+        return Err(ContractError::Unauthorized(
+            "Sender is not an admin".to_owned(),
+        ));
+    };
+
+    if env.block.time >= config.start_time {
+        return Err(ContractError::AlreadyStarted {});
+    }
+
+    if let Some(wl) = config.whitelist {
+        let res: WhitelistConfigResponse = deps
+            .querier
+            .query_wasm_smart(wl, &WhitelistQueryMsg::Config {})?;
+
+        if res.is_active {
+            return Err(ContractError::WhitelistAlreadyStarted {});
+        }
+    }
+
+    config.whitelist = Some(deps.api.addr_validate(whitelist)?);
+    CONFIG.save(deps.storage, &config)?;
+
+    Ok(Response::default()
+        .add_attribute("action", "set_whitelist")
+        .add_attribute("whitelist", whitelist.to_string()))
 }
 
 fn mint_count(deps: Deps, info: &MessageInfo) -> Result<u32, StdError> {
@@ -182,14 +252,31 @@ fn mint_count(deps: Deps, info: &MessageInfo) -> Result<u32, StdError> {
     Ok(mint_count)
 }
 
-// if admin_no_fee => no fee
+// if is_admin => no fee,
+// else if in whitelist => whitelist price
 // else => config unit price
-pub fn mint_price(deps: Deps, admin_no_fee: bool) -> Result<Coin, StdError> {
+pub fn mint_price(deps: Deps, is_admin: bool) -> Result<Coin, StdError> {
     let config = CONFIG.load(deps.storage)?;
-    if admin_no_fee {
-        return Ok(coin(0, config.unit_price.denom));
+
+    if is_admin {
+        return Ok(coin(AIRDROP_MINT_PRICE, config.unit_price.denom));
     }
-    return Ok(config.unit_price);
+
+    if config.whitelist.is_none() {
+        return Ok(config.unit_price);
+    }
+
+    let whitelist = config.whitelist.unwrap();
+
+    let wl_config: WhitelistConfigResponse = deps
+        .querier
+        .query_wasm_smart(whitelist, &WhitelistQueryMsg::Config {})?;
+
+    if wl_config.is_active {
+        Ok(wl_config.unit_price)
+    } else {
+        Ok(config.unit_price)
+    }
 }
 
 pub fn execute_mint_sender(
@@ -200,8 +287,9 @@ pub fn execute_mint_sender(
     let config = CONFIG.load(deps.storage)?;
     let action = "mint_sender";
 
+    // If there is no active whitelist right now, check public mint
     // Check if after start_time
-    if env.block.time < config.start_time {
+    if is_public_mint(deps.as_ref(), &info)? && (env.block.time < config.start_time) {
         return Err(ContractError::BeforeMintStartTime {});
     }
 
@@ -211,7 +299,48 @@ pub fn execute_mint_sender(
         return Err(ContractError::MaxPerAddressLimitExceeded {});
     }
 
-    _execute_mint(deps, env, info, action, false, None, None)
+    _execute_mint(deps, info, action, false, None, None)
+}
+
+// Check if a whitelist exists and not ended
+// Sender has to be whitelisted to mint
+fn is_public_mint(deps: Deps, info: &MessageInfo) -> Result<bool, ContractError> {
+    let config = CONFIG.load(deps.storage)?;
+
+    // If there is no whitelist, there's only a public mint
+    if config.whitelist.is_none() {
+        return Ok(true);
+    }
+
+    let whitelist = config.whitelist.unwrap();
+
+    let wl_config: WhitelistConfigResponse = deps
+        .querier
+        .query_wasm_smart(whitelist.clone(), &WhitelistQueryMsg::Config {})?;
+
+    if !wl_config.is_active {
+        return Ok(true);
+    }
+
+    let res: HasMemberResponse = deps.querier.query_wasm_smart(
+        whitelist,
+        &WhitelistQueryMsg::HasMember {
+            member: info.sender.to_string(),
+        },
+    )?;
+    if !res.has_member {
+        return Err(ContractError::NotWhitelisted {
+            addr: info.sender.to_string(),
+        });
+    }
+
+    // Check wl per address limit
+    let mint_count = mint_count(deps, info)?;
+    if mint_count >= wl_config.per_address_limit {
+        return Err(ContractError::MaxPerAddressLimitExceeded {});
+    }
+
+    Ok(false)
 }
 
 pub fn execute_mint_to(
@@ -231,7 +360,7 @@ pub fn execute_mint_to(
         ));
     }
 
-    _execute_mint(deps, env, info, action, true, Some(recipient), None)
+    _execute_mint(deps, info, action, true, Some(recipient), None)
 }
 
 pub fn execute_mint_for(
@@ -254,7 +383,6 @@ pub fn execute_mint_for(
 
     _execute_mint(
         deps,
-        env,
         info,
         action,
         true,
@@ -269,10 +397,9 @@ pub fn execute_mint_for(
 // mint_for(recipient: "friend2", token_id: 420) -> _execute_mint(recipient, token_id)
 fn _execute_mint(
     deps: DepsMut,
-    env: Env,
     info: MessageInfo,
     action: &str,
-    admin_no_fee: bool,
+    is_admin: bool,
     recipient: Option<Addr>,
     token_id: Option<u32>,
 ) -> Result<Response, ContractError> {
@@ -284,7 +411,7 @@ fn _execute_mint(
         None => info.sender.clone(),
     };
 
-    let mint_price: Coin = mint_price(deps.as_ref(), admin_no_fee)?;
+    let mint_price: Coin = mint_price(deps.as_ref(), is_admin)?;
     // Exact payment only accepted
     let payment = may_pay(&info, &config.unit_price.denom)?;
     if payment != mint_price.amount {
@@ -297,18 +424,13 @@ fn _execute_mint(
     let mut msgs: Vec<CosmosMsg<AnoneMsgWrapper>> = vec![];
 
     // Create network fee msgs
-    let network_fee: Uint128 = if admin_no_fee {
-        Uint128::zero()
+    let fee_percent = if is_admin {
+        Decimal::percent(AIRDROP_MINT_FEE_PERCENT as u64)
     } else {
-        let fee_percent = Decimal::percent(MINT_FEE_PERCENT as u64);
-        let network_fee = mint_price.amount * fee_percent;
-        msgs.append(&mut burn_and_distribute_fee(
-            env,
-            &info,
-            network_fee.u128(),
-        )?);
-        network_fee
+        Decimal::percent(MINT_FEE_PERCENT as u64)
     };
+    let network_fee = mint_price.amount * fee_percent;
+    msgs.append(&mut checked_fair_burn(&info, network_fee.u128())?);
 
     let mintable_token_id = match token_id {
         Some(token_id) => {
@@ -359,7 +481,7 @@ fn _execute_mint(
 
     let mut seller_amount = Uint128::zero();
     // Does have a fee
-    if !admin_no_fee {
+    if !is_admin {
         seller_amount = mint_price.amount - network_fee;
         msgs.append(&mut vec![CosmosMsg::Bank(BankMsg::Send {
             to_address: config.admin.to_string(),
@@ -465,6 +587,7 @@ fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
         start_time: config.start_time,
         unit_price: config.unit_price,
         per_address_limit: config.per_address_limit,
+        whitelist: config.whitelist.map(|w| w.to_string()),
     })
 }
 
@@ -493,9 +616,18 @@ fn query_mint_price(deps: Deps) -> StdResult<MintPriceResponse> {
     let config = CONFIG.load(deps.storage)?;
     let current_price = mint_price(deps, false)?;
     let public_price = config.unit_price;
+    let whitelist_price: Option<Coin> = if let Some(whitelist) = config.whitelist {
+        let wl_config: WhitelistConfigResponse = deps
+            .querier
+            .query_wasm_smart(whitelist, &WhitelistQueryMsg::Config {})?;
+        Some(wl_config.unit_price)
+    } else {
+        None
+    };
     Ok(MintPriceResponse {
         current_price,
         public_price,
+        whitelist_price
     })
 }
 
