@@ -12,17 +12,20 @@ pub struct InstantiateMsg {
     pub an721_instantiate_msg: An721InstantiateMsg,
     pub start_time: Timestamp,
     pub per_address_limit: u32,
-    pub unit_price: Coin
+    pub unit_price: Coin,
+    pub whitelist: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     Mint {},
+    SetWhitelist { whitelist: String },
     UpdateStartTime(Timestamp),
     UpdatePerAddressLimit {per_address_limit: u32},
     MintTo {recipient: String},
     MintFor {token_id: u32, recipient: String}, 
+    Withdraw {},
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -44,7 +47,8 @@ pub struct ConfigResponse {
     pub an721_address: String,
     pub an721_code_id: u64,
     pub start_time: Timestamp,
-    pub unit_price: Coin
+    pub unit_price: Coin,
+    pub whitelist: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -60,6 +64,7 @@ pub struct StartTimeResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct MintPriceResponse {
     pub public_price: Coin,
+    pub whitelist_price: Option<Coin>,
     pub current_price: Coin,
 }
 

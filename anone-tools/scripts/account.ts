@@ -8,7 +8,7 @@ import {
 async function createAccount() {
   const mnemonic = Bip39.encode(Random.getBytes(16)).toString();
   const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
-    prefix: 'stars',
+    prefix: 'one',
   });
   const [{ address, pubkey }] = await wallet.getAccounts();
 

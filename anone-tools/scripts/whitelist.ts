@@ -2,12 +2,12 @@ import { InstantiateMsg } from '@stargazezone/types/contracts/whitelist/instanti
 import { Timestamp } from '@stargazezone/types/contracts/minter/shared-types';
 import { coins } from 'cosmwasm';
 import inquirer from 'inquirer';
-import { toStars } from '../src/utils';
+import { toAnone } from '../src/utils';
 import { getClient } from '../src/client';
 
 const config = require('../config');
 
-const WHITELIST_CREATION_FEE = coins('100000000', 'ustars');
+const WHITELIST_CREATION_FEE = coins('100000000', 'uan1');
 
 async function init() {
   if (!config.whitelistStartTime || config.whitelistStartTime == '') {
@@ -35,7 +35,7 @@ async function init() {
     whitelist.length > 0
       ? (function (tmpWhitelist: Array<string> = config.whitelist) {
           tmpWhitelist.forEach(function (addr, index) {
-            tmpWhitelist[index] = toStars(addr);
+            tmpWhitelist[index] = toAnone(addr);
           });
           return tmpWhitelist;
         })()
@@ -56,7 +56,7 @@ async function init() {
     end_time: whitelistEndTime,
     unit_price: {
       amount: (config.whitelistPrice * 1000000).toString(),
-      denom: 'ustars',
+      denom: 'uan1',
     },
     per_address_limit: config.whitelistPerAddressLimit,
     member_limit: config.whitelistMemberLimit,
@@ -101,13 +101,13 @@ async function init() {
 
 async function add(add: string) {
   const client = await getClient();
-  const account = toStars(config.account);
-  const whitelistContract = toStars(config.whitelistContract);
+  const account = toAnone(config.account);
+  const whitelistContract = toAnone(config.whitelistContract);
 
   const addAddresses = add == '' ? null : add.split(',');
   if (addAddresses != null) {
     addAddresses.forEach(function (addr, index) {
-      addAddresses[index] = toStars(addr);
+      addAddresses[index] = toAnone(addr);
     });
     console.log('add addresses: ', addAddresses.join(','));
   }
@@ -150,8 +150,8 @@ async function add(add: string) {
 
 async function increaseMemberLimit(newMemberLimit: string) {
   const memberLimit: number = parseInt(newMemberLimit);
-  const account = toStars(config.account);
-  const whitelistContract = toStars(config.whitelistContract);
+  const account = toAnone(config.account);
+  const whitelistContract = toAnone(config.whitelistContract);
   const client = await getClient();
 
   const msg = {
@@ -190,8 +190,8 @@ async function increaseMemberLimit(newMemberLimit: string) {
 // Can not change if whitelist already started. Need to create a new whitelist
 async function updateStartTime() {
   const client = await getClient();
-  const account = toStars(config.account);
-  const whitelistContract = toStars(config.whitelistContract);
+  const account = toAnone(config.account);
+  const whitelistContract = toAnone(config.whitelistContract);
 
   // time expressed in nanoseconds (1 millionth of a millisecond)
   const whitelistStartTime: Timestamp = (
@@ -228,8 +228,8 @@ async function updateStartTime() {
 
 async function updateEndTime() {
   const client = await getClient();
-  const account = toStars(config.account);
-  const whitelistContract = toStars(config.whitelistContract);
+  const account = toAnone(config.account);
+  const whitelistContract = toAnone(config.whitelistContract);
 
   // time expressed in nanoseconds (1 millionth of a millisecond)
   const whitelistEndTime: Timestamp = (
@@ -282,8 +282,8 @@ async function updatePerAddressLimit() {
   ]);
   if (!answer.confirmation) return;
 
-  const account = toStars(config.account);
-  const whitelistContract = toStars(config.whitelistContract);
+  const account = toAnone(config.account);
+  const whitelistContract = toAnone(config.whitelistContract);
   const result = await client.execute(account, whitelistContract, msg, 'auto');
   const wasmEvent = result.logs[0].events.find((e) => e.type === 'wasm');
   console.info(
@@ -294,7 +294,7 @@ async function updatePerAddressLimit() {
 
 async function showConfig() {
   const client = await getClient();
-  const whitelistContract = toStars(config.whitelistContract);
+  const whitelistContract = toAnone(config.whitelistContract);
 
   let res = await client.queryContractSmart(whitelistContract, {
     config: {},

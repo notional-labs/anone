@@ -3,11 +3,11 @@ import { Timestamp } from '@stargazezone/types/contracts/minter/shared-types';
 import { coins } from 'cosmwasm';
 import inquirer from 'inquirer';
 import { getClient } from '../src/client';
-import { isValidHttpUrl, toStars } from '../src/utils';
+import { isValidHttpUrl, toAnone } from '../src/utils';
 
 const config = require('../config');
 
-const NEW_COLLECTION_FEE = coins('1000000000', 'ustars');
+const NEW_COLLECTION_FEE = coins('1000000000', 'uan1');
 
 function isValidIpfsUrl(uri: string) {
   let url;
@@ -45,12 +45,12 @@ function formatRoyaltyInfo(
 }
 
 async function init() {
-  const account = toStars(config.account);
+  const account = toAnone(config.account);
   const whitelistContract = config.whitelistContract
-    ? toStars(config.whitelistContract)
+    ? toAnone(config.whitelistContract)
     : null;
   const royaltyPaymentAddress = config.royaltyPaymentAddress
-    ? toStars(config.royaltyPaymentAddress)
+    ? toAnone(config.royaltyPaymentAddress)
     : null;
   const royaltyInfo = formatRoyaltyInfo(
     royaltyPaymentAddress,
@@ -83,8 +83,8 @@ async function init() {
   const tempMsg: InstantiateMsg = {
     base_token_uri: config.baseTokenUri,
     num_tokens: config.numTokens,
-    sg721_code_id: config.sg721CodeId,
-    sg721_instantiate_msg: {
+    an721_code_id: config.an721CodeId,
+    an721_instantiate_msg: {
       name: config.name,
       symbol: config.symbol,
       minter: account,
@@ -101,17 +101,17 @@ async function init() {
     start_time: startTime,
     unit_price: {
       amount: (config.unitPrice * 1000000).toString(),
-      denom: 'ustars',
+      denom: 'uan1',
     },
   };
 
   if (
-    tempMsg.sg721_instantiate_msg.collection_info?.royalty_info
+    tempMsg.an721_instantiate_msg.collection_info?.royalty_info
       ?.payment_address === undefined &&
-    tempMsg.sg721_instantiate_msg.collection_info?.royalty_info?.share ===
+    tempMsg.an721_instantiate_msg.collection_info?.royalty_info?.share ===
       undefined
   ) {
-    tempMsg.sg721_instantiate_msg.collection_info.royalty_info = null;
+    tempMsg.an721_instantiate_msg.collection_info.royalty_info = null;
   }
   const msg = clean(tempMsg);
 
@@ -151,7 +151,7 @@ async function init() {
   if (wasmEvent != undefined) {
     console.info('Add these contract addresses to config.js:');
     console.info('minter contract address: ', wasmEvent.attributes[0]['value']);
-    console.info('sg721 contract address: ', wasmEvent.attributes[5]['value']);
+    console.info('an721 contract address: ', wasmEvent.attributes[5]['value']);
   }
 
   //   console.info(wasmEvent.message);
@@ -159,9 +159,9 @@ async function init() {
 
 async function setWhitelist(whitelist: string) {
   const client = await getClient();
-  const account = toStars(config.account);
-  const minter = toStars(config.minter);
-  const whitelistContract = toStars(whitelist);
+  const account = toAnone(config.account);
+  const minter = toAnone(config.minter);
+  const whitelistContract = toAnone(whitelist);
 
   if (!minter) {
     throw Error(
@@ -199,8 +199,8 @@ async function setWhitelist(whitelist: string) {
 
 async function updatePerAddressLimit() {
   const client = await getClient();
-  const account = toStars(config.account);
-  const minter = toStars(config.minter);
+  const account = toAnone(config.account);
+  const minter = toAnone(config.minter);
   const limit: number = config.perAddressLimit;
 
   if (!minter) {
@@ -238,8 +238,8 @@ async function updatePerAddressLimit() {
 // Can not change if public mint already started.
 async function updateStartTime() {
   const client = await getClient();
-  const account = toStars(config.account);
-  const minter = toStars(config.minter);
+  const account = toAnone(config.account);
+  const minter = toAnone(config.minter);
 
   const answer = await inquirer.prompt([
     {

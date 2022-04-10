@@ -77,7 +77,7 @@ To add addresses to the whitelist, use:
 yarn whitelist --add [stars1..., stars2..., etc.]
 ```
 
-## Query sg721
+## Query an721
 
 You can run queries against an instantiated an721 contract with:
 

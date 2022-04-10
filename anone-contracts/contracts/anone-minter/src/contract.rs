@@ -1,3 +1,4 @@
+use an721::msg::InstantiateMsg as An721InstantiateMsg;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
@@ -7,7 +8,6 @@ use cosmwasm_std::{
 use cw2::set_contract_version;
 use cw721_base::{msg::ExecuteMsg as Cw721ExecuteMsg, MintMsg};
 use cw_utils::{may_pay, parse_reply_instantiate_data};
-use an721::msg::InstantiateMsg as An721InstantiateMsg;
 use url::Url;
 
 use crate::error::ContractError;
@@ -16,9 +16,12 @@ use crate::msg::{
     MintableNumTokensResponse, QueryMsg, StartTimeResponse,
 };
 use crate::state::{
-    Config, CONFIG, MINTABLE_NUM_TOKENS, MINTABLE_TOKEN_IDS, MINTER_ADDRS, AN721_ADDRESS,
+    Config, AN721_ADDRESS, CONFIG, MINTABLE_NUM_TOKENS, MINTABLE_TOKEN_IDS, MINTER_ADDRS,
 };
-use an_std::{burn_and_distribute_fee, AnoneMsgWrapper, GENESIS_MINT_START_TIME};
+use an_std::{burn_and_distribute_fee, AnoneMsgWrapper, GENESIS_MINT_START_TIME, NATIVE_DENOM};
+use whitelist::msg::{
+    ConfigResponse as WhitelistConfigResponse, HasMemberResponse, QueryMsg as WhitelistQueryMsg,
+};
 
 pub type Response = cosmwasm_std::Response<AnoneMsgWrapper>;
 pub type SubMsg = cosmwasm_std::SubMsg<AnoneMsgWrapper>;
@@ -33,8 +36,10 @@ const INSTANTIATE_AN721_REPLY_ID: u64 = 1;
 const MAX_TOKEN_LIMIT: u32 = 10000;
 const MAX_PER_ADDRESS_LIMIT: u32 = 50;
 const MIN_MINT_PRICE: u128 = 50_000_000;
+const AIRDROP_MINT_PRICE: u128 = 15_000_000;
 const MINT_FEE_PERCENT: u32 = 10;
-pub const NATIVE_DENOM: &str = "uan1";
+// 100% airdrop fee goes to fair burn
+const AIRDROP_MINT_FEE_PERCENT: u32 = 100;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -97,6 +102,10 @@ pub fn instantiate(
         ));
     }
 
+    // Validate address for the optional whitelist contract
+    let whitelist_addr = msg
+        .whitelist
+        .and_then(|w| deps.api.addr_validate(w.as_str()).ok());
 
     let config = Config {
         admin: info.sender.clone(),
@@ -105,6 +114,7 @@ pub fn instantiate(
         an721_code_id: msg.an721_code_id,
         unit_price: msg.unit_price,
         per_address_limit: msg.per_address_limit,
+        whitelist: whitelist_addr,
         start_time: msg.start_time,
     };
     CONFIG.save(deps.storage, &config)?;
@@ -160,7 +170,7 @@ pub fn execute(
         ExecuteMsg::MintFor {
             token_id,
             recipient,
-        } => execute_mint_for(deps, env, info, token_id, recipient)
+        } => execute_mint_for(deps, env, info, token_id, recipient),
     }
 }
 
@@ -242,7 +252,15 @@ pub fn execute_mint_for(
         ));
     }
 
-    _execute_mint(deps,env,info,action,true,Some(recipient),Some(token_id))
+    _execute_mint(
+        deps,
+        env,
+        info,
+        action,
+        true,
+        Some(recipient),
+        Some(token_id),
+    )
 }
 
 // Generalize checks and mint message creation
@@ -446,7 +464,7 @@ fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
         num_tokens: config.num_tokens,
         start_time: config.start_time,
         unit_price: config.unit_price,
-        per_address_limit: config.per_address_limit
+        per_address_limit: config.per_address_limit,
     })
 }
 
@@ -477,7 +495,7 @@ fn query_mint_price(deps: Deps) -> StdResult<MintPriceResponse> {
     let public_price = config.unit_price;
     Ok(MintPriceResponse {
         current_price,
-        public_price
+        public_price,
     })
 }
 
@@ -497,5 +515,3 @@ pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response, ContractE
         Err(_) => Err(ContractError::InstantiateAn721Error {}),
     }
 }
-
-

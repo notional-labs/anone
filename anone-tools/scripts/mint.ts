@@ -1,17 +1,17 @@
 import { MsgExecuteContractEncodeObject, coins, toUtf8 } from 'cosmwasm';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
 import { getClient } from '../src/client';
-import { toStars } from '../src/utils';
+import { toAnone } from '../src/utils';
 
 const config = require('../config');
 
 async function test_whitelist() {
   const client = await getClient();
 
-  const starsRecipient = toStars(config.account);
-  console.log('whitelist mint: ', starsRecipient);
+  const anoneRecipient = toAnone(config.account);
+  console.log('whitelist mint: ', anoneRecipient);
 
-  const mintFee = coins((config.whitelistPrice * 1000000).toString(), 'ustars');
+  const mintFee = coins((config.whitelistPrice * 1000000).toString(), 'uan1');
   const msg = { mint: {} };
   console.log(JSON.stringify(msg, null, 2));
 
@@ -33,11 +33,11 @@ async function test_whitelist() {
 async function mintTo(recipient: string) {
   const client = await getClient();
 
-  const starsRecipient = toStars(recipient);
+  const anoneRecipient = toAnone(recipient);
   console.log('Minter contract: ', config.minter);
-  console.log('Minting to: ', starsRecipient);
+  console.log('Minting to: ', anoneRecipient);
 
-  const msg = { mint_to: { recipient: starsRecipient } };
+  const msg = { mint_to: { recipient: anoneRecipient } };
   console.log(JSON.stringify(msg, null, 2));
 
   const result = await client.execute(
@@ -57,11 +57,11 @@ async function mintTo(recipient: string) {
 async function batchMint(recipient: string, num: number) {
   const client = await getClient();
 
-  const starsRecipient = toStars(recipient);
+  const anoneRecipient = toAnone(recipient);
   console.log('Minter contract: ', config.minter);
-  console.log('Minting ' + num + ' tokens to:', starsRecipient);
+  console.log('Minting ' + num + ' tokens to:', anoneRecipient);
 
-  const msg = { mint_to: { recipient: starsRecipient } };
+  const msg = { mint_to: { recipient: anoneRecipient } };
 
   const executeContractMsg: MsgExecuteContractEncodeObject = {
     typeUrl: '/cosmwasm.wasm.v1.MsgExecuteContract',
@@ -86,12 +86,12 @@ async function batchMint(recipient: string, num: number) {
 async function mintFor(tokenId: string, recipient: string) {
   const client = await getClient();
 
-  const starsRecipient = toStars(recipient);
+  const anoneRecipient = toAnone(recipient);
   console.log('Minter contract: ', config.minter);
-  console.log('Minting token ' + tokenId + ' for', starsRecipient);
+  console.log('Minting token ' + tokenId + ' for', anoneRecipient);
 
   const msg = {
-    mint_for: { token_id: Number(tokenId), recipient: starsRecipient },
+    mint_for: { token_id: Number(tokenId), recipient: anoneRecipient },
   };
   console.log(JSON.stringify(msg, null, 2));
 
@@ -110,7 +110,7 @@ async function mintFor(tokenId: string, recipient: string) {
 }
 
 async function mintForRange(tokenIdRange: string, recipient: string) {
-  const starsRecipient = toStars(recipient);
+  const anoneRecipient = toAnone(recipient);
 
   // Parse string from "1,10" -> "1" and "10"
   const [start, end] = tokenIdRange.split(',').map(Number);
@@ -123,13 +123,13 @@ async function mintForRange(tokenIdRange: string, recipient: string) {
   if (start < 1) throw new Error("Start ID out of bounds");
   if (end > configResponse.num_tokens) throw new Error("End ID out of bounds");
 
-  console.log('Minting tokens', start + '-' + end, 'for', starsRecipient);
+  console.log('Minting tokens', start + '-' + end, 'for', anoneRecipient);
 
   // Loop through range and generate contract messages.
   let msgArray = new Array();
   for (let i = start; i <= end; i++) {
     let msg = {
-      mint_for: { token_id: i, recipient: starsRecipient },
+      mint_for: { token_id: i, recipient: anoneRecipient },
     };
     let executeContractMsg: MsgExecuteContractEncodeObject = {
       typeUrl: '/cosmwasm.wasm.v1.MsgExecuteContract',

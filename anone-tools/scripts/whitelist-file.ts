@@ -1,10 +1,10 @@
 // Simple upload 500 addresses to whitelist using whitelist_addresses.csv.
-// Accepts cosmos, stars addresses.
+// Accepts cosmos, anone addresses.
 // If you run into an error with `member_limit`, run `yarn whitelist --increase-member-limit`
 
 import { ExecuteMsg } from '@stargazezone/types/contracts/whitelist/execute_msg';
 import { MsgExecuteContractEncodeObject } from 'cosmwasm';
-import { toStars } from '../src/utils';
+import { toAnone } from '../src/utils';
 import inquirer from 'inquirer';
 import { getClient } from '../src/client';
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
@@ -47,7 +47,7 @@ async function addFile() {
 
       const validatedAddrs: Array<string> = [];
       addrs.forEach((addr) => {
-        validatedAddrs.push(toStars(addr));
+        validatedAddrs.push(toAnone(addr));
       });
       let uniqueValidatedAddrs = [...new Set(validatedAddrs)].sort();
       if (uniqueValidatedAddrs.length > MSG_ADD_ADDR_LIMIT) {

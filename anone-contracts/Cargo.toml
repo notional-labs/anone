@@ -5,6 +5,10 @@ members = ["contracts/*", "packages/*"]
 codegen-units = 1
 incremental = false
 
+[profile.release.package.anone-whitelist]
+codegen-units = 1
+incremental = false
+
 [profile.release.package.anone-minter]
 codegen-units = 1
 incremental = false
