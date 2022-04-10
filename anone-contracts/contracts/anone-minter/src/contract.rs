@@ -166,11 +166,11 @@ pub fn execute(
         ExecuteMsg::UpdatePerAddressLimit { per_address_limit } => {
             execute_update_per_address_limit(deps, env, info, per_address_limit)
         }
-        ExecuteMsg::MintTo { recipient } => execute_mint_to(deps, env, info, recipient),
+        ExecuteMsg::MintTo { recipient } => execute_mint_to(deps, info, recipient),
         ExecuteMsg::MintFor {
             token_id,
             recipient,
-        } => execute_mint_for(deps, env, info, token_id, recipient),
+        } => execute_mint_for(deps, info, token_id, recipient),
         ExecuteMsg::SetWhitelist { whitelist } => {
             execute_set_whitelist(deps, env, info, &whitelist)
         }
@@ -345,7 +345,6 @@ fn is_public_mint(deps: Deps, info: &MessageInfo) -> Result<bool, ContractError>
 
 pub fn execute_mint_to(
     deps: DepsMut,
-    env: Env,
     info: MessageInfo,
     recipient: String,
 ) -> Result<Response, ContractError> {
@@ -365,7 +364,6 @@ pub fn execute_mint_to(
 
 pub fn execute_mint_for(
     deps: DepsMut,
-    env: Env,
     info: MessageInfo,
     token_id: u32,
     recipient: String,

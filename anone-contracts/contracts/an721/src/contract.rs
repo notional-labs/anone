@@ -29,7 +29,7 @@ pub type An721Contract<'a> = cw721_base::Cw721Contract<'a, Empty, AnoneMsgWrappe
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
-    env: Env,
+    _env: Env,
     info: MessageInfo,
     msg: InstantiateMsg,
 ) -> Result<Response, ContractError> {
