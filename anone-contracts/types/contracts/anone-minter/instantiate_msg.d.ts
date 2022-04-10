@@ -11,8 +11,8 @@ export interface InstantiateMsg {
 base_token_uri: string
 num_tokens: number
 per_address_limit: number
-sg721_code_id: number
-sg721_instantiate_msg: InstantiateMsg1
+an721_code_id: number
+an721_instantiate_msg: InstantiateMsg1
 start_time: Timestamp
 unit_price: Coin
 whitelist?: (string | null)
