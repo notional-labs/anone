@@ -39,6 +39,7 @@ version = "0.1.0"
 dependencies = [
  "an-std",
  "an721",
+ "anone-whitelist",
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus 0.12.1",
@@ -50,7 +51,6 @@ dependencies = [
  "serde",
  "thiserror",
  "url",
- "whitelist",
 ]
 
 [[package]]
@@ -64,6 +64,24 @@ dependencies = [
  "cw2 0.12.1",
  "cw20",
  "cw721",
+ "schemars",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "anone-whitelist"
+version = "0.1.0"
+dependencies = [
+ "an-std",
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cosmwasm-storage",
+ "cw-storage-plus 0.13.1",
+ "cw-utils 0.13.1",
+ "cw2 0.13.1",
+ "cw4",
+ "rust_decimal",
  "schemars",
  "serde",
  "thiserror",
@@ -855,24 +873,6 @@ name = "wasi"
 version = "0.10.2+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
-
-[[package]]
-name = "whitelist"
-version = "0.1.0"
-dependencies = [
- "an-std",
- "cosmwasm-schema",
- "cosmwasm-std",
- "cosmwasm-storage",
- "cw-storage-plus 0.13.1",
- "cw-utils 0.13.1",
- "cw2 0.13.1",
- "cw4",
- "rust_decimal",
- "schemars",
- "serde",
- "thiserror",
-]
 
 [[package]]
 name = "zeroize"

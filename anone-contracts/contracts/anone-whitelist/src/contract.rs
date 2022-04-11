@@ -18,7 +18,7 @@ use an_std::checked_fair_burn;
 use an_std::{AnoneMsgWrapper, GENESIS_MINT_START_TIME, NATIVE_DENOM};
 
 // version info for migration info
-const CONTRACT_NAME: &str = "crates.io:sg-whitelist";
+const CONTRACT_NAME: &str = "crates.io:anone-whitelist";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // contract governance params
@@ -678,7 +678,7 @@ mod tests {
         let mut deps = mock_dependencies();
         let mut members = vec![];
         for i in 0..150 {
-            members.push(format!("stars1{}", i));
+            members.push(format!("one1{}", i));
         }
         let msg = InstantiateMsg {
             members: members.clone(),

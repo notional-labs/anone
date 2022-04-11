@@ -388,14 +388,6 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@stargazezone/types@^0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@stargazezone/types/-/types-0.7.2.tgz#c168a6fb37cf5617845417d91321adf6b663cd6b"
-  integrity sha512-hnSOLvBbZ8/PZs+WHKBbKpZF/JiwNdfNeP4yiNBZGm6gpTLuQ1enaPC/roRoqIFHp8JaGL5HTa/E3GoeUnzRbQ==
-  dependencies:
-    dotenv "^10.0.0"
-    json-schema-to-typescript "^10.1.5"
-
 "@tsconfig/node10@^1.0.7":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.8.tgz#c1e4e80d6f964fbecb3359c43bd48b40f7cadad9"

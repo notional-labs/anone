@@ -1,7 +1,9 @@
 [package]
-name = "whitelist"
+name = "anone-whitelist"
 version = "0.1.0"
 edition = "2021"
+author = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com"]
+repository = "https://github.com/notional-labs/anone"
 
 exclude = [
   # Those files are rust-optimizer artifacts. You might want to commit them for convenience but they should not be part of the source code publication.

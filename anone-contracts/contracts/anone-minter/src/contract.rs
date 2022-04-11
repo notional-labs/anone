@@ -19,7 +19,7 @@ use crate::state::{
     Config, AN721_ADDRESS, CONFIG, MINTABLE_NUM_TOKENS, MINTABLE_TOKEN_IDS, MINTER_ADDRS,
 };
 use an_std::{checked_fair_burn, AnoneMsgWrapper, GENESIS_MINT_START_TIME, NATIVE_DENOM};
-use whitelist::msg::{
+use anone_whitelist::msg::{
     ConfigResponse as WhitelistConfigResponse, HasMemberResponse, QueryMsg as WhitelistQueryMsg,
 };
 

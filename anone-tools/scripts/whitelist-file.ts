@@ -2,7 +2,7 @@
 // Accepts cosmos, anone addresses.
 // If you run into an error with `member_limit`, run `yarn whitelist --increase-member-limit`
 
-import { ExecuteMsg } from '@stargazezone/types/contracts/whitelist/execute_msg';
+import { ExecuteMsg } from 'anone-types/contracts/anone-whitelist/execute_msg';
 import { MsgExecuteContractEncodeObject } from 'cosmwasm';
 import { toAnone } from '../src/utils';
 import inquirer from 'inquirer';

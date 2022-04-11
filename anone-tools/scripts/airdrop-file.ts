@@ -7,7 +7,7 @@
 
 // Accepts cosmos, anone addresses.
 
-import { ExecuteMsg } from '@stargazezone/types/contracts/minter/execute_msg';
+import { ExecuteMsg } from 'anone-types/contracts/anone-minter/execute_msg';
 import { coin, MsgExecuteContractEncodeObject } from 'cosmwasm';
 import { toAnone } from '../src/utils';
 import inquirer from 'inquirer';
