@@ -1,7 +1,7 @@
 package app
 
 import (
-	"fmt"
+	// "fmt"
 	"io"
 	"net/http"
 	"os"
@@ -114,6 +114,9 @@ import (
 	"github.com/notional-labs/anone/x/mint"
 	mintkeeper "github.com/notional-labs/anone/x/mint/keeper"
 	minttypes "github.com/notional-labs/anone/x/mint/types"
+	allocmodule "github.com/notional-labs/anone/x/alloc"
+	allocmodulekeeper "github.com/notional-labs/anone/x/alloc/keeper"
+	allocmoduletypes "github.com/notional-labs/anone/x/alloc/types"
 )
 
 var (
@@ -204,6 +207,7 @@ var (
 		vesting.AppModuleBasic{},
 		anonemodule.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
+		allocmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		wasm.AppModuleBasic{},
 	)
@@ -217,6 +221,7 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		allocmoduletypes.ModuleName:    {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 		wasm.ModuleName: {authtypes.Burner},
 	}
@@ -279,6 +284,7 @@ type App struct {
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 	wasmKeeper       wasm.Keeper
 	scopedWasmKeeper capabilitykeeper.ScopedKeeper
+	AllocKeeper allocmodulekeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -315,6 +321,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		wasm.StoreKey,
 		authzkeeper.StoreKey,
+		allocmoduletypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -456,6 +463,19 @@ func New(
 	)
 	anoneModule := anonemodule.NewAppModule(appCodec, app.AnoneKeeper)
 
+	app.AllocKeeper = *allocmodulekeeper.NewKeeper(
+		appCodec,
+		keys[allocmoduletypes.StoreKey],
+		keys[allocmoduletypes.MemStoreKey],
+
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.GetSubspace(allocmoduletypes.ModuleName),
+	)
+	allocModule := allocmodule.NewAppModule(appCodec, app.AllocKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -497,6 +517,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		anoneModule,
+		allocModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
@@ -512,6 +533,7 @@ func New(
 		banktypes.ModuleName,
 		feegrant.ModuleName,
 		vestingtypes.ModuleName,
+		allocmoduletypes.ModuleName, // must run before distribution begin blocker
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -549,6 +571,7 @@ func New(
 		authz.ModuleName,
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
+		allocmoduletypes.ModuleName,
 		wasm.ModuleName,
 	)
 
@@ -577,6 +600,7 @@ func New(
 		authz.ModuleName,
 		ibctransfertypes.ModuleName,
 		anonemoduletypes.ModuleName,
+		allocmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		wasm.ModuleName,
 	)
@@ -775,6 +799,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(anonemoduletypes.ModuleName)
+	paramsKeeper.Subspace(allocmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(wasm.ModuleName)
 

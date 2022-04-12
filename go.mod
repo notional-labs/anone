@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/CosmWasm/wasmd v0.23.0
+	github.com/armon/go-metrics v0.3.10 // indirect
 	github.com/cosmos/cosmos-sdk v0.45.1
 	github.com/cosmos/ibc-go/v2 v2.0.3
 	github.com/gogo/protobuf v1.3.3
@@ -11,6 +12,8 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/prometheus/client_golang v1.12.0
+	github.com/public-awesome/stargaze/v3 v3.0.0
+	// github.com/notional-labs/anone/x
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
