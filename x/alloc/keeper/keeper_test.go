@@ -10,7 +10,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/notional-labs/anone/x/alloc/types"
 	"github.com/notional-labs/anone/app"
-	"github.com/public-awesome/stargaze/v3/testutil/simapp"
+	"github.com/notional-labs/anone/testutil/simapp"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
