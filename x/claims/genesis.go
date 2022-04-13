@@ -1,6 +1,8 @@
 package claims
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/notional-labs/anone/x/claims/keeper"
 	"github.com/notional-labs/anone/x/claims/types"
@@ -11,6 +13,9 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
     // this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
+	k.CreateModuleAccount(ctx, genState.ModuleAccountBalance)
+	k.SetClaimRecords(ctx, genState.ClaimRecords)
+	fmt.Println(genState)
 }
 
 // ExportGenesis returns the capability module's exported genesis.
