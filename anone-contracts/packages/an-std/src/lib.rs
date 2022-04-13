@@ -20,7 +20,3 @@ pub use fees::{checked_fair_burn, fair_burn, FeeError};
 pub use query::AnoneQuery;
 pub use route::AnoneRoute;
 
-// This export is added to all contracts that import this package, signifying that they require
-// "anone" support on the chain they run on.
-#[no_mangle]
-extern "C" fn requires_anone() {}

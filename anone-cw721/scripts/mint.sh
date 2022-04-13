@@ -5,7 +5,7 @@ NODE="http://65.108.128.139:2281"
 #OWNER="test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="15s"
-CONTRACT="one1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrq9jdqcm"
+CONTRACT="one10qhsnxrhegp62qm4f56s0jhf4j7cc0enh2y3e9hw03ne27tlv7lq46pxzm"
 
 LATEST=$(bash scripts/query_all.sh | jq -r ".data.tokens | last")
 TOKEN_ID=$(($LATEST+1))
@@ -34,7 +34,7 @@ EXTENSION="{
     \"name\":\"$name\"
 }"
 
-MINT="{\"mint\": {\"extension\":$EXTENSION, \"token_id\":\"$TOKEN_ID\",  \"token_uri\": \"$TOKEN_URI\"}}"
+MINT="{\"mint\": {\"extension\":$EXTENSION, \"token_id\":\"$TOKEN_ID\",  \"token_uri\": \"$TOKEN_URI\", \"owner\":\"$(anoned keys show $OWNER -a)\"}}"
 
 echo $MINT
 

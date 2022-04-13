@@ -2,7 +2,7 @@
 name = "anone-cw721"
 description = "An implementation of cw721 for Anone project"
 version = "0.1.0"
-authors = ["Nguyen The Vinh <nghuyenthevinh@gmail.com>"]
+authors = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com>"]
 edition = "2021"
 repository = "https://github.com/notional-labs/anone"
 
@@ -24,9 +24,14 @@ library = []
 cw721 = "0.11.0"
 cw721-base = { version = "0.11.0", features = ["library"] }
 cosmwasm-std = { version = "1.0.0-beta" }
+cosmwasm-storage = { version = "1.0.0-beta5" }
+cw-storage-plus = "0.12.1"
+cw-utils = "0.12.1"
+cw2 = "0.12.1"
 schemars = "0.8"
 serde = { version = "1.0.130", default-features = false, features = ["derive"] }
 thiserror = { version = "1.0.30" }
+url = "2.2.2"
 
 [dev-dependencies]
 cosmwasm-schema = { version = "1.0.0-beta3" }
