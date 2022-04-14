@@ -20,7 +20,7 @@ pub struct RoyaltyInfoResponse {
 
 impl RoyaltyInfoResponse {
     pub fn share_validate(&self) -> Result<Decimal, ContractError> {
-        if self.share > Decimal::one() {
+        if self.share > Decimal::percent(20) {
             return Err(ContractError::InvalidRoyalities {});
         }
 
