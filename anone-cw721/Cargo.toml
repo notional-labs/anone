@@ -1,6 +1,7 @@
 [package]
 name = "anone-cw721"
 description = "An implementation of cw721 for Anone project"
+license = "Apache-2.0"
 version = "0.1.0"
 authors = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com>"]
 edition = "2021"
