@@ -11,6 +11,7 @@ use cosmwasm_std::{
 use cw2::set_contract_version;
 use cw20::{Cw20Coin, Cw20ExecuteMsg, Cw20ReceiveMsg};
 use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
+use anone_cw721::msg::{CollectionInfoResponse, QueryMsg as an721QueryMsg};
 
 use crate::error::ContractError;
 use crate::msg::{BuyNft, ExecuteMsg, InstantiateMsg, QueryMsg, SellNft};
@@ -131,12 +132,21 @@ pub fn execute_create_sale(
     // get OFFERING_COUNT
     let id = increment_offerings(deps.storage)?.to_string();
 
+    // query collection info
+    let collection_info: CollectionInfoResponse = deps
+        .querier
+        .query_wasm_smart(info.sender.clone(), &an721QueryMsg::CollectionInfo {})?;
+
+    let royalty_info = collection_info.royalty_info;
+    let royalty_info_clone = royalty_info.clone();
+
     if msg.list_price.amount <= Uint128::from(0u128) {
         return Err(ContractError::PriceMustBePosiTive {});
     }
     // save Offering
     let off = Offering {
         contract_addr: info.sender.clone(),
+        royalty_info: royalty_info.clone(),
         token_id: rcv_msg.token_id.clone(),
         seller: deps.api.addr_validate(&rcv_msg.sender.clone())?,
         list_price: msg.list_price.clone(),
@@ -146,10 +156,12 @@ pub fn execute_create_sale(
     OFFERINGS.save(deps.storage, &id, &off)?;
 
     let price_string = format!("{} {}", msg.list_price.amount, msg.list_price.address);
+    let royalty_info_string = format!("{} {}", royalty_info_clone.unwrap().payment_address, royalty_info.unwrap().share);
 
     Ok(Response::new()
         .add_attribute("action", "create_sale")
         .add_attribute("original_contract", info.sender)
+        .add_attribute("royalty_info", royalty_info_string)
         .add_attribute("seller", off.seller.to_string())
         .add_attribute("list_price", price_string)
         .add_attribute("token_id", off.token_id))

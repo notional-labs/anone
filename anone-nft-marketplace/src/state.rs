@@ -4,6 +4,7 @@ use cw20::Cw20Coin;
 use cw_storage_plus::{Item, Map};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use anone_cw721::msg::RoyaltyInfoResponse;
 
 pub static CONFIG_KEY: &str = "config";
 
@@ -11,6 +12,7 @@ pub static CONFIG_KEY: &str = "config";
 pub struct Offering {
     pub token_id: String,
     pub contract_addr: Addr,
+    pub royalty_info: Option<RoyaltyInfoResponse>,
     pub seller: Addr,
     pub list_price: Cw20Coin,
     pub listing_time: Timestamp,
