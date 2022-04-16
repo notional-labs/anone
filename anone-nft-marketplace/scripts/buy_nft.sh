@@ -6,7 +6,7 @@ ACCOUNT="Test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one1qje5ufydcpc30mecken3cry77rqh59dcx5m70qfhddwfpahvnvlq2fxzd6"
+MARKETPLACE_CONTRACT_ADDR="one15q2ult9rrmrum5dw2asmw5xy6nu4fhukke8wtz0m7mqd6m3p065qptrcfg"
 CW20_CONTRACT_ADDR="one13v6dgzhf9nu4fzdkrc6tpvxxd8eqg546ynjep8cqvl4n27xlvf7sme7ml3"
 INSERT_OFFERING_ID="1"
 # This msg is BASE64_ENCODED_JSON --> { "offering_id": "<INSERT_OFFERING_ID>" } <--

@@ -5,13 +5,15 @@ version = 3
 [[package]]
 name = "anone-cw721"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d7091356f86b6cde1807e55771ab2b2264fa7b80979a7ef9423a102983bc2b2"
 dependencies = [
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus 0.12.1",
  "cw-utils 0.12.1",
  "cw2 0.12.1",
- "cw721 0.11.1",
+ "cw721",
  "cw721-base",
  "schemars",
  "serde",
@@ -21,7 +23,7 @@ dependencies = [
 
 [[package]]
 name = "anone-nft-marketplace"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "anone-cw721",
  "cosmwasm-schema",
@@ -30,7 +32,7 @@ dependencies = [
  "cw-storage-plus 0.12.1",
  "cw2 0.12.1",
  "cw20",
- "cw721 0.12.0",
+ "cw721",
  "schemars",
  "serde",
  "thiserror",
@@ -273,18 +275,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cw721"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc5bb00baf493fc48bf05831edc3ed074731da7c1944c8521ead3df4ff08d9c7"
-dependencies = [
- "cosmwasm-std",
- "cw-utils 0.12.1",
- "schemars",
- "serde",
-]
-
-[[package]]
 name = "cw721-base"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -294,7 +284,7 @@ dependencies = [
  "cw-storage-plus 0.11.1",
  "cw-utils 0.11.1",
  "cw2 0.11.1",
- "cw721 0.11.1",
+ "cw721",
  "schemars",
  "serde",
  "thiserror",

@@ -337,6 +337,7 @@ fn parse_offering(
             id: id.to_string(),
             token_id: offering.token_id,
             list_price: offering.list_price,
+            royalty_info: offering.royalty_info,
             contract_addr: offering.contract_addr.clone().into_string(),
             seller: offering.seller.clone().into_string(),
             listing_time: offering.listing_time,

@@ -6,8 +6,8 @@ ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one1qje5ufydcpc30mecken3cry77rqh59dcx5m70qfhddwfpahvnvlq2fxzd6"
-CW721_CONTRACT_ADDR="one1d77dhuvgu2estd9v3vdmhurn8822xazf6clna2xyuwrm20k5yjgqj3097g"
+MARKETPLACE_CONTRACT_ADDR="one15q2ult9rrmrum5dw2asmw5xy6nu4fhukke8wtz0m7mqd6m3p065qptrcfg"
+CW721_CONTRACT_ADDR="one1nda8ud7zuzj4342vr5jxfj0fpqfwlle6cy8xgp0r5am26rdmgwrqrm3jkj"
 CW20_CONTRACT_ADDR="one13v6dgzhf9nu4fzdkrc6tpvxxd8eqg546ynjep8cqvl4n27xlvf7sme7ml3"
 AMOUNT_WITHOUT_DENOM=500000
 TOKEN_ID="$1"

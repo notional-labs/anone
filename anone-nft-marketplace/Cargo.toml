@@ -1,7 +1,7 @@
 [package]
 name = "anone-nft-marketplace"
 description = "NFT marketplace contract of Anone project"
-version = "0.2.0"
+version = "0.1.0"
 edition = "2021"
 author = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com"]
 repository = "https://github.com/notional-labs/anone"
@@ -24,13 +24,13 @@ backtraces = ["cosmwasm-std/backtraces"]
 library = []
 
 [dependencies]
-cosmwasm-std = { version = "1.0.0-beta5" }
+cosmwasm-std = { version = "1.0.0-beta" }
 cosmwasm-storage = { version = "1.0.0-beta5" }
 cw-storage-plus = "0.12.1"
 cw2 = "0.12.1"
 cw20 = "0.12.1"
-cw721 = "0.12.0"
-anone-cw721 = { path = "../anone-cw721", features = ["library"] }
+cw721 = "0.11.0"
+anone-cw721 = { version = "0.1.0", features = ["library"] }
 
 schemars = "0.8"
 serde = { version = "1.0", default-features = false, features = ["derive"] }
