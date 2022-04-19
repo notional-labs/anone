@@ -1,4 +1,4 @@
-use cw20::{Cw20Coin, Cw20ReceiveMsg};
+use cosmwasm_std::Coin;
 use cw721::Cw721ReceiveMsg;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -11,18 +11,24 @@ pub struct InstantiateMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
-    WithdrawNft { offering_id: String },
-    Receive(Cw20ReceiveMsg),
+    WithdrawNft {
+        offering_id: String,
+    },
     ReceiveNft(Cw721ReceiveMsg),
-    UpdatePrice { offering_id: String, update_price: Cw20Coin }
+    UpdatePrice {
+        offering_id: String,
+        update_price: Coin,
+    },
+    MakeOrder {
+        offering_id: String,
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct SellNft {
-    pub list_price: Cw20Coin,
+    pub list_price: Coin,
 }
-
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
@@ -30,11 +36,8 @@ pub struct BuyNft {
     pub offering_id: String,
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
-    GetOfferings {
-        sort_listing: String
-    },
+    GetOfferings { sort_listing: String },
 }

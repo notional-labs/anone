@@ -4,12 +4,11 @@ use std::str::from_utf8;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    from_binary, to_binary, Api, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order, Record,
+    coin, from_binary, to_binary, Api, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order, Record,
     Response, StdError, StdResult, WasmMsg, Uint128
 };
 
 use cw2::set_contract_version;
-use cw20::{Cw20Coin, Cw20ExecuteMsg, Cw20ReceiveMsg};
 use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
 use anone_cw721::msg::{CollectionInfoResponse, QueryMsg as an721QueryMsg};
 
@@ -17,6 +16,8 @@ use crate::error::ContractError;
 use crate::msg::{BuyNft, ExecuteMsg, InstantiateMsg, QueryMsg, SellNft};
 use crate::package::{ContractInfoResponse, OfferingsResponse, QueryOfferingsResult};
 use crate::state::{increment_offerings, Offering, CONTRACT_INFO, OFFERINGS};
+
+pub const NATIVE_DENOM: &str = "uan1";
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:anone-nft-marketplace";
@@ -50,7 +51,7 @@ pub fn execute(
         ExecuteMsg::WithdrawNft { offering_id } => {
             execute_cancel_sale(deps, env, info, offering_id)
         }
-        ExecuteMsg::Receive(msg) => execute_make_order(deps, env, info, msg),
+        ExecuteMsg::MakeOrder {offering_id} => execute_make_order(deps, env, info, offering_id),
         ExecuteMsg::ReceiveNft(msg) => execute_create_sale(deps, env, info, msg),
         ExecuteMsg::UpdatePrice {
             offering_id,
@@ -63,28 +64,16 @@ pub fn execute_make_order(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
-    rcv_msg: Cw20ReceiveMsg,
+    offering_id: String,
 ) -> Result<Response, ContractError> {
-    let msg: BuyNft = from_binary(&rcv_msg.msg)?;
+    let off = OFFERINGS.load(deps.storage, &offering_id)?;
+    let price = coin((&off.list_price).u128(), NATIVE_DENOM);
 
-    let off = OFFERINGS.load(deps.storage, &msg.offering_id)?;
-
-    // check for enough coins
-    if rcv_msg.amount < off.list_price.amount {
-        return Err(ContractError::InsufficientFunds {});
-    }
-
-    // create transfer cw20 msg
-    let transfer_cw20_msg = Cw20ExecuteMsg::Transfer {
-        recipient: (&off.seller).to_string(),
-        amount: rcv_msg.amount,
-    };
-
-    let exec_cw20_transfer = WasmMsg::Execute {
-        contract_addr: info.sender.clone().into_string(),
-        msg: to_binary(&transfer_cw20_msg)?,
-        funds: vec![],
-    };
+    // send price to seller
+    let transfer_coin_msg = CosmosMsg::Bank(BankMsg::Send {
+        to_address: (&off.seller).to_string(),
+        amount: vec![price],
+    });
 
     // create transfer cw721 msg
     let transfer_cw721_msg = Cw721ExecuteMsg::TransferNft {
@@ -207,7 +196,7 @@ pub fn execute_update_price(
     _env: Env,
     info: MessageInfo,
     offering_id: String,
-    update_price: Cw20Coin,
+    update_price: Coin,
 ) -> Result<Response, ContractError> {
     // check if token_id is currently sold by the requesting address
     let mut off = OFFERINGS.load(deps.storage, &offering_id)?;
