@@ -4,16 +4,16 @@ use std::str::from_utf8;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    coin, from_binary, to_binary, Api, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order, Record,
-    Response, StdError, StdResult, WasmMsg, Uint128
+    coin, to_binary, Addr, Api, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order,
+    Record, Response, StdError, StdResult, WasmMsg
 };
 
-use cw2::set_contract_version;
-use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
 use anone_cw721::msg::{CollectionInfoResponse, QueryMsg as an721QueryMsg};
+use cw2::set_contract_version;
+use cw721::Cw721ExecuteMsg;
 
 use crate::error::ContractError;
-use crate::msg::{BuyNft, ExecuteMsg, InstantiateMsg, QueryMsg, SellNft};
+use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::package::{ContractInfoResponse, OfferingsResponse, QueryOfferingsResult};
 use crate::state::{increment_offerings, Offering, CONTRACT_INFO, OFFERINGS};
 
@@ -48,11 +48,13 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::WithdrawNft { offering_id } => {
-            execute_cancel_sale(deps, env, info, offering_id)
-        }
-        ExecuteMsg::MakeOrder {offering_id} => execute_make_order(deps, env, info, offering_id),
-        ExecuteMsg::ReceiveNft(msg) => execute_create_sale(deps, env, info, msg),
+        ExecuteMsg::CancelSale { offering_id } => execute_cancel_sale(deps, env, info, offering_id),
+        ExecuteMsg::MakeOrder { offering_id } => execute_make_order(deps, env, info, offering_id),
+        ExecuteMsg::CreateSale {
+            token_id,
+            contract_addr,
+            list_price,
+        } => execute_create_sale(deps, env, info, token_id, contract_addr, list_price),
         ExecuteMsg::UpdatePrice {
             offering_id,
             update_price,
@@ -67,17 +69,18 @@ pub fn execute_make_order(
     offering_id: String,
 ) -> Result<Response, ContractError> {
     let off = OFFERINGS.load(deps.storage, &offering_id)?;
-    let price = coin((&off.list_price).u128(), NATIVE_DENOM);
+    let price = off.list_price;
+    let price_an1 = coin(price, NATIVE_DENOM);
 
     // send price to seller
     let transfer_coin_msg = CosmosMsg::Bank(BankMsg::Send {
         to_address: (&off.seller).to_string(),
-        amount: vec![price],
+        amount: vec![price_an1],
     });
 
     // create transfer cw721 msg
     let transfer_cw721_msg = Cw721ExecuteMsg::TransferNft {
-        recipient: rcv_msg.sender.clone(),
+        recipient: info.sender.to_string(),
         token_id: off.token_id.clone(),
     };
 
@@ -87,23 +90,21 @@ pub fn execute_make_order(
         funds: vec![],
     };
 
-    // if everything is fine transfer cw20 to seller
-    let cw20_transfer_cosmos_msg: CosmosMsg = exec_cw20_transfer.into();
     // transfer nft to buyer
     let cw721_transfer_cosmos_msg: CosmosMsg = exec_cw721_transfer.into();
 
-    let cosmos_msgs = vec![cw20_transfer_cosmos_msg, cw721_transfer_cosmos_msg];
+    let cosmos_msgs = vec![transfer_coin_msg, cw721_transfer_cosmos_msg];
 
     //delete offering
-    OFFERINGS.remove(deps.storage, &msg.offering_id);
+    OFFERINGS.remove(deps.storage, &offering_id);
 
-    let price_string = format!("{} {}", rcv_msg.amount, info.sender);
+    let price_string = format!("{} {}", price, info.sender);
 
     Ok(Response::new()
         .add_messages(cosmos_msgs)
         .add_attribute("action", "make_order")
         .add_attribute("seller", off.seller.to_string())
-        .add_attribute("buyer", rcv_msg.sender)
+        .add_attribute("buyer", info.sender)
         .add_attribute("paid_price", price_string)
         .add_attribute("token_id", off.token_id)
         .add_attribute("contract_addr", off.contract_addr.to_string()))
@@ -113,14 +114,12 @@ pub fn execute_create_sale(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
-    rcv_msg: Cw721ReceiveMsg,
+    token_id: String,
+    contract_addr: Addr,
+    list_price: u128,
 ) -> Result<Response, ContractError> {
-    let msg: SellNft = from_binary(&rcv_msg.msg)?;
-
-    // check if same token Id form same original contract is already on sale
     // get OFFERING_COUNT
     let id = increment_offerings(deps.storage)?.to_string();
-
     // query collection info
     let collection_info: CollectionInfoResponse = deps
         .querier
@@ -129,27 +128,46 @@ pub fn execute_create_sale(
     let royalty_info = collection_info.royalty_info;
     let royalty_info_clone = royalty_info.clone();
 
-    if msg.list_price.amount <= Uint128::from(0u128) {
+    if list_price == 0 {
         return Err(ContractError::PriceMustBePosiTive {});
     }
+
+    // grant permission cw721 to nft-marketplace
+    let approve_cw721_msg = Cw721ExecuteMsg::Approve {
+        spender: env.contract.address.to_string(),
+        token_id: token_id.clone(),
+        expires: None,
+    };
+    let approve_cw721_cosmos_msg = WasmMsg::Execute {
+        contract_addr: contract_addr.to_string(),
+        msg: to_binary(&approve_cw721_msg)?,
+        funds: vec![],
+    };
+    let msg : Vec<CosmosMsg> = vec![approve_cw721_cosmos_msg.into()];
+
     // save Offering
     let off = Offering {
-        contract_addr: info.sender.clone(),
+        contract_addr: contract_addr,
         royalty_info: royalty_info.clone(),
-        token_id: rcv_msg.token_id.clone(),
-        seller: deps.api.addr_validate(&rcv_msg.sender.clone())?,
-        list_price: msg.list_price.clone(),
+        token_id: token_id,
+        seller: info.sender.clone(),
+        list_price: list_price,
         listing_time: env.block.time,
     };
 
     OFFERINGS.save(deps.storage, &id, &off)?;
 
-    let price_string = format!("{} {}", msg.list_price.amount, msg.list_price.address);
-    let royalty_info_string = format!("{} {}", royalty_info_clone.unwrap().payment_address, royalty_info.unwrap().share);
+    let price_string = format!("{} {}", list_price, NATIVE_DENOM);
+    let royalty_info_string = format!(
+        "{} {}",
+        royalty_info_clone.unwrap().payment_address,
+        royalty_info.unwrap().share
+    );
 
     Ok(Response::new()
+        .add_messages(msg)
         .add_attribute("action", "create_sale")
-        .add_attribute("original_contract", info.sender)
+        .add_attribute("original_contract", off.contract_addr.to_string())
         .add_attribute("royalty_info", royalty_info_string)
         .add_attribute("seller", off.seller.to_string())
         .add_attribute("list_price", price_string)
@@ -158,32 +176,30 @@ pub fn execute_create_sale(
 
 pub fn execute_cancel_sale(
     deps: DepsMut,
-    _env: Env,
+    env: Env,
     info: MessageInfo,
     offering_id: String,
 ) -> Result<Response, ContractError> {
     // check if token_id is currently sold by the requesting address
     let off = OFFERINGS.load(deps.storage, &offering_id)?;
     if off.seller == info.sender {
-        // transfer token back to original owner
-        let transfer_cw721_msg = Cw721ExecuteMsg::TransferNft {
-            recipient: off.seller.clone().into_string(),
-            token_id: off.token_id.clone(),
+        // revoke cw721 marketplace's permission
+        let revoke_cw721_msg = Cw721ExecuteMsg::Revoke {
+            spender: env.contract.address.to_string(),
+            token_id: off.token_id,
         };
-
-        let exec_cw721_transfer = WasmMsg::Execute {
-            contract_addr: off.contract_addr.clone().into_string(),
-            msg: to_binary(&transfer_cw721_msg)?,
+        let revoke_cw721_cosmos_msg = WasmMsg::Execute {
+            contract_addr: off.contract_addr.to_string(),
+            msg: to_binary(&revoke_cw721_msg)?,
             funds: vec![],
         };
-
-        let cw721_transfer_cosmos_msg: Vec<CosmosMsg> = vec![exec_cw721_transfer.into()];
-
+        let msg : Vec<CosmosMsg> = vec![revoke_cw721_cosmos_msg.into()];
+        
         // remove offering
         OFFERINGS.remove(deps.storage, &offering_id);
 
         return Ok(Response::new()
-            .add_messages(cw721_transfer_cosmos_msg)
+            .add_messages(msg)
             .add_attribute("action", "cancel_sale")
             .add_attribute("seller", info.sender)
             .add_attribute("offering_id", offering_id));
@@ -196,20 +212,20 @@ pub fn execute_update_price(
     _env: Env,
     info: MessageInfo,
     offering_id: String,
-    update_price: Coin,
+    update_price: u128,
 ) -> Result<Response, ContractError> {
     // check if token_id is currently sold by the requesting address
     let mut off = OFFERINGS.load(deps.storage, &offering_id)?;
     if info.sender != off.seller {
-        return Err(ContractError::Unauthorized{});
+        return Err(ContractError::Unauthorized {});
     }
-    if update_price.amount <= Uint128::from(0u128) {
+    if update_price == 0 {
         return Err(ContractError::PriceMustBePosiTive {});
     }
     off.list_price = update_price;
     OFFERINGS.save(deps.storage, &offering_id, &off)?;
 
-    let price_string = format!("{} {}", off.list_price.amount, off.list_price.address);
+    let price_string = format!("{} {}", off.list_price, NATIVE_DENOM);
 
     Ok(Response::new()
         .add_attribute("action", "update_price")
@@ -244,9 +260,9 @@ fn query_offerings(deps: Deps, sort_listing: &str) -> StdResult<OfferingsRespons
     match sort_listing {
         "price_lowest" => {
             offerings_clone.sort_by(|a, b| {
-                if a.list_price.amount < b.list_price.amount {
+                if a.list_price < b.list_price {
                     Ordering::Less
-                } else if a.list_price.amount == b.list_price.amount {
+                } else if a.list_price == b.list_price {
                     Ordering::Equal
                 } else {
                     Ordering::Greater
@@ -259,9 +275,9 @@ fn query_offerings(deps: Deps, sort_listing: &str) -> StdResult<OfferingsRespons
         }
         "price_highest" => {
             offerings_clone.sort_by(|a, b| {
-                if a.list_price.amount < b.list_price.amount {
+                if a.list_price < b.list_price {
                     Ordering::Greater
-                } else if a.list_price.amount == b.list_price.amount {
+                } else if a.list_price == b.list_price {
                     Ordering::Equal
                 } else {
                     Ordering::Less

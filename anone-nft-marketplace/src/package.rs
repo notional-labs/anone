@@ -1,5 +1,4 @@
-use cosmwasm_std::Timestamp;
-use cw20::{Cw20Coin};
+use cosmwasm_std::{Timestamp};
 use anone_cw721::msg::RoyaltyInfoResponse;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -13,7 +12,7 @@ pub struct ContractInfoResponse {
 pub struct QueryOfferingsResult {
     pub id: String,
     pub token_id: String,
-    pub list_price: Cw20Coin,
+    pub list_price: u128,
     pub royalty_info: Option<RoyaltyInfoResponse>,
     pub contract_addr: String,
     pub seller: String,
