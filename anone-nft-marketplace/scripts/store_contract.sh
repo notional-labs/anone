@@ -3,7 +3,7 @@
 NODE="http://65.108.128.139:2281"
 ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
-CONTRACT_DIR="artifacts/an721.wasm"
+CONTRACT_DIR="artifacts/anone_nft_marketplace.wasm"
 SLEEP_TIME="15s"
 
 RES=$(anoned tx wasm store "$CONTRACT_DIR" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 875000uan1 -y --output json)

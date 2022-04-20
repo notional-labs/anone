@@ -18,4 +18,7 @@ pub enum ContractError {
     
     #[error("Price must be positive")]
     PriceMustBePosiTive {},
+
+    #[error("Marketplace don't have permission with this nft")]
+    NoPermission {},
 }

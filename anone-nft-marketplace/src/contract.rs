@@ -4,18 +4,21 @@ use std::str::from_utf8;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    coin, to_binary, Addr, Api, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Order,
-    Record, Response, StdError, StdResult, WasmMsg
+    coin, to_binary, Addr, Api, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Empty, Env, MessageInfo,
+    Order, Record, Response, StdError, StdResult, WasmMsg,
 };
 
 use anone_cw721::msg::{CollectionInfoResponse, QueryMsg as an721QueryMsg};
+
 use cw2::set_contract_version;
-use cw721::Cw721ExecuteMsg;
+use cw721::{ApprovalResponse, Cw721ExecuteMsg};
 
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::package::{ContractInfoResponse, OfferingsResponse, QueryOfferingsResult};
 use crate::state::{increment_offerings, Offering, CONTRACT_INFO, OFFERINGS};
+
+pub type Cw721BaseExecuteMsg = cw721_base::ExecuteMsg<Empty>;
 
 pub const NATIVE_DENOM: &str = "uan1";
 
@@ -123,7 +126,7 @@ pub fn execute_create_sale(
     // query collection info
     let collection_info: CollectionInfoResponse = deps
         .querier
-        .query_wasm_smart(info.sender.clone(), &an721QueryMsg::CollectionInfo {})?;
+        .query_wasm_smart(contract_addr.clone(), &an721QueryMsg::CollectionInfo {})?;
 
     let royalty_info = collection_info.royalty_info;
     let royalty_info_clone = royalty_info.clone();
@@ -132,24 +135,20 @@ pub fn execute_create_sale(
         return Err(ContractError::PriceMustBePosiTive {});
     }
 
-    // grant permission cw721 to nft-marketplace
-    let approve_cw721_msg = Cw721ExecuteMsg::Approve {
-        spender: env.contract.address.to_string(),
-        token_id: token_id.clone(),
-        expires: None,
-    };
-    let approve_cw721_cosmos_msg = WasmMsg::Execute {
-        contract_addr: contract_addr.to_string(),
-        msg: to_binary(&approve_cw721_msg)?,
-        funds: vec![],
-    };
-    let msg : Vec<CosmosMsg> = vec![approve_cw721_cosmos_msg.into()];
+    // check approval
+    let approval : StdResult<ApprovalResponse> = deps
+        .querier
+        .query_wasm_smart(contract_addr.clone(), &an721QueryMsg::Approval {token_id: token_id.clone(), spender: env.contract.address.to_string(), include_expired: None});
 
+    if approval.is_ok() == false {
+        return Err(ContractError::NoPermission {});
+    }
+    
     // save Offering
     let off = Offering {
         contract_addr: contract_addr,
         royalty_info: royalty_info.clone(),
-        token_id: token_id,
+        token_id: token_id.clone(),
         seller: info.sender.clone(),
         list_price: list_price,
         listing_time: env.block.time,
@@ -164,8 +163,7 @@ pub fn execute_create_sale(
         royalty_info.unwrap().share
     );
 
-    Ok(Response::new()
-        .add_messages(msg)
+    Ok(Response::default()
         .add_attribute("action", "create_sale")
         .add_attribute("original_contract", off.contract_addr.to_string())
         .add_attribute("royalty_info", royalty_info_string)
@@ -193,8 +191,7 @@ pub fn execute_cancel_sale(
             msg: to_binary(&revoke_cw721_msg)?,
             funds: vec![],
         };
-        let msg : Vec<CosmosMsg> = vec![revoke_cw721_cosmos_msg.into()];
-        
+        let msg: Vec<CosmosMsg> = vec![revoke_cw721_cosmos_msg.into()];
         // remove offering
         OFFERINGS.remove(deps.storage, &offering_id);
 
