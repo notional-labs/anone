@@ -6,14 +6,14 @@ ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="15s"
 CONTRACT="one1mych7nr7fk86y2ezekkqfwsqpl8ax659ez4r4lm87x6clhz65q9sn4ngte"
-MARKETPLACE_CONTRACT_ADDR="one1qm8dzr6lyz9swhq98tgejhf9r8usqc64v5arjpf2jtpjs0w5yewqx3hkqs"
+MARKETPLACE_CONTRACT_ADDR="one15uery5y3vutl3nmv4qh8nrd4cvkty9a44sajc2kf23t9l5hs0jdq8dz6yu"
 TOKEN_ID="$1"
 
-APPROVE="{\"approve\": {\"token_id\":\"$TOKEN_ID\", \"spender\":\"$MARKETPLACE_CONTRACT_ADDR\"}}"
+REVOKE="{\"revoke\": {\"token_id\":\"$TOKEN_ID\", \"spender\":\"$MARKETPLACE_CONTRACT_ADDR\"}}"
 
-echo $APPROVE
+echo $REVOKE
 
-RES=$(anoned tx wasm execute "$CONTRACT" "$APPROVE" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 0uan1 -y --output json)
+RES=$(anoned tx wasm execute "$CONTRACT" "$REVOKE" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 0uan1 -y --output json)
 echo $RES
 
 TXHASH=$(echo $RES | jq -r .txhash)

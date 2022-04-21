@@ -1,4 +1,4 @@
-use cosmwasm_std::{Timestamp};
+use cosmwasm_std::{Timestamp, Uint128};
 use anone_cw721::msg::RoyaltyInfoResponse;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -12,7 +12,7 @@ pub struct ContractInfoResponse {
 pub struct QueryOfferingsResult {
     pub id: String,
     pub token_id: String,
-    pub list_price: u128,
+    pub list_price: Uint128,
     pub royalty_info: Option<RoyaltyInfoResponse>,
     pub contract_addr: String,
     pub seller: String,
@@ -23,4 +23,3 @@ pub struct QueryOfferingsResult {
 pub struct OfferingsResponse {
     pub offerings: Vec<QueryOfferingsResult>,
 }
-

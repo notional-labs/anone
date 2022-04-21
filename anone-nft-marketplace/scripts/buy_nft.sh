@@ -6,18 +6,14 @@ ACCOUNT="Test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one15q2ult9rrmrum5dw2asmw5xy6nu4fhukke8wtz0m7mqd6m3p065qptrcfg"
-CW20_CONTRACT_ADDR="one13v6dgzhf9nu4fzdkrc6tpvxxd8eqg546ynjep8cqvl4n27xlvf7sme7ml3"
-INSERT_OFFERING_ID="1"
-# This msg is BASE64_ENCODED_JSON --> { "offering_id": "<INSERT_OFFERING_ID>" } <--
-BASE64_ENCODED_JSON="eyJvZmZlcmluZ19pZCI6ICIxIn0="
+MARKETPLACE_CONTRACT_ADDR="one1qm8dzr6lyz9swhq98tgejhf9r8usqc64v5arjpf2jtpjs0w5yewqx3hkqs"
+INSERT_OFFERING_ID="$1"
 
-AMOUNT="$1"
-BUY_NFT="{\"send\": {\"contract\": \"$MARKETPLACE_CONTRACT_ADDR\", \"amount\": \"$AMOUNT\", \"msg\": \"$BASE64_ENCODED_JSON\"}}"
+BUY_NFT="{\"make_order\": {\"offering_id\": \"$INSERT_OFFERING_ID\"}}"
 echo $BUY_NFT
 
 # Execute send action to buy token with the specified offering_id from the marketplace
-RES=$(anoned tx wasm execute "$CW20_CONTRACT_ADDR" "$BUY_NFT" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 0uan1 -y --output json)
+RES=$(anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" "$BUY_NFT" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 5000000uan1 -y --output json)
 echo $RES
 
 TXHASH=$(echo $RES | jq -r .txhash)

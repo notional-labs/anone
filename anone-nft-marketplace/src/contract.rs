@@ -4,27 +4,24 @@ use std::str::from_utf8;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    coin, to_binary, Addr, Api, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Empty, Env, MessageInfo,
-    Order, Record, Response, StdError, StdResult, WasmMsg,
+    coin, from_binary, to_binary, Api, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut, Env,
+    MessageInfo, Order, Record, Response, StdError, StdResult, Uint128, WasmMsg,
 };
 
 use anone_cw721::msg::{CollectionInfoResponse, QueryMsg as an721QueryMsg};
-
 use cw2::set_contract_version;
-use cw721::{ApprovalResponse, Cw721ExecuteMsg};
+use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
 
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg, SellNft};
 use crate::package::{ContractInfoResponse, OfferingsResponse, QueryOfferingsResult};
 use crate::state::{increment_offerings, Offering, CONTRACT_INFO, OFFERINGS};
-
-pub type Cw721BaseExecuteMsg = cw721_base::ExecuteMsg<Empty>;
-
-pub const NATIVE_DENOM: &str = "uan1";
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:anone-nft-marketplace";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+
+pub const NATIVE_DENOM: &str = "uan1";
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -51,17 +48,32 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::CancelSale { offering_id } => execute_cancel_sale(deps, env, info, offering_id),
+        ExecuteMsg::WithdrawNft { offering_id } => {
+            execute_cancel_sale(deps, env, info, offering_id)
+        }
         ExecuteMsg::MakeOrder { offering_id } => execute_make_order(deps, env, info, offering_id),
-        ExecuteMsg::CreateSale {
-            token_id,
-            contract_addr,
-            list_price,
-        } => execute_create_sale(deps, env, info, token_id, contract_addr, list_price),
+        ExecuteMsg::ReceiveNft(msg) => execute_create_sale(deps, env, info, msg),
         ExecuteMsg::UpdatePrice {
             offering_id,
             update_price,
         } => execute_update_price(deps, env, info, offering_id, update_price),
+    }
+}
+
+/// If exactly one coin was sent, returns it regardless of denom.
+/// Returns error if 0 or 2+ coins were sent
+pub fn one_coin(info: &MessageInfo) -> Result<Coin, ContractError> {
+    match info.funds.len() {
+        0 => Err(ContractError::NoFunds {}),
+        1 => {
+            let coin = &info.funds[0];
+            if coin.amount.is_zero() {
+                Err(ContractError::NoFunds {})
+            } else {
+                Ok(coin.clone())
+            }
+        }
+        _ => Err(ContractError::MultipleDenoms {}),
     }
 }
 
@@ -72,36 +84,57 @@ pub fn execute_make_order(
     offering_id: String,
 ) -> Result<Response, ContractError> {
     let off = OFFERINGS.load(deps.storage, &offering_id)?;
-    let price = off.list_price;
-    let price_an1 = coin(price, NATIVE_DENOM);
 
-    // send price to seller
-    let transfer_coin_msg = CosmosMsg::Bank(BankMsg::Send {
-        to_address: (&off.seller).to_string(),
-        amount: vec![price_an1],
-    });
+    let royalty_info = off.royalty_info;
+    let royalty_info_clone = royalty_info.clone();
+    let payment_address = royalty_info_clone.unwrap().payment_address;
+    let share = royalty_info.unwrap().share;
+
+    // check funds have just one denom
+    let check_price = one_coin(&info)?;
+
+    // check for enough coins
+    let funds_from_sender = check_price;
+    if funds_from_sender.amount < off.list_price {
+        return Err(ContractError::InsufficientFunds {});
+    }
+
+    let royalty_fee = funds_from_sender.amount * share;
+    let net_price = funds_from_sender.amount - funds_from_sender.amount * share;
 
     // create transfer cw721 msg
     let transfer_cw721_msg = Cw721ExecuteMsg::TransferNft {
-        recipient: info.sender.to_string(),
+        recipient: off.seller.clone().into_string(),
         token_id: off.token_id.clone(),
     };
 
     let exec_cw721_transfer = WasmMsg::Execute {
         contract_addr: (&off.contract_addr).to_string(),
         msg: to_binary(&transfer_cw721_msg)?,
-        funds: vec![],
+        funds: vec![funds_from_sender.clone()],
     };
+
+    // send price to seller
+    let transfer_net_price_msg = CosmosMsg::Bank(BankMsg::Send {
+        to_address: (&off.seller).to_string(),
+        amount: vec![coin(net_price.u128(), NATIVE_DENOM)],
+    });
+
+    // send price to creator
+    let transfer_royalty_fee_msg = CosmosMsg::Bank(BankMsg::Send {
+        to_address: payment_address,
+        amount: vec![coin(royalty_fee.u128(), NATIVE_DENOM)],
+    });
 
     // transfer nft to buyer
     let cw721_transfer_cosmos_msg: CosmosMsg = exec_cw721_transfer.into();
 
-    let cosmos_msgs = vec![transfer_coin_msg, cw721_transfer_cosmos_msg];
+    let cosmos_msgs = vec![transfer_net_price_msg, transfer_royalty_fee_msg, cw721_transfer_cosmos_msg];
 
     //delete offering
     OFFERINGS.remove(deps.storage, &offering_id);
 
-    let price_string = format!("{} {}", price, info.sender);
+    let price_string = format!("{} {}", off.list_price.clone(), NATIVE_DENOM);
 
     Ok(Response::new()
         .add_messages(cosmos_msgs)
@@ -117,55 +150,46 @@ pub fn execute_create_sale(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
-    token_id: String,
-    contract_addr: Addr,
-    list_price: u128,
+    rcv_msg: Cw721ReceiveMsg,
 ) -> Result<Response, ContractError> {
+    let msg: SellNft = from_binary(&rcv_msg.msg)?;
+
     // get OFFERING_COUNT
     let id = increment_offerings(deps.storage)?.to_string();
+
     // query collection info
     let collection_info: CollectionInfoResponse = deps
         .querier
-        .query_wasm_smart(contract_addr.clone(), &an721QueryMsg::CollectionInfo {})?;
+        .query_wasm_smart(info.sender.clone(), &an721QueryMsg::CollectionInfo {})?;
 
     let royalty_info = collection_info.royalty_info;
     let royalty_info_clone = royalty_info.clone();
 
-    if list_price == 0 {
+    if msg.list_price.is_zero() {
         return Err(ContractError::PriceMustBePosiTive {});
     }
-
-    // check approval
-    let approval : StdResult<ApprovalResponse> = deps
-        .querier
-        .query_wasm_smart(contract_addr.clone(), &an721QueryMsg::Approval {token_id: token_id.clone(), spender: env.contract.address.to_string(), include_expired: None});
-
-    if approval.is_ok() == false {
-        return Err(ContractError::NoPermission {});
-    }
-    
     // save Offering
     let off = Offering {
-        contract_addr: contract_addr,
+        contract_addr: info.sender.clone(),
         royalty_info: royalty_info.clone(),
-        token_id: token_id.clone(),
-        seller: info.sender.clone(),
-        list_price: list_price,
+        token_id: rcv_msg.token_id.clone(),
+        seller: deps.api.addr_validate(&rcv_msg.sender.clone())?,
+        list_price: msg.list_price.clone(),
         listing_time: env.block.time,
     };
 
     OFFERINGS.save(deps.storage, &id, &off)?;
 
-    let price_string = format!("{} {}", list_price, NATIVE_DENOM);
+    let price_string = format!("{} {}", msg.list_price, NATIVE_DENOM);
     let royalty_info_string = format!(
         "{} {}",
         royalty_info_clone.unwrap().payment_address,
         royalty_info.unwrap().share
     );
 
-    Ok(Response::default()
+    Ok(Response::new()
         .add_attribute("action", "create_sale")
-        .add_attribute("original_contract", off.contract_addr.to_string())
+        .add_attribute("original_contract", info.sender)
         .add_attribute("royalty_info", royalty_info_string)
         .add_attribute("seller", off.seller.to_string())
         .add_attribute("list_price", price_string)
@@ -174,29 +198,32 @@ pub fn execute_create_sale(
 
 pub fn execute_cancel_sale(
     deps: DepsMut,
-    env: Env,
+    _env: Env,
     info: MessageInfo,
     offering_id: String,
 ) -> Result<Response, ContractError> {
     // check if token_id is currently sold by the requesting address
     let off = OFFERINGS.load(deps.storage, &offering_id)?;
     if off.seller == info.sender {
-        // revoke cw721 marketplace's permission
-        let revoke_cw721_msg = Cw721ExecuteMsg::Revoke {
-            spender: env.contract.address.to_string(),
-            token_id: off.token_id,
+        // transfer token back to original owner
+        let transfer_cw721_msg = Cw721ExecuteMsg::TransferNft {
+            recipient: off.seller.clone().into_string(),
+            token_id: off.token_id.clone(),
         };
-        let revoke_cw721_cosmos_msg = WasmMsg::Execute {
-            contract_addr: off.contract_addr.to_string(),
-            msg: to_binary(&revoke_cw721_msg)?,
+
+        let exec_cw721_transfer = WasmMsg::Execute {
+            contract_addr: off.contract_addr.clone().into_string(),
+            msg: to_binary(&transfer_cw721_msg)?,
             funds: vec![],
         };
-        let msg: Vec<CosmosMsg> = vec![revoke_cw721_cosmos_msg.into()];
+
+        let cw721_transfer_cosmos_msg: Vec<CosmosMsg> = vec![exec_cw721_transfer.into()];
+
         // remove offering
         OFFERINGS.remove(deps.storage, &offering_id);
 
         return Ok(Response::new()
-            .add_messages(msg)
+            .add_messages(cw721_transfer_cosmos_msg)
             .add_attribute("action", "cancel_sale")
             .add_attribute("seller", info.sender)
             .add_attribute("offering_id", offering_id));
@@ -209,14 +236,14 @@ pub fn execute_update_price(
     _env: Env,
     info: MessageInfo,
     offering_id: String,
-    update_price: u128,
+    update_price: Uint128,
 ) -> Result<Response, ContractError> {
     // check if token_id is currently sold by the requesting address
     let mut off = OFFERINGS.load(deps.storage, &offering_id)?;
     if info.sender != off.seller {
         return Err(ContractError::Unauthorized {});
     }
-    if update_price == 0 {
+    if update_price.is_zero() {
         return Err(ContractError::PriceMustBePosiTive {});
     }
     off.list_price = update_price;

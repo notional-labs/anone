@@ -1,5 +1,5 @@
 use crate::package::ContractInfoResponse;
-use cosmwasm_std::{Addr, StdResult, Storage, Timestamp};
+use cosmwasm_std::{Addr, StdResult, Storage, Timestamp, Uint128};
 use cw_storage_plus::{Item, Map};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -13,7 +13,7 @@ pub struct Offering {
     pub contract_addr: Addr,
     pub royalty_info: Option<RoyaltyInfoResponse>,
     pub seller: Addr,
-    pub list_price: u128,
+    pub list_price: Uint128,
     pub listing_time: Timestamp,
 }
 

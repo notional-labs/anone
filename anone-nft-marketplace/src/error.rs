@@ -21,4 +21,12 @@ pub enum ContractError {
 
     #[error("Marketplace don't have permission with this nft")]
     NoPermission {},
+
+    #[error("Don't have enough fund")]
+    NoFunds {},
+
+    #[error("Have more than one denom")]
+    MultipleDenoms {},
+
+
 }
