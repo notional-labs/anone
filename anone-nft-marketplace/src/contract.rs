@@ -93,8 +93,14 @@ pub fn execute_make_order(
     // check funds have just one denom
     let check_price = one_coin(&info)?;
 
+    // check denom is uan1
+    if check_price.denom != NATIVE_DENOM {
+        return Err(ContractError::WrongDenoms {})
+    }
+    
     // check for enough coins
     let funds_from_sender = check_price;
+
     if funds_from_sender.amount < off.list_price {
         return Err(ContractError::InsufficientFunds {});
     }
@@ -111,7 +117,7 @@ pub fn execute_make_order(
     let exec_cw721_transfer = WasmMsg::Execute {
         contract_addr: (&off.contract_addr).to_string(),
         msg: to_binary(&transfer_cw721_msg)?,
-        funds: vec![funds_from_sender.clone()],
+        funds: vec![],
     };
 
     // send price to seller
@@ -143,7 +149,9 @@ pub fn execute_make_order(
         .add_attribute("buyer", info.sender)
         .add_attribute("paid_price", price_string)
         .add_attribute("token_id", off.token_id)
-        .add_attribute("contract_addr", off.contract_addr.to_string()))
+        .add_attribute("contract_addr", off.contract_addr.to_string())
+        .add_attribute("net_price", net_price)
+        .add_attribute("royalty_fee", royalty_fee))
 }
 
 pub fn execute_create_sale(

@@ -28,5 +28,7 @@ pub enum ContractError {
     #[error("Have more than one denom")]
     MultipleDenoms {},
 
+    #[error("Have more than one denom")]
+    WrongDenoms {},
 
 }

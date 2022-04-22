@@ -6,19 +6,22 @@ ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one1qm8dzr6lyz9swhq98tgejhf9r8usqc64v5arjpf2jtpjs0w5yewqx3hkqs"
+MARKETPLACE_CONTRACT_ADDR="one1sc2mtuwqls6mgd5cg2u5mzcfz3jxendjx3smgywu97f9p4ywmsusgsntls"
 CW721_CONTRACT_ADDR="one1mych7nr7fk86y2ezekkqfwsqpl8ax659ez4r4lm87x6clhz65q9sn4ngte"
-AMOUNT=5000000
+AMOUNT_WITHOUT_DENOM=5000000
 TOKEN_ID="$1"
+
+# This msg is BASE64_ENCODED_JSON --> { "list_price": "<AMOUNT_WITHOUT_DENOM>"} <--
+BASE64_ENCODED_JSON="IHsibGlzdF9wcmljZSI6IjUwMDAwMDAifQ=="
 
 ALL_NFTS_QUERY="{\"all_tokens\": {}}"
 OWNER_OF=$(anoned query wasm contract-state smart "$CW721_CONTRACT_ADDR" "$ALL_NFTS_QUERY" --node "$NODE" --output json)
 echo $OWNER_OF
 
-CREATE_SALE="{\"create_sale\": {\"contract_addr\":\"$CW721_CONTRACT_ADDR\", \"token_id\":\"$TOKEN_ID\", \"list_price\": \"5000000\"}}"
-echo $CREATE_SALE
+SEND_NFT="{\"send_nft\": {\"contract\":\"$MARKETPLACE_CONTRACT_ADDR\", \"token_id\":\"$TOKEN_ID\", \"msg\": \"$BASE64_ENCODED_JSON\"}}"
+echo $SEND_NFT
 
-RES=$(anoned tx wasm execute "$MARKETPLACE_CONTRACT_ADDR" "$CREATE_SALE" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 875000uan1 -y --output json)
+RES=$(anoned tx wasm execute "$CW721_CONTRACT_ADDR" "$SEND_NFT" --from "$ACCOUNT" -y --output json --chain-id "$CHAINID" --node "$NODE" --gas 35000000 --fees 0uan1 -y --output json)
 echo $RES
 
 TXHASH=$(echo $RES | jq -r .txhash)
