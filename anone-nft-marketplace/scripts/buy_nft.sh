@@ -6,7 +6,7 @@ ACCOUNT="Test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one1sc2mtuwqls6mgd5cg2u5mzcfz3jxendjx3smgywu97f9p4ywmsusgsntls"
+MARKETPLACE_CONTRACT_ADDR="one1mcy2qkuphhz4h4mncdzrxf3fh57fk98l6m30zfp7lggk4zh407rqq2carw"
 INSERT_OFFERING_ID="$1"
 
 BUY_NFT="{\"make_order\": {\"offering_id\": \"$INSERT_OFFERING_ID\"}}"

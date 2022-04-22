@@ -110,7 +110,7 @@ pub fn execute_make_order(
 
     // create transfer cw721 msg
     let transfer_cw721_msg = Cw721ExecuteMsg::TransferNft {
-        recipient: off.seller.clone().into_string(),
+        recipient: info.sender.clone().into_string(),
         token_id: off.token_id.clone(),
     };
 
