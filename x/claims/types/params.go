@@ -39,7 +39,7 @@ func NewParams(enabled bool, claimDenom string, startTime time.Time, durationUnt
 func DefaultParams() Params {
 	return Params{
 		AirdropEnabled:     true,
-		AirdropStartTime:   time.Time{},
+		AirdropStartTime:   time.Now(),
 		DurationUntilDecay: DefaultDurationUntilDecay,
 		DurationOfDecay:    DefaultDurationOfDecay,
 		ClaimDenom:         DefaultClaimDenom,

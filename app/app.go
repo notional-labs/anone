@@ -106,6 +106,9 @@ import (
 	claim "github.com/notional-labs/anone/x/claims"
 	claimkeeper "github.com/notional-labs/anone/x/claims/keeper"
 	claimtypes "github.com/notional-labs/anone/x/claims/types"
+
+	sgwasm "github.com/notional-labs/anone/internal/wasm"
+	claimwasm "github.com/notional-labs/anone/x/claims/wasm"
 )
 
 var (
@@ -413,8 +416,17 @@ func New(
 		panic("error while reading wasm config: " + err.Error())
 	}
 
+	registry := sgwasm.NewEncoderRegistry()
+	registry.RegisterEncoder(sgwasm.DistributionRoute, sgwasm.CustomDistributionEncoder)
+	registry.RegisterEncoder(claimtypes.ModuleName, claimwasm.Encoder)
+
 	supportedFeatures := "iterator,staking,stargate"
 	wasmOpts := GetWasmOpts(appOpts)
+	wasmOpts = append(
+		wasmOpts,
+		wasmkeeper.WithMessageEncoders(sgwasm.MessageEncoders(registry)),
+		wasmkeeper.WithQueryPlugins(nil),
+	)
 	app.wasmKeeper = wasm.NewKeeper(
 		appCodec,
 		keys[wasm.StoreKey],
@@ -427,7 +439,6 @@ func New(
 		&app.IBCKeeper.PortKeeper,
 		scopedWasmKeeper,
 		app.TransferKeeper,
-		app.Router(),
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),
 		wasmDir,
@@ -435,6 +446,7 @@ func New(
 		supportedFeatures,
 		wasmOpts...,
 	)
+
 
 	// register wasm gov proposal types
 	enabledProposals := GetEnabledProposals()
