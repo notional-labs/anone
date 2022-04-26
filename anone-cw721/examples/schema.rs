@@ -7,7 +7,7 @@ use cw721::{
     AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, NftInfoResponse,
     NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
 };
-use anone_cw721::contract::{ExecuteMsg, Extension, InstantiateMsg, MinterResponse, QueryMsg};
+use anone_cw721::contract::{ExecuteMsg, Extension, InstantiateMsg, QueryMsg, CollectionInfoResponse, RoyaltyInfoResponse};
 
 fn main() {
     let mut out_dir = current_dir().unwrap();
@@ -18,6 +18,8 @@ fn main() {
     export_schema(&schema_for!(InstantiateMsg), &out_dir);
     export_schema_with_title(&schema_for!(ExecuteMsg), &out_dir, "ExecuteMsg");
     export_schema(&schema_for!(QueryMsg), &out_dir);
+    export_schema(&schema_for!(CollectionInfoResponse), &out_dir);
+    export_schema(&schema_for!(RoyaltyInfoResponse), &out_dir);
     export_schema_with_title(
         &schema_for!(AllNftInfoResponse<Extension>),
         &out_dir,
@@ -27,7 +29,6 @@ fn main() {
     export_schema(&schema_for!(ApprovalsResponse), &out_dir);
     export_schema(&schema_for!(OperatorsResponse), &out_dir);
     export_schema(&schema_for!(ContractInfoResponse), &out_dir);
-    export_schema(&schema_for!(MinterResponse), &out_dir);
     export_schema_with_title(
         &schema_for!(NftInfoResponse<Extension>),
         &out_dir,

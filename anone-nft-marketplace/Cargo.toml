@@ -1,16 +1,18 @@
 [package]
-name = "anone-cw721"
-description = "An implementation of cw721 for Anone project"
-license = "Apache-2.0"
+name = "anone-nft-marketplace"
+description = "NFT marketplace contract of Anone project"
 version = "0.1.0"
-authors = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com>"]
 edition = "2021"
+author = ["Chinh D. Nguyen <eyescryptoinsights@gmail.com"]
 repository = "https://github.com/notional-labs/anone"
 
 exclude = [
   # Those files are rust-optimizer artifacts. You might want to commit them for convenience but they should not be part of the source code publication.
-  "artifacts/*",
+  "contract.wasm",
+  "hash.txt",
 ]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -22,17 +24,19 @@ backtraces = ["cosmwasm-std/backtraces"]
 library = []
 
 [dependencies]
-cw721 = "0.11.0"
-cw721-base = { version = "0.11.0", features = ["library"] }
 cosmwasm-std = { version = "1.0.0-beta" }
 cosmwasm-storage = { version = "1.0.0-beta5" }
 cw-storage-plus = "0.12.1"
 cw-utils = "0.12.1"
 cw2 = "0.12.1"
+cw20 = "0.12.1"
+cw721 = "0.11.0"
+cw721-base = { version = "0.11.0", features = ["library"] }
+anone-cw721 = { version = "0.1.0", features = ["library"] }
+
 schemars = "0.8"
-serde = { version = "1.0.130", default-features = false, features = ["derive"] }
-thiserror = { version = "1.0.30" }
-url = "2.2.2"
+serde = { version = "1.0", default-features = false, features = ["derive"] }
+thiserror = { version = "1.0" }
 
 [dev-dependencies]
 cosmwasm-schema = { version = "1.0.0-beta3" }
