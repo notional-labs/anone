@@ -4,10 +4,9 @@ use cosmwasm_std::entry_point;
 use cosmwasm_std::{Addr, DepsMut, Env, MessageInfo};
 use cw2::set_contract_version;
 use anone_minter::msg::{MintCountResponse, QueryMsg};
-use an_std::{create_claim_for_msg, ClaimAction, AnoneMsgWrapper};
 
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg};
+use crate::msg::{ExecuteMsg, InstantiateMsg, create_claim_for_msg, ClaimAction, AnoneMsgWrapper};
 pub type Response = cosmwasm_std::Response<AnoneMsgWrapper>;
 
 // version info for migration info
