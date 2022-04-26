@@ -47,7 +47,7 @@ pub enum ClaimAction {
 
 pub fn create_claim_for_msg(address: String, action: ClaimAction) -> CosmosMsg<AnoneMsgWrapper> {
     AnoneMsgWrapper {
-        route: AnoneRoute::Claim,
+        route: AnoneRoute::Claims,
         msg_data: AnoneMsg::ClaimFor { address, action },
         version: MSG_DATA_VERSION.to_owned(),
     }

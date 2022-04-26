@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "snake_case")]
 pub enum AnoneRoute {
     Alloc,
-    Claim,
+    #[serde(rename = "claims")]
+    Claims,
     Distribution,
 }
