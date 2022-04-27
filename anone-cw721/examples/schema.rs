@@ -3,11 +3,11 @@ use std::fs::create_dir_all;
 
 use cosmwasm_schema::{export_schema, export_schema_with_title, remove_schemas, schema_for};
 
-use cw721::{
-    AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, NftInfoResponse,
+use anone_cw721::msg::{
+    AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, NftInfoResponse, CollectionInfoResponse, ModelInfoResponse,
     NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
 };
-use anone_cw721::contract::{ExecuteMsg, Extension, InstantiateMsg, QueryMsg, CollectionInfoResponse, RoyaltyInfoResponse};
+use anone_cw721::{ExecuteMsg, Extension, InstantiateMsg, MinterResponse, QueryMsg, };
 
 fn main() {
     let mut out_dir = current_dir().unwrap();
@@ -16,10 +16,8 @@ fn main() {
     remove_schemas(&out_dir).unwrap();
 
     export_schema(&schema_for!(InstantiateMsg), &out_dir);
-    export_schema_with_title(&schema_for!(ExecuteMsg), &out_dir, "ExecuteMsg");
+    export_schema_with_title(&schema_for!(ExecuteMsg<Extension>), &out_dir, "ExecuteMsg");
     export_schema(&schema_for!(QueryMsg), &out_dir);
-    export_schema(&schema_for!(CollectionInfoResponse), &out_dir);
-    export_schema(&schema_for!(RoyaltyInfoResponse), &out_dir);
     export_schema_with_title(
         &schema_for!(AllNftInfoResponse<Extension>),
         &out_dir,
@@ -29,10 +27,17 @@ fn main() {
     export_schema(&schema_for!(ApprovalsResponse), &out_dir);
     export_schema(&schema_for!(OperatorsResponse), &out_dir);
     export_schema(&schema_for!(ContractInfoResponse), &out_dir);
+    export_schema(&schema_for!(CollectionInfoResponse), &out_dir);
+    export_schema(&schema_for!(MinterResponse), &out_dir);
     export_schema_with_title(
         &schema_for!(NftInfoResponse<Extension>),
         &out_dir,
         "NftInfoResponse",
+    );
+    export_schema_with_title(
+        &schema_for!(ModelInfoResponse<Extension>),
+        &out_dir,
+        "ModelInfoResponse",
     );
     export_schema(&schema_for!(NumTokensResponse), &out_dir);
     export_schema(&schema_for!(OwnerOfResponse), &out_dir);
