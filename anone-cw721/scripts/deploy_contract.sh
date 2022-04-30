@@ -10,7 +10,7 @@ SLEEP_TIME="15s"
 
 CREATOR=$(anoned keys show $ACCOUNT -a)
 INIT="{\"name\": \"Anone NFT Collection Contract\", \"symbol\": \"ANCC\", \"minter\": \"$CREATOR\", \"collection_info\": {\"creator\": \"$CREATOR\", \"description\": \"Test\", \"image\": \"https://drive.google.com/file/d/1sMElSrt5mXMLwHF_crPs6YfNUg0PMMq2/view?usp=sharing\", \"royalty_info\":{\"payment_address\": \"$CREATOR\", \"share\":\"0.1\"}}}"
-INIT_JSON=$(anoned tx wasm instantiate "67" "$INIT" --from "$ACCOUNT" --label "anone-cw721" -y --chain-id "$CHAINID" --node "$NODE" --gas 3000000 --fees 0uan1 -o json)
+INIT_JSON=$(anoned tx wasm instantiate "69" "$INIT" --from "$ACCOUNT" --label "anone-cw721" -y --chain-id "$CHAINID" --node "$NODE" --gas 3000000 --fees 0uan1 -o json)
 
 echo "INIT_JSON = $INIT_JSON"
 

@@ -5,14 +5,14 @@ NODE="http://65.108.128.139:2281"
 #OWNER="test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="15s"
-CONTRACT="one1tj748034gl3zvujn2tz4p4m8rf9j9uarsj5j3c5a5z2neqel77cslz2lp0"
+CONTRACT="one1jgee6ue6sp844g7wm46gdc0zkpgllt6yu5huspln23cnzhmslwkqk3qwgq"
 
 LATEST=$(bash scripts/query_all_models.sh | jq -r ".data.models | last")
 MODEL_ID=$(($LATEST+1))
 
 # CHANGE ONLY THIS
 OWNER="Developer"
-MODEL_URI="https://drive.google.com/file/d/1HpYCJaIB4nEu54V8cPAK1cCiIur9Ua0M/view?usp=sharing"
+MODEL_URI="https://ipfs.io/ipfs/bafybeiaivv62j7jxlkahxobfr5io7h2j56obw5mojljho2ybg7zhah2eue/galaxyfcnCU3/2"
 
 CREATE_MODEL="{\"create_shoe_model\": {\"model_id\":\"$MODEL_ID\",  \"model_uri\": \"$MODEL_URI\", \"owner\":\"$(anoned keys show $OWNER -a)\"}}"
 
