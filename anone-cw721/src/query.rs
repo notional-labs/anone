@@ -8,13 +8,13 @@ use cw_storage_plus::Bound;
 use cw_utils::maybe_addr;
 
 use crate::msg::{
-    AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, CollectionInfoResponse,
-    ContractInfoResponse, MinterResponse, ModelInfoResponse, ModelsResponse, NftInfoResponse,
-    NumModelsResponse, NumTokensResponse, OperatorsResponse, OwnerOfResponse, QueryMsg,
-    RoyaltyInfoResponse, TokensResponse,
+    AllModelsResponse, AllNftInfoResponse, AllNftsResponse, ApprovalResponse, ApprovalsResponse,
+    CollectionInfoResponse, ContractInfoResponse, MinterResponse, ModelInfoResponse,
+    ModelsResponse, NftInfoResponse, NumModelsResponse, NumTokensResponse, OperatorsResponse,
+    OwnerOfResponse, QueryMsg, RoyaltyInfoResponse, TokensResponse,
 };
 use crate::state::COLLECTION_INFO;
-use crate::state::{AnoneCw721Contract, Approval, TokenInfo};
+use crate::state::{AnoneCw721Contract, Approval, ModelInfo, TokenInfo};
 
 const DEFAULT_LIMIT: u32 = 10;
 const MAX_LIMIT: u32 = 30;
@@ -45,25 +45,6 @@ where
         Ok(NumModelsResponse { count })
     }
 
-    fn nft_info(&self, deps: Deps, token_id: String) -> StdResult<NftInfoResponse<T>> {
-        let info = self.tokens.load(deps.storage, &token_id)?;
-        Ok(NftInfoResponse {
-            model_id: info.model_id,
-            token_uri: info.token_uri,
-            size: info.size,
-            extension: info.extension,
-        })
-    }
-
-    fn model_info(&self, deps: Deps, model_id: String) -> StdResult<ModelInfoResponse<T>> {
-        let info = self.models.load(deps.storage, &model_id)?;
-        Ok(ModelInfoResponse {
-            owner: info.owner.to_string(),
-            model_uri: info.model_uri,
-            extension: info.extension,
-        })
-    }
-
     fn owner_of(
         &self,
         deps: Deps,
@@ -75,6 +56,47 @@ where
         Ok(OwnerOfResponse {
             owner: info.owner.to_string(),
             approvals: humanize_approvals(&env.block, &info, include_expired),
+        })
+    }
+
+    fn nft_info(&self, deps: Deps, token_id: String) -> StdResult<NftInfoResponse<T>> {
+        let info = self.tokens.load(deps.storage, &token_id)?;
+        Ok(NftInfoResponse {
+            model_id: info.model_id,
+            token_uri: info.token_uri,
+            size: info.size,
+            extension: info.extension,
+        })
+    }
+
+    fn all_nft_info(
+        &self,
+        deps: Deps,
+        env: Env,
+        token_id: String,
+        include_expired: bool,
+    ) -> StdResult<AllNftInfoResponse<T>> {
+        let info = self.tokens.load(deps.storage, &token_id)?;
+        Ok(AllNftInfoResponse {
+            access: OwnerOfResponse {
+                owner: info.owner.to_string(),
+                approvals: humanize_approvals(&env.block, &info, include_expired),
+            },
+            info: NftInfoResponse {
+                model_id: info.model_id,
+                token_uri: info.token_uri,
+                size: info.size,
+                extension: info.extension,
+            },
+        })
+    }
+
+    fn model_info(&self, deps: Deps, model_id: String) -> StdResult<ModelInfoResponse<T>> {
+        let info = self.models.load(deps.storage, &model_id)?;
+        Ok(ModelInfoResponse {
+            owner: info.owner.to_string(),
+            model_uri: info.model_uri,
+            extension: info.extension,
         })
     }
 
@@ -210,6 +232,27 @@ where
         Ok(TokensResponse { tokens: tokens? })
     }
 
+    fn all_tokens_info(
+        &self,
+        deps: Deps,
+        start_after: Option<String>,
+        limit: Option<u32>,
+    ) -> StdResult<AllNftsResponse<T>> {
+        let limit = limit.unwrap_or(DEFAULT_LIMIT).min(MAX_LIMIT) as usize;
+        let start = start_after.map(Bound::exclusive);
+
+        let tokens: StdResult<Vec<TokenInfo<T>>> = self
+            .tokens
+            .range(deps.storage, start, None, Order::Ascending)
+            .take(limit)
+            .map(|item| item.map(|(_, info)| info))
+            .collect();
+
+        Ok(AllNftsResponse {
+            all_tokens_info: tokens?,
+        })
+    }
+
     fn all_models(
         &self,
         deps: Deps,
@@ -229,25 +272,24 @@ where
         Ok(ModelsResponse { models: models? })
     }
 
-    fn all_nft_info(
+    fn all_models_info(
         &self,
         deps: Deps,
-        env: Env,
-        token_id: String,
-        include_expired: bool,
-    ) -> StdResult<AllNftInfoResponse<T>> {
-        let info = self.tokens.load(deps.storage, &token_id)?;
-        Ok(AllNftInfoResponse {
-            access: OwnerOfResponse {
-                owner: info.owner.to_string(),
-                approvals: humanize_approvals(&env.block, &info, include_expired),
-            },
-            info: NftInfoResponse {
-                model_id: info.model_id,
-                token_uri: info.token_uri,
-                size: info.size,
-                extension: info.extension,
-            },
+        start_after: Option<String>,
+        limit: Option<u32>,
+    ) -> StdResult<AllModelsResponse<T>> {
+        let limit = limit.unwrap_or(DEFAULT_LIMIT).min(MAX_LIMIT) as usize;
+        let start = start_after.map(Bound::exclusive);
+
+        let models: StdResult<Vec<ModelInfo<T>>> = self
+            .models
+            .range(deps.storage, start, None, Order::Ascending)
+            .take(limit)
+            .map(|item| item.map(|(_, info)| info))
+            .collect();
+
+        Ok(AllModelsResponse {
+            all_models_info: models?,
         })
     }
 
@@ -294,10 +336,16 @@ where
             } => to_binary(&self.tokens(deps, owner, start_after, limit)?),
             QueryMsg::AllTokens { start_after, limit } => {
                 to_binary(&self.all_tokens(deps, start_after, limit)?)
-            },
+            }
+            QueryMsg::AllTokensInfo { start_after, limit } => {
+                to_binary(&self.all_tokens_info(deps, start_after, limit)?)
+            }
             QueryMsg::AllModels { start_after, limit } => {
                 to_binary(&self.all_models(deps, start_after, limit)?)
-            },
+            }
+            QueryMsg::AllModelsInfo { start_after, limit } => {
+                to_binary(&self.all_models_info(deps, start_after, limit)?)
+            }
             QueryMsg::Approval {
                 token_id,
                 spender,

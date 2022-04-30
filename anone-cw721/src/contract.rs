@@ -137,6 +137,7 @@ where
 
         // create the token
         let token = TokenInfo {
+            token_id: msg.token_id.clone(),
             owner: deps.api.addr_validate(&msg.owner)?,
             approvals: vec![],
             model_id: msg.model_id,
@@ -181,6 +182,7 @@ where
 
         // create the shoe model
         let model = ModelInfo {
+            model_id: msg.model_id.clone(),
             owner: deps.api.addr_validate(&msg.owner)?,
             model_uri: msg.model_uri,
             extension: msg.extension,

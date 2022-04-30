@@ -42,7 +42,7 @@ where
             "tokens",
             "tokens__owner",
             "models",
-            "models_owner"
+            "models_owner",
         )
     }
 }
@@ -132,8 +132,12 @@ pub struct RoyaltyInfo {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct TokenInfo<T> {
+    /// Id of this token
+    pub token_id: String,
+
     /// The owner of the newly minted NFT
     pub owner: Addr,
+
     /// Approvals are stored here, as we clear them all upon transfer and cannot accumulate much
     pub approvals: Vec<Approval>,
 
@@ -143,7 +147,7 @@ pub struct TokenInfo<T> {
     /// Token uri will be the same as model_uri of this token's model
     pub token_uri: String,
 
-    /// Here is a unique feature of Anone project. 
+    /// Here is a unique feature of Anone project.
     pub size: String,
 
     /// You can add any custom metadata here when you extend cw721-base
@@ -152,6 +156,9 @@ pub struct TokenInfo<T> {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct ModelInfo<T> {
+    /// Id of this model
+    pub model_id: String,
+    
     /// The owner of the newly shoe model
     pub owner: Addr,
 
