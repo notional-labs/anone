@@ -7,7 +7,7 @@ CHAINID="anone-testnet-1"
 SLEEP_TIME="15s"
 CONTRACT="one1tj748034gl3zvujn2tz4p4m8rf9j9uarsj5j3c5a5z2neqel77cslz2lp0"
 
-LATEST=$(bash scripts/query_all_models.sh | jq -r ".data.tokens | last")
+LATEST=$(bash scripts/query_all_models.sh | jq -r ".data.models | last")
 MODEL_ID=$(($LATEST+1))
 
 # CHANGE ONLY THIS
