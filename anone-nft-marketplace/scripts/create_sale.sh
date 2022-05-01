@@ -1,12 +1,12 @@
 #!/bin/bash
 
 NODE="http://65.108.128.139:2281"
-ACCOUNT="Developer"
-#ACCOUNT="one1k2x29vppqrhgsdxtkmkpspnawm229lcpec7mm3"
+#ACCOUNT="Developer"
+ACCOUNT="one1k2x29vppqrhgsdxtkmkpspnawm229lcpec7mm3"
 CHAINID="anone-testnet-1"
-SLEEP_TIME="10s"
+SLEEP_TIME="15s"
 
-MARKETPLACE_CONTRACT_ADDR="one1sh9n6msknq5w0psaczat0egrf692xkznmwt4wpnthfwdhryldrzstdqtsz"
+MARKETPLACE_CONTRACT_ADDR="one1hkw0czu90estdr04pp4u76treyrkdm7mxuktk593qcs239wrwdnq2dgysh"
 CW721_CONTRACT_ADDR="one1mych7nr7fk86y2ezekkqfwsqpl8ax659ez4r4lm87x6clhz65q9sn4ngte"
 AMOUNT_WITHOUT_DENOM=5000000
 TOKEN_ID="$1"
