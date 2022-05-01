@@ -95,9 +95,8 @@ pub fn execute_make_order(
 
     // check denom is uan1
     if check_price.denom != NATIVE_DENOM {
-        return Err(ContractError::WrongDenoms {})
+        return Err(ContractError::WrongDenoms {});
     }
-    
     // check for enough coins
     let funds_from_sender = check_price;
 
@@ -135,7 +134,11 @@ pub fn execute_make_order(
     // transfer nft to buyer
     let cw721_transfer_cosmos_msg: CosmosMsg = exec_cw721_transfer.into();
 
-    let cosmos_msgs = vec![transfer_net_price_msg, transfer_royalty_fee_msg, cw721_transfer_cosmos_msg];
+    let cosmos_msgs = vec![
+        transfer_net_price_msg,
+        transfer_royalty_fee_msg,
+        cw721_transfer_cosmos_msg,
+    ];
 
     //delete offering
     OFFERINGS.remove(deps.storage, &offering_id);
@@ -272,6 +275,16 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
         QueryMsg::GetOfferings { sort_listing } => {
             to_binary(&query_offerings(deps, &sort_listing)?)
         }
+        QueryMsg::GetOfferingsByPriceRange {
+            min,
+            max,
+            sort_listing,
+        } => to_binary(&query_offerings_by_price_range(
+            deps,
+            min,
+            max,
+            &sort_listing,
+        )?),
     }
 }
 
@@ -355,6 +368,105 @@ fn query_offerings(deps: Deps, sort_listing: &str) -> StdResult<OfferingsRespons
             Ok(OfferingsResponse {
                 offerings: offerings_clone,
             })
+        }
+
+        _ => Err(StdError::NotFound {
+            kind: "Sort must be one of (price_lowest, price_highest, newest_listed, oldest_listed)"
+                .to_string(),
+        }),
+    }
+}
+
+fn query_offerings_by_price_range(
+    deps: Deps,
+    min: Uint128,
+    max: Uint128,
+    sort_listing: &str,
+) -> StdResult<OfferingsResponse> {
+    let res: StdResult<Vec<QueryOfferingsResult>> = OFFERINGS
+        .range_raw(deps.storage, None, None, Order::Ascending)
+        .map(|kv_item| parse_offering(deps.api, kv_item))
+        .collect();
+
+    let offerings_clone = res?.clone();
+
+    if offerings_clone.len() == 0 {
+        return Ok(OfferingsResponse {
+            offerings: offerings_clone,
+        });
+    }
+
+    let mut result: Vec<QueryOfferingsResult> = offerings_clone
+        .into_iter()
+        .filter(|x| x.list_price >= min && x.list_price <= max)
+        .collect();
+
+    let result_clone = result.clone();
+
+    if result_clone.len() == 0 {
+        return Ok(OfferingsResponse {
+            offerings: result_clone,
+        });
+    }
+    
+    match sort_listing {
+        "price_lowest" => {
+            result.sort_by(|a, b| {
+                if a.list_price < b.list_price {
+                    Ordering::Less
+                } else if a.list_price == b.list_price {
+                    Ordering::Equal
+                } else {
+                    Ordering::Greater
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "price_highest" => {
+            result.sort_by(|a, b| {
+                if a.list_price < b.list_price {
+                    Ordering::Greater
+                } else if a.list_price == b.list_price {
+                    Ordering::Equal
+                } else {
+                    Ordering::Less
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "newest_listed" => {
+            result.sort_by(|a, b| {
+                let a_id: u128 = a.id.parse().unwrap();
+                let b_id: u128 = b.id.parse().unwrap();
+
+                if a_id < b_id {
+                    Ordering::Less
+                } else if a_id == b_id {
+                    Ordering::Equal
+                } else {
+                    Ordering::Greater
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "oldest_listed" => {
+            result.sort_by(|a, b| {
+                let a_id: u128 = a.id.parse().unwrap();
+                let b_id: u128 = b.id.parse().unwrap();
+
+                if a_id < b_id {
+                    Ordering::Greater
+                } else if a_id == b_id {
+                    Ordering::Equal
+                } else {
+                    Ordering::Less
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
         }
 
         _ => Err(StdError::NotFound {

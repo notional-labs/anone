@@ -2,10 +2,11 @@
 
 NODE="http://65.108.128.139:2281"
 ACCOUNT="Developer"
+#ACCOUNT="wallet-test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one1mcy2qkuphhz4h4mncdzrxf3fh57fk98l6m30zfp7lggk4zh407rqq2carw"
+MARKETPLACE_CONTRACT_ADDR="one1sh9n6msknq5w0psaczat0egrf692xkznmwt4wpnthfwdhryldrzstdqtsz"
 OFFERING_ID="$1"
 UPDATE_PRICE="$2"
 UPDATE_PRICE_EXECUTE="{\"update_price\": {\"offering_id\": \"$OFFERING_ID\", \"update_price\": \"$UPDATE_PRICE\"}}"

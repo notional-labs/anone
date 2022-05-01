@@ -6,7 +6,7 @@ ACCOUNT="Developer"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one1mcy2qkuphhz4h4mncdzrxf3fh57fk98l6m30zfp7lggk4zh407rqq2carw"
+MARKETPLACE_CONTRACT_ADDR="one1sh9n6msknq5w0psaczat0egrf692xkznmwt4wpnthfwdhryldrzstdqtsz"
 CW721_CONTRACT_ADDR="one1mych7nr7fk86y2ezekkqfwsqpl8ax659ez4r4lm87x6clhz65q9sn4ngte"
 AMOUNT_WITHOUT_DENOM=5000000
 TOKEN_ID="$1"

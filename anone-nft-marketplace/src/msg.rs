@@ -37,4 +37,10 @@ pub enum QueryMsg {
     GetOfferings {
         sort_listing: String
     },
+
+    GetOfferingsByPriceRange {
+        min: Uint128,
+        max: Uint128,
+        sort_listing: String
+    }
 }

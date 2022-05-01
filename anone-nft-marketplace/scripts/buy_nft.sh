@@ -2,11 +2,11 @@
 
 NODE="http://65.108.128.139:2281"
 #ACCOUNT="Developer"
-ACCOUNT="Test"
+ACCOUNT="wallet-test"
 CHAINID="anone-testnet-1"
 SLEEP_TIME="10s"
 
-MARKETPLACE_CONTRACT_ADDR="one1mcy2qkuphhz4h4mncdzrxf3fh57fk98l6m30zfp7lggk4zh407rqq2carw"
+MARKETPLACE_CONTRACT_ADDR="one1sh9n6msknq5w0psaczat0egrf692xkznmwt4wpnthfwdhryldrzstdqtsz"
 INSERT_OFFERING_ID="$1"
 
 BUY_NFT="{\"make_order\": {\"offering_id\": \"$INSERT_OFFERING_ID\"}}"
