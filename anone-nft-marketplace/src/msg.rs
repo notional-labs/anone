@@ -42,5 +42,15 @@ pub enum QueryMsg {
         min: Uint128,
         max: Uint128,
         sort_listing: String
-    }
+    },
+
+    GetOfferingsOfCollection {
+        contract_addr: String,
+        sort_listing: String
+    },
+
+    GetOfferingsOfSeller {
+        seller: String,
+        sort_listing: String
+    },
 }

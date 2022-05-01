@@ -285,6 +285,18 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
             max,
             &sort_listing,
         )?),
+        QueryMsg::GetOfferingsOfCollection {
+            contract_addr,
+            sort_listing,
+        } => to_binary(&query_offerings_of_collection(
+            deps,
+            &contract_addr,
+            &sort_listing,
+        )?),
+        QueryMsg::GetOfferingsOfSeller {
+            seller,
+            sort_listing,
+        } => to_binary(&query_offerings_of_seller(deps, &seller, &sort_listing)?),
     }
 }
 
@@ -408,7 +420,200 @@ fn query_offerings_by_price_range(
             offerings: result_clone,
         });
     }
-    
+    match sort_listing {
+        "price_lowest" => {
+            result.sort_by(|a, b| {
+                if a.list_price < b.list_price {
+                    Ordering::Less
+                } else if a.list_price == b.list_price {
+                    Ordering::Equal
+                } else {
+                    Ordering::Greater
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "price_highest" => {
+            result.sort_by(|a, b| {
+                if a.list_price < b.list_price {
+                    Ordering::Greater
+                } else if a.list_price == b.list_price {
+                    Ordering::Equal
+                } else {
+                    Ordering::Less
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "newest_listed" => {
+            result.sort_by(|a, b| {
+                let a_id: u128 = a.id.parse().unwrap();
+                let b_id: u128 = b.id.parse().unwrap();
+
+                if a_id < b_id {
+                    Ordering::Less
+                } else if a_id == b_id {
+                    Ordering::Equal
+                } else {
+                    Ordering::Greater
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "oldest_listed" => {
+            result.sort_by(|a, b| {
+                let a_id: u128 = a.id.parse().unwrap();
+                let b_id: u128 = b.id.parse().unwrap();
+
+                if a_id < b_id {
+                    Ordering::Greater
+                } else if a_id == b_id {
+                    Ordering::Equal
+                } else {
+                    Ordering::Less
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+
+        _ => Err(StdError::NotFound {
+            kind: "Sort must be one of (price_lowest, price_highest, newest_listed, oldest_listed)"
+                .to_string(),
+        }),
+    }
+}
+
+fn query_offerings_of_collection(
+    deps: Deps,
+    contract_addr: &str,
+    sort_listing: &str,
+) -> StdResult<OfferingsResponse> {
+    let res: StdResult<Vec<QueryOfferingsResult>> = OFFERINGS
+        .range_raw(deps.storage, None, None, Order::Ascending)
+        .map(|kv_item| parse_offering(deps.api, kv_item))
+        .collect();
+
+    let offerings_clone = res?.clone();
+
+    if offerings_clone.len() == 0 {
+        return Ok(OfferingsResponse {
+            offerings: offerings_clone,
+        });
+    }
+
+    let mut result: Vec<QueryOfferingsResult> = offerings_clone
+        .into_iter()
+        .filter(|x| x.contract_addr == contract_addr)
+        .collect();
+
+    let result_clone = result.clone();
+
+    if result_clone.len() == 0 {
+        return Ok(OfferingsResponse {
+            offerings: result_clone,
+        });
+    }
+    match sort_listing {
+        "price_lowest" => {
+            result.sort_by(|a, b| {
+                if a.list_price < b.list_price {
+                    Ordering::Less
+                } else if a.list_price == b.list_price {
+                    Ordering::Equal
+                } else {
+                    Ordering::Greater
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "price_highest" => {
+            result.sort_by(|a, b| {
+                if a.list_price < b.list_price {
+                    Ordering::Greater
+                } else if a.list_price == b.list_price {
+                    Ordering::Equal
+                } else {
+                    Ordering::Less
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "newest_listed" => {
+            result.sort_by(|a, b| {
+                let a_id: u128 = a.id.parse().unwrap();
+                let b_id: u128 = b.id.parse().unwrap();
+
+                if a_id < b_id {
+                    Ordering::Less
+                } else if a_id == b_id {
+                    Ordering::Equal
+                } else {
+                    Ordering::Greater
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+        "oldest_listed" => {
+            result.sort_by(|a, b| {
+                let a_id: u128 = a.id.parse().unwrap();
+                let b_id: u128 = b.id.parse().unwrap();
+
+                if a_id < b_id {
+                    Ordering::Greater
+                } else if a_id == b_id {
+                    Ordering::Equal
+                } else {
+                    Ordering::Less
+                }
+            });
+
+            Ok(OfferingsResponse { offerings: result })
+        }
+
+        _ => Err(StdError::NotFound {
+            kind: "Sort must be one of (price_lowest, price_highest, newest_listed, oldest_listed)"
+                .to_string(),
+        }),
+    }
+}
+
+fn query_offerings_of_seller(
+    deps: Deps,
+    seller: &str,
+    sort_listing: &str,
+) -> StdResult<OfferingsResponse> {
+    let res: StdResult<Vec<QueryOfferingsResult>> = OFFERINGS
+        .range_raw(deps.storage, None, None, Order::Ascending)
+        .map(|kv_item| parse_offering(deps.api, kv_item))
+        .collect();
+
+    let offerings_clone = res?.clone();
+
+    if offerings_clone.len() == 0 {
+        return Ok(OfferingsResponse {
+            offerings: offerings_clone,
+        });
+    }
+
+    let mut result: Vec<QueryOfferingsResult> = offerings_clone
+        .into_iter()
+        .filter(|x| x.seller == seller)
+        .collect();
+
+    let result_clone = result.clone();
+
+    if result_clone.len() == 0 {
+        return Ok(OfferingsResponse {
+            offerings: result_clone,
+        });
+    }
     match sort_listing {
         "price_lowest" => {
             result.sort_by(|a, b| {
