@@ -1,6 +1,7 @@
 package simapp
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -15,7 +16,7 @@ import (
 )
 
 // New creates application instance with in-memory database and disabled logging.
-func New(dir string) cosmoscmd.App {
+func New(dir string) *app.App {
 	db := tmdb.NewMemDB()
 	logger := log.NewNopLogger()
 
@@ -24,11 +25,18 @@ func New(dir string) cosmoscmd.App {
 	a := app.New(logger, db, nil, true, map[int64]bool{}, dir, 0, encoding,
 		simapp.EmptyAppOptions{})
 	// InitChain updates deliverState which is required when app.NewContext is called
+
+	// Is this thing generate a default genesis for app?
+	stateBytes, err := json.MarshalIndent(app.ModuleBasics.DefaultGenesis(encoding.Marshaler), "", " ")
+	if err != nil {
+		panic(err)
+	}
+
 	a.InitChain(abci.RequestInitChain{
 		ConsensusParams: defaultConsensusParams,
-		AppStateBytes:   []byte("{}"),
+		AppStateBytes:   stateBytes,
 	})
-	return a
+	return a.(*app.App)
 }
 
 var defaultConsensusParams = &abci.ConsensusParams{
