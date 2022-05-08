@@ -14,7 +14,7 @@ pub struct Config {
 }
 
 pub const CONFIG: Item<Config> = Item::new("config");
-pub const AN721_ADDRESS: Item<Addr> = Item::new("sg721_address");
+pub const AN721_ADDRESS: Item<Addr> = Item::new("an721_address");
 pub const MINTABLE_TOKEN_IDS: Map<u32, bool> = Map::new("mt");
 pub const MINTABLE_NUM_TOKENS: Item<u32> = Item::new("mintable_num_tokens");
 pub const MINTER_ADDRS: Map<Addr, u32> = Map::new("ma");
