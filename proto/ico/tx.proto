@@ -1,0 +1,93 @@
+syntax = "proto3";
+package nghuyenthevinh2000.nebula.ico;
+
+option go_package = "github.com/nghuyenthevinh2000/nebula/x/ico/types";
+
+// Msg defines the Msg service.
+service Msg {
+    rpc EnableICO(MessageEnableICORequest) returns (MessageEnableICOResponse);
+    rpc AddDistributionToken(MessageAddDistributionTokenRequest) returns (MessageAddDistributionTokenResponse);
+    rpc ModifyTokenListingPrice(MessageModifyTokenListingPriceRequest) returns (MessageModifyTokenListingPriceResponse);
+    rpc CommitParticipation(MessageCommitParticipationRequest) returns (MessageCommitParticipationResponse);
+}
+
+// ====== MessageEnableICO
+message MessageEnableICORequest {
+
+    string owner = 1 [ (gogoproto.moretags) = "yaml:\"owner\"" ];
+
+    // Project unique id of each project
+    uint64 project_id = 2 [
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"project_id\""
+    ];
+
+    repeated cosmos.base.v1beta1.Coin token_for_distribution = 3 [
+        (gogoproto.moretags) = "yaml:\"token_for_distribution\"",
+    ];
+
+    string token_listing_price = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.moretags) = "yaml:\"token_listing_price\"",
+    ];
+
+}
+
+message MessageEnableICOResponse {}
+
+// ====== MessageAddDistributionToken
+
+message MessageAddDistributionTokenRequest {
+    
+    string owner = 1 [ (gogoproto.moretags) = "yaml:\"owner\"" ];
+
+    // Project unique id of each project
+    uint64 project_id = 2 [
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"project_id\""
+    ];
+
+    repeated cosmos.base.v1beta1.Coin token_for_distribution = 3 [
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"token_for_distribution\"",
+    ];
+}
+
+message MessageAddDistributionTokenResponse {}
+
+// ====== MessageModifyTokenListingPrice
+
+message MessageModifyTokenListingPriceRequest {
+
+    string owner = 1 [ (gogoproto.moretags) = "yaml:\"owner\"" ];
+
+    // Project unique id of each project
+    uint64 project_id = 2 [
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"project_id\""
+    ];
+
+    string token_listing_price = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.moretags) = "yaml:\"token_listing_price\"",
+        (gogoproto.nullable) = false
+    ];
+
+}
+
+message MessageModifyTokenListingPriceResponse {}
+
+// ====== MessageCommitParticipation
+
+message MessageCommitParticipationRequest {
+
+    string participant = 1 [ (gogoproto.moretags) = "yaml:\"participant\"" ];
+
+    repeated cosmos.base.v1beta1.Coin token_commit = 2 [
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"token_commit\"",
+    ];
+
+}
+
+message MessageCommitParticipationResponse {}
