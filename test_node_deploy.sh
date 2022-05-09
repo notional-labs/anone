@@ -82,6 +82,12 @@ cat $HOME/.anone/config/genesis.json | jq '.app_state["mint"]["params"]["mint_de
 # Set gas limit in genesis
 # cat $HOME/.anone/config/genesis.json | jq '.consensus_params["block"]["max_gas"]="10000000"' > $HOME/.anone/config/tmp_genesis.json && mv $HOME/.anone/config/tmp_genesis.json $HOME/.anone/config/genesis.json
 
+#Enable chain rest api
+config="$HOME/.anone/config/app.toml"
+sed -i 's/^\(api\.enable\s*=\s*\).*$/\true/' $config
+sed -i 's/^\(api\.swagger\s*=\s*\).*$/\true/' $config
+
+
 # Allocate genesis accounts (cosmos formatted addresses)
 anoned add-genesis-account $KEY 1000000000000uan1 --keyring-backend $KEYRING
 
