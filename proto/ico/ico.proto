@@ -4,7 +4,7 @@ package nghuyenthevinh2000.nebula.ico;
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/nghuyenthevinh2000/nebula/x/ico/types";
+option go_package = "github.com/notional-labs/anone/x/ico/types";
 
 message ICO {
 

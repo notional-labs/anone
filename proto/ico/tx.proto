@@ -1,7 +1,7 @@
 syntax = "proto3";
 package nghuyenthevinh2000.nebula.ico;
 
-option go_package = "github.com/nghuyenthevinh2000/nebula/x/ico/types";
+option go_package = "github.com/notional-labs/anone/x/ico/types";
 
 // Msg defines the Msg service.
 service Msg {

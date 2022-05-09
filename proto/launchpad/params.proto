@@ -1,12 +1,11 @@
 syntax = "proto3";
-package nghuyenthevinh2000.nebula.ico;
+package nghuyenthevinh2000.nebula.launchpad;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/notional-labs/anone/x/ico/types";
+option go_package = "github.com/notional-labs/anone/x/launchpad/types";
 
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
 }

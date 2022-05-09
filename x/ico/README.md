@@ -17,9 +17,6 @@ ICO needs a way to select people else a lot of people will buy like crazy.
 3. distributed_amount: total amount distributed
 4. token_listing_price: the initial price of token (in UST)
 
-# ICO as implementation of ReleaseMechanism interface (Obsolete)
-As mentioned in [ReleaseMechanism.md](/docs/ADR/ReleaseMechanism.md), all release mechanism needs to implement ReleaseMechanism interface.
-
 # Global params
 # Message Tx
 1. EnableICO: tx message to enable ico for a specific project id

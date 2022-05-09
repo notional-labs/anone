@@ -1,0 +1,20 @@
+syntax = "proto3";
+package nghuyenthevinh2000.nebula.launchpad;
+
+import "gogoproto/gogo.proto";
+import "launchpad/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/notional-labs/anone/x/launchpad/types";
+
+// GenesisState defines the launchpad module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+  
+  // initial Project at genesis
+  repeated Project projects = 2;
+
+  // global project id. The start of global project id will start from the number of project at genesis.
+  uint64 global_project_id_start = 3;
+}
