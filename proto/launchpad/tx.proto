@@ -1,7 +1,8 @@
 syntax = "proto3";
-package nghuyenthevinh2000.nebula.launchpad;
+package notionallabs.anone.launchpad;
 
 import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/notional-labs/anone/x/launchpad/types";
 
@@ -29,7 +30,6 @@ message MsgCreateProjectRequest {
     
     // the title of project
     string project_title = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_title\""
     ];
 
@@ -56,13 +56,11 @@ message MsgCreateProjectRequest {
 
 message MsgCreateProjectResponse {
     uint64 project_id = 1 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
     // Project address to store assets
     string project_address = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_address\""
     ];
 }
@@ -74,7 +72,6 @@ message MsgDeleteProjectRequest {
     string owner = 1 [ (gogoproto.moretags) = "yaml:\"owner\"" ];
 
     uint64 project_id = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 }
@@ -88,7 +85,6 @@ message MsgModifyStartTimeRequest {
     string owner = 1 [ (gogoproto.moretags) = "yaml:\"owner\"" ];
 
     uint64 project_id = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
@@ -109,13 +105,11 @@ message MsgModifyProjectInformationRequest {
     string owner = 1 [ (gogoproto.moretags) = "yaml:\"owner\"" ];
 
     uint64 project_id = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
     // Project information
     string project_information = 3 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_information\""
     ];
 }

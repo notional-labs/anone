@@ -1,5 +1,8 @@
 syntax = "proto3";
-package nghuyenthevinh2000.nebula.ico;
+package notionallabs.anone.ico;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/notional-labs/anone/x/ico/types";
 
@@ -18,17 +21,16 @@ message MessageEnableICORequest {
 
     // Project unique id of each project
     uint64 project_id = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
     repeated cosmos.base.v1beta1.Coin token_for_distribution = 3 [
-        (gogoproto.moretags) = "yaml:\"token_for_distribution\"",
+        (gogoproto.moretags) = "yaml:\"token_for_distribution\""
     ];
 
     string token_listing_price = 4 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.moretags) = "yaml:\"token_listing_price\"",
+        (gogoproto.moretags) = "yaml:\"token_listing_price\""
     ];
 
 }
@@ -43,13 +45,12 @@ message MessageAddDistributionTokenRequest {
 
     // Project unique id of each project
     uint64 project_id = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
     repeated cosmos.base.v1beta1.Coin token_for_distribution = 3 [
         (gogoproto.nullable) = false,
-        (gogoproto.moretags) = "yaml:\"token_for_distribution\"",
+        (gogoproto.moretags) = "yaml:\"token_for_distribution\""
     ];
 }
 
@@ -63,7 +64,6 @@ message MessageModifyTokenListingPriceRequest {
 
     // Project unique id of each project
     uint64 project_id = 2 [
-        (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
@@ -85,7 +85,7 @@ message MessageCommitParticipationRequest {
 
     repeated cosmos.base.v1beta1.Coin token_commit = 2 [
         (gogoproto.nullable) = false,
-        (gogoproto.moretags) = "yaml:\"token_commit\"",
+        (gogoproto.moretags) = "yaml:\"token_commit\""
     ];
 
 }

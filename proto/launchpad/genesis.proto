@@ -1,9 +1,9 @@
 syntax = "proto3";
-package nghuyenthevinh2000.nebula.launchpad;
+package notionallabs.anone.launchpad;
 
 import "gogoproto/gogo.proto";
 import "launchpad/params.proto";
-// this line is used by starport scaffolding # genesis/proto/import
+import "launchpad/project.proto";
 
 option go_package = "github.com/notional-labs/anone/x/launchpad/types";
 
