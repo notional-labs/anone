@@ -1,7 +1,7 @@
 #!/bin/bash
 
-NODE="http://65.108.128.139:2281"
-ACCOUNT="Developer"
+NODE="tcp://localhost:2281"
+ACCOUNT="test"
 CHAINID="anone-testnet-1"
 CONTRACT_DIR="artifacts/cw20_base.wasm"
 SLEEP_TIME="15s"

@@ -4,7 +4,7 @@ use crate::helpers::{
     get_staked_balance, get_total_staked_supply, get_voting_power_at_height, map_proposal,
 };
 use crate::msg::{
-    ExecuteMsg, GovTokenMsg, InstantiateMsg, ProposeMsg, QueryMsg, StakingContractMsg, VoteMsg,
+    ExecuteMsg, GovTokenMsg, InstantiateMsg, ProposeMsg, QueryMsg, StakingContractMsg, VoteMsg, MintGovTokenMsg,
 };
 use crate::query::{
     ConfigResponse, Cw20BalancesResponse, ProposalListResponse, ProposalResponse,
@@ -22,8 +22,9 @@ use cosmwasm_std::{
 use cw2::set_contract_version;
 use cw20::{
     BalanceResponse, Cw20Coin, Cw20CoinVerified, Cw20Contract, Cw20QueryMsg, Cw20ReceiveMsg,
-    MinterResponse,
+    MinterResponse, Cw20ExecuteMsg,
 };
+
 use cw3::{Status, Vote};
 use cw_storage_plus::Bound;
 use cw_utils::{maybe_addr, parse_reply_instantiate_data, Expiration};
@@ -63,6 +64,7 @@ pub fn instantiate(
         image_url: msg.image_url,
         only_members_execute: msg.only_members_execute,
         automatically_add_cw20s: msg.automatically_add_cw20s,
+        mint_gov_token: msg.mint_gov_token,
     };
     CONFIG.save(deps.storage, &cfg)?;
 
@@ -204,6 +206,7 @@ pub fn execute(
             new_staking_contract,
         } => execute_update_staking_contract(deps, env, info, new_staking_contract),
         ExecuteMsg::Receive(rec) => execute_receive(deps, env, info, rec),
+        ExecuteMsg::MintGovToken(MintGovTokenMsg { receiver }) => execute_mint_gov_tokens(deps, env, receiver),
     }
 }
 
@@ -331,6 +334,36 @@ pub fn execute_vote(
         .add_attribute("sender", info.sender)
         .add_attribute("proposal_id", proposal_id.to_string())
         .add_attribute("status", format!("{:?}", prop.status)))
+}
+
+pub fn execute_mint_gov_tokens(
+    deps: DepsMut,
+    env: Env,
+    receiver: String,
+) -> Result<Response<Empty>, ContractError> {
+    let cfg = CONFIG.load(deps.storage)?;
+    let gov_mint_amount = cfg.mint_gov_token;
+    let gov_token = GOV_TOKEN.load(deps.storage)?;
+
+    if gov_mint_amount == Uint128::zero() {
+        return Ok(Response::new());
+    }
+    let mint_gov_token_msg = Cw20ExecuteMsg::Mint {
+        recipient: receiver.clone(),
+        amount: gov_mint_amount,
+    };
+    let exec_mint_gov_token = WasmMsg::Execute {
+        contract_addr: gov_token.to_string(),
+        msg: to_binary(&mint_gov_token_msg)?,
+        funds: vec![],
+    };
+    let mint_msg: CosmosMsg = exec_mint_gov_token.into();
+
+    Ok(Response::new()
+        .add_message(mint_msg)
+        .add_attribute("action", "mint")
+        .add_attribute("receiver", receiver.clone())
+        .add_attribute("amount", gov_mint_amount.to_string()))
 }
 
 pub fn execute_execute(

@@ -24,6 +24,7 @@ pub struct Config {
     pub image_url: Option<String>,
     pub only_members_execute: bool,
     pub automatically_add_cw20s: bool,
+    pub mint_gov_token: Uint128,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]

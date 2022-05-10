@@ -16,7 +16,7 @@ ACCOUNT="test"
 SLEEP_TIME="15s"
 
 
-##### UPLOAD CONTRACTS #####
+# ##### UPLOAD CONTRACTS #####
 
 ### CW-DAO ###
 CW3_DAO=$(anoned tx wasm store "artifacts/cw3_dao.wasm" --from $ACCOUNT $TXFLAG --output json) 
@@ -36,39 +36,52 @@ RAW_LOG=$(anoned query tx "$TXHASH" --chain-id "$CHAIN_ID" --node "$RPC" -o json
 STAKE_CW20_CODE=$(echo $RAW_LOG | jq -r .[0].events[1].attributes[0].value)
 echo $STAKE_CW20_CODE
 
+KEY=$(anoned keys show $ACCOUNT -a)
+
 
 # ##### INSTANTIATE CONTRACTS #####
 
 # Instantiate a DAO contract instantiates its own cw20
-CW3_DAO_INIT='{
-  "name": "DAO DAO",
-  "description": "A DAO that makes DAO tooling",
-  "gov_token": {
-    "use_existing_cw20": {
-      "addr": "one14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sf8gz6a",
-      "label": "DAO DAO v0.1.1"
+CW3_DAO_INIT="{
+  \"name\": \"DAO\",
+  \"description\": \"A DAO that makes DAO tooling\",
+  \"gov_token\": {
+    \"instantiate_new_cw20\": {
+      \"cw20_code_id\": 3,
+      \"label\": \"DAO DAO v0.1.1\",
+      \"initial_dao_balance\": \"1000000000\",
+      \"msg\": {
+        \"name\": \"DAO governance token\",
+        \"symbol\": \"DAO\",
+        \"decimals\": 6,
+        \"initial_balances\": [{
+          \"address\": \"one14wkt0quyk0ytn9u6regseqm4u4txgv4gn0aqyl\",
+          \"amount\": \"10000000\"
+        }]
+      }
     }
   },
-  "staking_contract": {
-    "instantiate_new_staking_contract": {
-      "staking_contract_code_id": '$STAKE_CW20_CODE'
+  \"staking_contract\": {
+    \"instantiate_new_staking_contract\": {
+      \"staking_contract_code_id\": 13
     }
   },
-  "threshold": {
-    "absolute_percentage": {
-        "percentage": "0.5"
+  \"threshold\": {
+    \"absolute_percentage\": {
+        \"percentage\": \"0.5\"
     }
   },
-  "max_voting_period": {
-    "height": 100
+  \"max_voting_period\": {
+    \"height\": 100
   },
-  "proposal_deposit_amount": "0",
-  "only_members_execute": false,
-  "automatically_add_cw20s": true
-}'
+  \"proposal_deposit_amount\": \"0\",
+  \"only_members_execute\": false,
+  \"automatically_add_cw20s\": true,
+  \"mint_gov_token\": \"1000000\"
+}"
 echo $CW3_DAO_INIT | jq .
 
-INIT=$(anoned tx wasm instantiate "$CW3_DAO_CODE" "$CW3_DAO_INIT" --from $ACCOUNT --label "DAO DAO" $TXFLAG --output json)
+INIT=$(anoned tx wasm instantiate "$CW3_DAO_CODE" "$CW3_DAO_INIT" --from $ACCOUNT --label "DAO DAO" $TXFLAG --output json --no-admin)
 
 CW3_DAO_CONTRACT=$(anoned q wasm list-contract-by-code $CW3_DAO_CODE --output json --node $RPC | jq -r '.contracts[-1]')
 echo $CW3_DAO_CONTRACT

@@ -31,6 +31,15 @@ pub struct InstantiateMsg {
     pub image_url: Option<String>,
     pub only_members_execute: bool,
     pub automatically_add_cw20s: bool,
+
+    /// Gov token mint to user when minting nft
+    pub mint_gov_token: Uint128,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema, Debug, Clone, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub struct MintGovTokenMsg {
+    pub receiver: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
@@ -180,6 +189,8 @@ pub enum ExecuteMsg {
     /// Wrapper called for automatically adding cw20s
     /// to our tracked balances
     Receive(Cw20ReceiveMsg),
+    /// Mint gov tokens to user
+    MintGovToken(MintGovTokenMsg),
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
