@@ -8,14 +8,13 @@ use cw721::Expiration;
 
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map, MultiIndex};
 
-use crate::msg::{CollectionInfoResponse, ContractInfoResponse};
+use crate::msg::{ContractInfoResponse};
 
 pub struct AnoneCw721Contract<'a, T, C>
 where
     T: Serialize + DeserializeOwned + Clone,
 {
     pub contract_info: Item<'a, ContractInfoResponse>,
-    pub collection_info: Item<'a, CollectionInfoResponse>,
     pub minter: Item<'a, Addr>,
     pub token_count: Item<'a, u64>,
     pub model_count: Item<'a, u64>,
@@ -34,7 +33,6 @@ where
     fn default() -> Self {
         Self::new(
             "nft_info",
-            "collection_info",
             "minter",
             "num_tokens",
             "num_models",
@@ -53,7 +51,6 @@ where
 {
     fn new(
         contract_key: &'a str,
-        collection_key: &'a str,
         minter_key: &'a str,
         token_count_key: &'a str,
         model_count_key: &'a str,
@@ -71,7 +68,6 @@ where
         };
         Self {
             contract_info: Item::new(contract_key),
-            collection_info: Item::new(collection_key),
             minter: Item::new(minter_key),
             token_count: Item::new(token_count_key),
             model_count: Item::new(model_count_key),

@@ -30,4 +30,7 @@ pub enum ContractError {
 
     #[error("{0}")]
     Parse(#[from] ParseError),
+
+    #[error("Invalid base URI (must be an IPFS URI)")]
+    InvalidBaseURI {},
 }

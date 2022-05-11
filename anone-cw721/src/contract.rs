@@ -8,7 +8,10 @@ use cw721::{CustomMsg, Cw721Execute, Cw721ReceiveMsg, Expiration};
 use url::Url;
 
 use crate::error::ContractError;
-use crate::msg::{ContractInfoResponse, CreateShoeModelMsg, ExecuteMsg, InstantiateMsg, MintMsg};
+use crate::msg::{
+    ContractInfoResponse, CreateShoeModelMsg, ExecuteMsg, InstantiateMsg, MintMsg,
+    RoyaltyInfoResponse,
+};
 use crate::state::{
     AnoneCw721Contract, Approval, CollectionInfo, ModelInfo, RoyaltyInfo, TokenInfo,
     COLLECTION_INFO,
@@ -46,6 +49,9 @@ where
         }
 
         let image = Url::parse(&msg.collection_info.image)?;
+        if image.scheme() != "ipfs" {
+            return Err(ContractError::InvalidBaseURI {});
+        }
 
         if let Some(ref external_link) = msg.collection_info.external_link {
             Url::parse(external_link)?;
@@ -110,6 +116,20 @@ where
                 msg,
             } => self.send_nft(deps, env, info, contract, token_id, msg),
             ExecuteMsg::Burn { token_id } => self.burn(deps, env, info, token_id),
+            ExecuteMsg::ModifyCollectionInfo {
+                description,
+                image,
+                external_link,
+                royalty_info,
+            } => self.modify_collection_info(
+                deps,
+                env,
+                info,
+                description,
+                image,
+                external_link,
+                royalty_info,
+            ),
         }
     }
 }
@@ -134,7 +154,6 @@ where
         }
 
         let model = self.models.load(deps.storage, &msg.model_id)?;
-
         // create the token
         let token = TokenInfo {
             token_id: msg.token_id.clone(),
@@ -146,7 +165,6 @@ where
             extension: msg.extension,
         };
 
-        
         self.tokens
             .update(deps.storage, &msg.token_id, |old| match old {
                 Some(_) => Err(ContractError::Claimed {}),
@@ -180,11 +198,16 @@ where
             return Err(ContractError::Unauthorized {});
         }
 
+        let model_uri = Url::parse(&msg.model_uri)?;
+        if model_uri.scheme() != "ipfs" {
+            return Err(ContractError::InvalidBaseURI {});
+        }
+
         // create the shoe model
         let model = ModelInfo {
             model_id: msg.model_id.clone(),
             owner: deps.api.addr_validate(&msg.owner)?,
-            model_uri: msg.model_uri,
+            model_uri: model_uri.to_string(),
             extension: msg.extension,
         };
         self.models
@@ -199,6 +222,75 @@ where
             .add_attribute("action", "mint")
             .add_attribute("minter", info.sender)
             .add_attribute("model_id", msg.model_id))
+    }
+}
+
+impl<'a, T, C> AnoneCw721Contract<'a, T, C>
+where
+    T: Serialize + DeserializeOwned + Clone,
+    C: CustomMsg,
+{
+    pub fn modify_collection_info(
+        &self,
+        deps: DepsMut,
+        _env: Env,
+        info: MessageInfo,
+        description: Option<String>,
+        image: Option<String>,
+        external_link: Option<String>,
+        royalty_info: Option<RoyaltyInfoResponse>,
+    ) -> Result<Response<C>, ContractError> {
+        let mut collection_info = COLLECTION_INFO.load(deps.storage)?;
+        let minter = self.minter.load(deps.storage)?;
+        if info.sender != minter {
+            return Err(ContractError::Unauthorized {});
+        }
+
+        if let Some(i) = description.clone() {
+            collection_info.description = i;
+        }
+
+        if let Some(i) = image.clone() {
+            let image_url = Url::parse(&i)?;
+            if image_url.scheme() != "ipfs" {
+                return Err(ContractError::InvalidBaseURI {});
+            }
+            collection_info.image = i;
+        }
+
+        let modify_royalty_info: Option<RoyaltyInfo> = match royalty_info {
+            Some(royalty_info) => Some(RoyaltyInfo {
+                payment_address: deps.api.addr_validate(&royalty_info.payment_address)?,
+                share: royalty_info.share_validate()?,
+            }),
+            None => None,
+        };
+
+        collection_info.external_link = external_link.clone();
+        collection_info.royalty_info = modify_royalty_info.clone();
+
+        COLLECTION_INFO.save(deps.storage, &collection_info)?;
+
+        let null_string = String::new();
+
+        let unwrap_external_link = external_link.unwrap_or(null_string.clone());
+        let unwrap_description = description.unwrap_or(null_string.clone());
+        let unwrap_image = image.unwrap_or(null_string.clone());
+        let modify_royalty_info_clone = modify_royalty_info.clone();
+
+        let modify_royalty_info_string = format!(
+            "{} {}",
+            modify_royalty_info_clone.unwrap().payment_address,
+            modify_royalty_info.unwrap().share
+        );
+
+        Ok(Response::new()
+            .add_attribute("action", "modify_collection_info")
+            .add_attribute("minter", info.sender)
+            .add_attribute("new_description", unwrap_description)
+            .add_attribute("new_image", unwrap_image)
+            .add_attribute("new_external_link", unwrap_external_link)
+            .add_attribute("new_royalty_info", modify_royalty_info_string))
     }
 }
 

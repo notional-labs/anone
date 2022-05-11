@@ -42,6 +42,8 @@ pub enum ExecuteMsg<T> {
     CreateShoeModel(CreateShoeModelMsg<T>),
 
     Burn { token_id: String },
+
+    ModifyCollectionInfo {description: Option<String>, image: Option<String>, external_link: Option<String>, royalty_info: Option<RoyaltyInfoResponse> }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
