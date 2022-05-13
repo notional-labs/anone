@@ -19,7 +19,7 @@ This module will save plenty of time for new project to lauch.
 2. v2: add participation
 
 # a project structure
-1. project_owner: the owner address of project. The address that creates project.
+1. project_owner: the owner address of project. The address that owns the project.
 1. project_title: the title of release project
 1. project_id: unique id of project
 1. project_address: to store tokens
