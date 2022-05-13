@@ -1039,7 +1039,6 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `project_id` | [uint64](#uint64) |  |  |
-| `project_address` | [string](#string) |  | Project address to store assets |
 
 
 

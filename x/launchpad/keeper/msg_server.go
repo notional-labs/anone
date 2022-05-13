@@ -2,6 +2,9 @@ package keeper
 
 import (
 	"context"
+	"strconv"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/notional-labs/anone/x/launchpad/types"
 )
@@ -18,22 +21,35 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-func (server msgServer) CreateProject(ctx context.Context, msg *types.MsgCreateProjectRequest) (*types.MsgCreateProjectResponse, error) {
-	// verify signer
-
+func (server msgServer) CreateProject(goCtx context.Context, msg *types.MsgCreateProjectRequest) (*types.MsgCreateProjectResponse, error) {
 	// get ctx SDK context
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// get project id
-
-	// get project address
-
-	// create project data
-
-	// store project data into kv store
+	// invoke logic CreateProject
+	project_id, err := server.Keeper.CreateProject(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 
 	// emit event
+	ctx.EventManager().EmitEvents(sdk.Events{
+		// an event to signify a project created
+		sdk.NewEvent(
+			types.TypeProjectCreated,
+			sdk.NewAttribute(types.AttributeProjectID, strconv.FormatUint(project_id, 10)),
+		),
+		// an event to signify the event comes from which module and which signer
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner),
+		),
+	})
 
-	return &types.MsgCreateProjectResponse{}, types.ErrNotImplemented
+	// return result to gRPC server
+	return &types.MsgCreateProjectResponse{
+		ProjectId: project_id,
+	}, nil
 }
 
 func (server msgServer) DeleteProject(ctx context.Context, msg *types.MsgDeleteProjectRequest) (*types.MsgDeleteProjectResponse, error) {

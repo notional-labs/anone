@@ -29,7 +29,7 @@ This module will save plenty of time for new project to lauch.
 1. start_time: start time of project schedule.
     * One can only modify start_time when the project is not active
     * Needs a field to check if the project is already active
-1. release_mechanism: the release mechanism used for this project. If a chain intends to use multiple release mechanism on different phases, it should create multiple projects.
+1. (DEPRECATED)release_mechanism: the release mechanism used for this project. If a chain intends to use multiple release mechanism on different phases, it should create multiple projects.
 1. project_active: Is the current project already active
 
 # global params

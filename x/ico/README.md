@@ -15,7 +15,7 @@ ICO needs a way to select people else a lot of people will buy like crazy.
 1. project_id: the project id that this ICO is linked to
 2. token_for_distribution: the total amount of coins for distribution
 3. distributed_amount: total amount distributed
-4. token_listing_price: the initial price of token (in UST)
+4. token_listing_price: the initial price of token (in US Dollar)
 
 # Global params
 # Message Tx
