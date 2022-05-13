@@ -47,7 +47,7 @@ CW3_DAO_INIT="{
   \"description\": \"A DAO that makes DAO tooling\",
   \"gov_token\": {
     \"instantiate_new_cw20\": {
-      \"cw20_code_id\": 3,
+      \"cw20_code_id\": 1,
       \"label\": \"DAO DAO v0.1.1\",
       \"initial_dao_balance\": \"1000000000\",
       \"msg\": {
@@ -55,7 +55,7 @@ CW3_DAO_INIT="{
         \"symbol\": \"DAO\",
         \"decimals\": 6,
         \"initial_balances\": [{
-          \"address\": \"one14wkt0quyk0ytn9u6regseqm4u4txgv4gn0aqyl\",
+          \"address\": \"$KEY\",
           \"amount\": \"10000000\"
         }]
       }
@@ -63,7 +63,7 @@ CW3_DAO_INIT="{
   },
   \"staking_contract\": {
     \"instantiate_new_staking_contract\": {
-      \"staking_contract_code_id\": 13
+      \"staking_contract_code_id\": $STAKE_CW20_CODE
     }
   },
   \"threshold\": {
