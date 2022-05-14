@@ -12,7 +12,7 @@ import (
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
-	app := simapp.New(t.TempDir())
+	app := simapp.New(false)
 
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 

@@ -16,26 +16,27 @@ import (
 )
 
 // New creates application instance with in-memory database and disabled logging.
-func New(dir string) *app.App {
+func New(isCheckTx bool) *app.App {
 	db := tmdb.NewMemDB()
 	logger := log.NewNopLogger()
 
 	encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
 
-	a := app.New(logger, db, nil, true, map[int64]bool{}, dir, 0, encoding,
-		simapp.EmptyAppOptions{})
+	a := app.New(logger, db, nil, true, map[int64]bool{}, app.DefaultNodeHome, 0, encoding, simapp.EmptyAppOptions{})
 	// InitChain updates deliverState which is required when app.NewContext is called
 
-	// Is this thing generate a default genesis for app?
-	stateBytes, err := json.MarshalIndent(app.ModuleBasics.DefaultGenesis(encoding.Marshaler), "", " ")
-	if err != nil {
-		panic(err)
+	if !isCheckTx {
+		stateBytes, err := json.MarshalIndent(app.ModuleBasics.DefaultGenesis(encoding.Marshaler), "", " ")
+		if err != nil {
+			panic(err)
+		}
+
+		a.InitChain(abci.RequestInitChain{
+			ConsensusParams: defaultConsensusParams,
+			AppStateBytes:   stateBytes,
+		})
 	}
 
-	a.InitChain(abci.RequestInitChain{
-		ConsensusParams: defaultConsensusParams,
-		AppStateBytes:   stateBytes,
-	})
 	return a.(*app.App)
 }
 

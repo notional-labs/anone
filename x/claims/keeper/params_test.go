@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetParams(t *testing.T) {
-	app := simapp.New(t.TempDir())
+	app := simapp.New(false)
 
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 

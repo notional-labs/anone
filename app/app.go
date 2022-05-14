@@ -447,7 +447,6 @@ func New(
 		wasmOpts...,
 	)
 
-
 	// register wasm gov proposal types
 	enabledProposals := GetEnabledProposals()
 	if len(enabledProposals) != 0 {

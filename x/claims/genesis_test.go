@@ -18,7 +18,7 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	app := simapp.New(t.TempDir())
+	app := simapp.New(false)
 
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
