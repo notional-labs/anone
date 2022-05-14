@@ -107,6 +107,10 @@ import (
 	claimkeeper "github.com/notional-labs/anone/x/claims/keeper"
 	claimtypes "github.com/notional-labs/anone/x/claims/types"
 
+	launchpad "github.com/notional-labs/anone/x/launchpad"
+	launchpadkeeper "github.com/notional-labs/anone/x/launchpad/keeper"
+	launchpadtypes "github.com/notional-labs/anone/x/launchpad/types"
+
 	sgwasm "github.com/notional-labs/anone/internal/wasm"
 	claimwasm "github.com/notional-labs/anone/x/claims/wasm"
 )
@@ -201,6 +205,7 @@ var (
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		wasm.AppModuleBasic{},
 		claim.AppModuleBasic{},
+		launchpad.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -213,8 +218,9 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		wasm.ModuleName:       {authtypes.Burner},
-		claimtypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		wasm.ModuleName:           {authtypes.Burner},
+		claimtypes.ModuleName:     {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		launchpadtypes.ModuleName: nil,
 	}
 )
 
@@ -267,6 +273,7 @@ type App struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	ClaimKeeper      claimkeeper.Keeper
+	LaunchpadKeeper  launchpadkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -311,6 +318,7 @@ func New(
 		wasm.StoreKey,
 		authzkeeper.StoreKey,
 		claimtypes.StoreKey,
+		launchpadtypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -373,6 +381,10 @@ func New(
 
 	app.ClaimKeeper = *claimkeeper.NewKeeper(appCodec, keys[claimtypes.StoreKey], app.AccountKeeper,
 		app.BankKeeper, app.StakingKeeper, app.DistrKeeper, app.GetSubspace(claimtypes.ModuleName),
+	)
+
+	app.LaunchpadKeeper = *launchpadkeeper.NewKeeper(appCodec, keys[launchpadtypes.StoreKey],
+		app.GetSubspace(launchpadtypes.ModuleName), app.AccountKeeper,
 	)
 
 	// register the staking hooks
@@ -508,6 +520,7 @@ func New(
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		claim.NewAppModule(appCodec, app.ClaimKeeper),
+		launchpad.NewAppModule(appCodec, app.LaunchpadKeeper, app.AccountKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -535,6 +548,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		wasm.ModuleName,
 		claimtypes.ModuleName,
+		launchpadtypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -558,6 +572,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		wasm.ModuleName,
 		claimtypes.ModuleName,
+		launchpadtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -587,6 +602,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		wasm.ModuleName,
 		claimtypes.ModuleName,
+		launchpadtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -785,6 +801,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(claimtypes.ModuleName)
+	paramsKeeper.Subspace(launchpadtypes.ModuleName)
 
 	return paramsKeeper
 }
