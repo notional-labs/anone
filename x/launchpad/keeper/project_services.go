@@ -24,7 +24,7 @@ func validateCreatedProject(ctx sdk.Context, project types.Project) error {
 	return nil
 }
 
-func (k Keeper) CreateProject(ctx sdk.Context, msg *types.MsgCreateProjectRequest) (uint64, error) {
+func (k Keeper) CreateProject(ctx sdk.Context, project_owner sdk.AccAddress, msg *types.MsgCreateProjectRequest) (uint64, error) {
 	// validate Msg
 	if err := validateCreateProjectMsg(ctx, msg); err != nil {
 		return 0, err
@@ -56,15 +56,19 @@ func (k Keeper) CreateProject(ctx sdk.Context, msg *types.MsgCreateProjectReques
 	acc := k.accountKeeper.NewAccount(
 		ctx,
 		authtypes.NewModuleAccount(
-			authtypes.NewBaseAccountWithAddress(sdk.AccAddress(project.GetProjectAddress())),
+			authtypes.NewBaseAccountWithAddress(project_address),
 			project.GetProjectAddress(),
 		),
 	)
 	k.accountKeeper.SetAccount(ctx, acc)
 
 	// save project to KV stores
+	if err := k.SetProject(ctx, project); err != nil {
+		return 0, err
+	}
 
 	// after effect
+	k.hooks.AfterProjectCreated(ctx, project_owner, projectID)
 
-	return projectID, types.ErrNotImplemented
+	return projectID, nil
 }

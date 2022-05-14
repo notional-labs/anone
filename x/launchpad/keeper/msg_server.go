@@ -25,8 +25,14 @@ func (server msgServer) CreateProject(goCtx context.Context, msg *types.MsgCreat
 	// get ctx SDK context
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// get project owner
+	project_owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return nil, err
+	}
+
 	// invoke logic CreateProject
-	project_id, err := server.Keeper.CreateProject(ctx, msg)
+	project_id, err := server.Keeper.CreateProject(ctx, project_owner, msg)
 	if err != nil {
 		return nil, err
 	}

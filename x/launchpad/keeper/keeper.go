@@ -19,6 +19,7 @@ type (
 		storeKey   sdk.StoreKey
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
+		hooks      types.LaunchpadHooks
 
 		accountKeeper types.AccountKeeper
 	}
@@ -54,7 +55,7 @@ func (k Keeper) GetModuleAccountAddress(ctx sdk.Context) sdk.AccAddress {
 	return k.accountKeeper.GetModuleAddress(types.ModuleName)
 }
 
-// ============ I. Project Helper Logic
+// ============ Project Helper Logic
 
 // GetNextProjectIDAndIncrement returns the next project id, and increments the corresponding state entry.
 func (k Keeper) GetNextProjectIDAndIncrement(ctx sdk.Context) uint64 {
@@ -86,7 +87,21 @@ func (k Keeper) SetNextProjectID(ctx sdk.Context, projectID uint64) {
 	store.Set(types.KeyNextGlobalProjectID, bz)
 }
 
+// Get new project address
 func (k Keeper) NewProjectAddress(projectID uint64) sdk.AccAddress {
 	key := append([]byte("pool"), sdk.Uint64ToBigEndian(projectID)...)
 	return address.Module(types.ModuleName, key)
+}
+
+// ============ Hooks
+
+// Set the gamm hooks.
+func (k *Keeper) SetHooks(gh types.LaunchpadHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set gamm hooks twice")
+	}
+
+	k.hooks = gh
+
+	return k
 }
