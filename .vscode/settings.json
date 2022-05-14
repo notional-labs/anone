@@ -1,0 +1,8 @@
+{
+    "protoc": {
+        "path": "/usr/local/bin/protoc",
+        "options": [
+            "--proto_path=third_party",
+        ]
+    }
+}

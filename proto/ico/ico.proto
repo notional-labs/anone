@@ -1,0 +1,32 @@
+syntax = "proto3";
+package notionallabs.anone.ico;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/notional-labs/anone/x/ico/types";
+
+message ICO {
+
+    // Project unique id of each project
+    uint64 project_id = 1 [
+        (gogoproto.moretags) = "yaml:\"project_id\""
+    ];
+
+    repeated cosmos.base.v1beta1.Coin token_for_distribution = 2 [
+        (gogoproto.moretags) = "yaml:\"token_for_distribution\"",
+        (gogoproto.nullable) = false
+    ];
+
+    string distributed_amount = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.moretags) = "yaml:\"distributed_amount\"",
+        (gogoproto.nullable) = false
+    ];
+
+    string token_listing_price = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.moretags) = "yaml:\"token_listing_price\"",
+        (gogoproto.nullable) = false
+    ];
+}
