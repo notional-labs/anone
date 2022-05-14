@@ -48,13 +48,6 @@ var Action_value = map[string]int32{
 	"ActionDelegateStake": 3,
 }
 
-var Action_percentage = map[int32]int32{
-	0: 10,
-	1: 50,
-	2: 20,
-	3: 20,
-}
-
 func (x Action) String() string {
 	return proto.EnumName(Action_name, int32(x))
 }

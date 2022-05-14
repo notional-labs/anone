@@ -120,7 +120,7 @@ func (k Keeper) GetClaimableAmountForAction(ctx sdk.Context, addr sdk.AccAddress
 		Action_percentage := types.Action_percentage
 		InitialClaimablePerAction = InitialClaimablePerAction.Add(
 			sdk.NewCoin(coin.Denom,
-				coin.Amount.Mul(sdk.NewInt(int64(Action_percentage[int32(action)]))).QuoRaw(int64(100)),
+				coin.Amount.Mul(sdk.NewInt(int64(Action_percentage[types.Action_name[int32(action)]]))).QuoRaw(int64(100)),
 			),
 		)
 	}
