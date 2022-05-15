@@ -74,7 +74,7 @@ func (k Keeper) GetNextProjectIDAndIncrement(ctx sdk.Context) uint64 {
 	}
 
 	k.SetNextProjectID(ctx, projectID+1)
-	return projectID
+	return projectID + 1
 }
 
 // SetNextProjectID sets next project ID.

@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/notional-labs/anone/app"
 	"github.com/notional-labs/anone/testutil/simapp"
+	"github.com/notional-labs/anone/x/launchpad/types"
 	"github.com/stretchr/testify/suite"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -25,6 +26,10 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	// setup ctx
 	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{Height: 1, ChainID: "anone-1", Time: time.Now().UTC()})
+
+	// set params of global_project_id
+	suite.app.LaunchpadKeeper.SetParams(suite.ctx, types.Params{})
+	suite.app.LaunchpadKeeper.SetNextProjectID(suite.ctx, 0)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

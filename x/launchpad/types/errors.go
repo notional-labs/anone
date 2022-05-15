@@ -10,7 +10,8 @@ import (
 var (
 	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
 
-	ErrInvalidProject = sdkerrors.Register(ModuleName, 1, "attempting to create an invalid project")
+	ErrInvalidProject                           = sdkerrors.Register(ModuleName, 1, "attempting to create an invalid project")
+	ErrGenesisProjectIDDoesNotMatchProjectArray = sdkerrors.Register(ModuleName, 2, "attempting to init genesis with unequal project array length and GlobalProjectIdStart")
 
 	ErrNotImplemented = sdkerrors.Register(ModuleName, 60, "function not implemented")
 )
