@@ -164,3 +164,35 @@ func (k Keeper) ModifyStartTime(ctx sdk.Context, msg *types.MsgModifyStartTimeRe
 
 	return projectId, nil
 }
+
+func (k Keeper) DeleteProject(ctx sdk.Context, msg *types.MsgDeleteProjectRequest) (uint64, error) {
+
+	// get project id
+	projectId := msg.GetProjectId()
+	
+	// get project by id
+	project, err := k.GetProjectById(ctx, projectId)
+	if(err != nil) {
+		return 0, err
+	}
+
+	// check if msg.Owner is current project owner
+	if(project.GetProjectOwner() != msg.GetOwner()) {
+		return 0, types.ErrNotProjecOwner
+	}
+
+	// Modify project as empty object
+	newProject := types.Project{}
+
+	// delete project module address from the account keeper
+	projectModuleAddress := k.accountKeeper.GetModuleAddress(project.ProjectAddress)
+	account := k.accountKeeper.GetAccount(ctx, projectModuleAddress)
+	k.accountKeeper.RemoveAccount(ctx, account)
+
+	// save project to KV stores
+	if err := k.SetProject(ctx, newProject); err != nil {
+		return 0, err
+	}
+
+	return projectId, nil
+}
