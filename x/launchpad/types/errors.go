@@ -13,4 +13,6 @@ var (
 	ErrInvalidProject = sdkerrors.Register(ModuleName, 1, "attempting to create an invalid project")
 
 	ErrNotImplemented = sdkerrors.Register(ModuleName, 60, "function not implemented")
+
+	ErrProjectNotFound = sdkerrors.Register(ModuleName, 404, "project not found")
 )

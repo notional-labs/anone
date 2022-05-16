@@ -72,3 +72,34 @@ func (k Keeper) CreateProject(ctx sdk.Context, project_owner sdk.AccAddress, msg
 
 	return projectID, nil
 }
+
+func (k Keeper) ModifyProjectInformation(ctx sdk.Context, msg *types.MsgModifyProjectInformationRequest) (uint64, error) {
+
+	// get project id
+	projectId := msg.GetProjectId()
+	
+	// get project by id
+	project, err := k.GetProjectById(ctx, projectId)
+
+	if(err != nil) {
+		return 0, err
+	}
+
+	// Modify project
+	newProject := types.Project{
+		ProjectOwner:       msg.GetOwner(),
+		ProjectTitle:       project.GetProjectTitle(),
+		ProjectId:          projectId,
+		ProjectAddress:     project.GetProjectAddress(),
+		ProjectInformation: msg.GetProjectInformation(),
+		ProjectActive:      project.GetProjectActive(),
+		StartTime:          project.GetStartTime(),
+	}
+
+	// save project to KV stores
+	if err := k.SetProject(ctx, newProject); err != nil {
+		return 0, err
+	}
+
+	return projectId, nil
+}

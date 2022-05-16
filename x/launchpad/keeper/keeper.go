@@ -77,6 +77,21 @@ func (k Keeper) GetNextProjectIDAndIncrement(ctx sdk.Context) uint64 {
 	return projectID
 }
 
+func (k Keeper) GetProjectById(ctx sdk.Context, projectId uint64) (types.Project, error) {
+	store := ctx.KVStore(k.storeKey)
+	projectKey := types.GetKeyPrefixProject(projectId)
+	if !store.Has(projectKey) {
+		fmt.Errorf("project with ID %d does not exist", projectKey)
+		return types.Project{}, nil
+	}
+	project, err := k.UnmarshalProject(store.Get(projectKey))
+	if(err != nil) {
+		return types.Project{}, err
+	}
+
+	return project, nil
+}
+
 // SetNextProjectID sets next project ID.
 func (k Keeper) SetNextProjectID(ctx sdk.Context, projectID uint64) {
 	store := ctx.KVStore(k.storeKey)
