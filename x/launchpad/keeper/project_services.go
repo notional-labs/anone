@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"fmt"
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -9,6 +12,15 @@ import (
 )
 
 func validateCreateProjectMsg(ctx sdk.Context, msg *types.MsgCreateProjectRequest) error {
+	return nil
+}
+
+// start time should after current time
+func validateStartTime(ctx sdk.Context, startTime time.Time) error {
+	currentTime := time.Now()
+	if(startTime.Before(currentTime)) {
+		return fmt.Errorf("invalid start time")
+	}
 	return nil
 }
 
@@ -27,6 +39,11 @@ func validateCreatedProject(ctx sdk.Context, project types.Project) error {
 func (k Keeper) CreateProject(ctx sdk.Context, project_owner sdk.AccAddress, msg *types.MsgCreateProjectRequest) (uint64, error) {
 	// validate Msg
 	if err := validateCreateProjectMsg(ctx, msg); err != nil {
+		return 0, err
+	}
+
+	// validate start time
+	if err := validateStartTime(ctx, msg.StartTime); err != nil {
 		return 0, err
 	}
 
@@ -122,6 +139,11 @@ func (k Keeper) ModifyStartTime(ctx sdk.Context, msg *types.MsgModifyStartTimeRe
 	// check if msg.Owner is current project owner
 	if(project.GetProjectOwner() != msg.GetOwner()) {
 		return 0, types.ErrNotProjecOwner
+	}
+
+	// validate start time
+	if err := validateStartTime(ctx, msg.StartTime); err != nil {
+		return 0, err
 	}
 
 	// Modify project
