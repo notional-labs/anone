@@ -15,4 +15,6 @@ var (
 	ErrNotImplemented = sdkerrors.Register(ModuleName, 60, "function not implemented")
 
 	ErrProjectNotFound = sdkerrors.Register(ModuleName, 404, "project not found")
+
+	ErrNotProjecOwner = sdkerrors.Register(ModuleName, 403, "not project owner")
 )

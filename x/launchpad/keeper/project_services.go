@@ -80,9 +80,13 @@ func (k Keeper) ModifyProjectInformation(ctx sdk.Context, msg *types.MsgModifyPr
 	
 	// get project by id
 	project, err := k.GetProjectById(ctx, projectId)
-
 	if(err != nil) {
 		return 0, err
+	}
+
+	// check if msg.Owner is current project owner
+	if(project.GetProjectOwner() != msg.GetOwner()) {
+		return 0, types.ErrNotProjecOwner
 	}
 
 	// Modify project
