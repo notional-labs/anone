@@ -10,10 +10,9 @@ enum Action {
   option (gogoproto.goproto_enum_prefix) = false;
 
   ActionInitialClaim = 0;
-  ActionBidNFT = 1;
-  ActionMintNFT = 2;
-  ActionVote = 3;
-  ActionDelegateStake = 4;
+  ActionMintNFT = 1;
+  ActionVote = 2;
+  ActionDelegateStake = 3;
 }
 
 message ClaimRecord {

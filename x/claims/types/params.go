@@ -13,6 +13,12 @@ var (
 	DefaultClaimDenom         = "uan1"
 	DefaultDurationUntilDecay = time.Hour
 	DefaultDurationOfDecay    = time.Hour * 5
+	DefaultActionPercentage = map[string]uint32{
+		"ActionInitialClaim":  10,
+		"ActionMintNFT":       50,
+		"ActionVote":          20,
+		"ActionDelegateStake": 20,
+	}
 )
 
 // Parameter store keys
@@ -23,9 +29,10 @@ var (
 	KeyDurationUntilDecal = []byte("DurationUntilDecay")
 	KeyDurationOfDecay    = []byte("DurationOfDecay")
 	KeyAllowedClaimers    = []byte("AllowedClaimers")
+	KeyActionPerCentage	  = []byte("ActionPercentage")
 )
 
-func NewParams(enabled bool, claimDenom string, startTime time.Time, durationUntilDecay, durationOfDecay time.Duration, allowedClaimers []ClaimAuthorization) Params {
+func NewParams(enabled bool, claimDenom string, startTime time.Time, durationUntilDecay, durationOfDecay time.Duration, allowedClaimers []ClaimAuthorization, actionPercentage map[string]uint32) Params {
 	return Params{
 		AirdropEnabled:     enabled,
 		ClaimDenom:         claimDenom,
@@ -33,6 +40,7 @@ func NewParams(enabled bool, claimDenom string, startTime time.Time, durationUnt
 		DurationUntilDecay: durationUntilDecay,
 		DurationOfDecay:    durationOfDecay,
 		AllowedClaimers:    allowedClaimers,
+		ActionPercentage: 	actionPercentage,
 	}
 }
 
@@ -43,6 +51,7 @@ func DefaultParams() Params {
 		DurationUntilDecay: DefaultDurationUntilDecay,
 		DurationOfDecay:    DefaultDurationOfDecay,
 		ClaimDenom:         DefaultClaimDenom,
+		ActionPercentage:   DefaultActionPercentage,
 	}
 }
 
@@ -65,6 +74,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyDurationUntilDecal, &p.DurationUntilDecay, validateDuration),
 		paramtypes.NewParamSetPair(KeyDurationOfDecay, &p.DurationOfDecay, validateDuration),
 		paramtypes.NewParamSetPair(KeyAllowedClaimers, &p.AllowedClaimers, validateClaimers),
+		paramtypes.NewParamSetPair(KeyActionPerCentage, &p.ActionPercentage, validateActionPercentage),
 	}
 }
 
@@ -138,6 +148,14 @@ func validateDuration(i interface{}) error {
 
 func validateClaimers(i interface{}) error {
 	_, ok := i.([]ClaimAuthorization)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	return nil
+}
+
+func validateActionPercentage(i interface{}) error {
+	_, ok := i.(map[string]uint32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
