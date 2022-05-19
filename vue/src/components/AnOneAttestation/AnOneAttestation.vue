@@ -10,6 +10,7 @@
         </p>
         <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
         <span>(Will Open Metamask)</span>
+        <AnButton href="3" type="secondary" v-on:click="switchToPolygon">Switch to Polygon Network</AnButton>
       </div>
       <div v-if="attested">
         <h2>{{ this.attestationMsg }}</h2>
@@ -116,6 +117,54 @@ export default defineComponent({
     }
   },
   methods: {
+    switchNetwork: async function(e) {
+      // Check if MetaMask is installed
+      // MetaMask injects the global API into window.ethereum
+      if (window.ethereum) {
+        try {
+          // check if the chain to connect to is installed
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x137' }], // chainId must be in hexadecimal numbers
+          });
+        } catch (error) {
+          // This error code indicates that the chain has not been added to MetaMask
+          // if it is not, then install it into the user MetaMask
+          if (error.code === 4902) {
+            try {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId: '0x137',
+                    rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+                    nativeCurrency: {
+                      name: 'MATIC',
+                      symbol: 'MATIC', // 2-6 characters long
+                      decimals: 18,
+                    },
+                    rpcUrls: [
+                      'https://polygon-rpc.com',
+                      'https://rpc-mainnet.maticvigil.com ',
+                      'https://rpc-mainnet.matic.network ',
+                      'https://rpc-mainnet.matic.quiknode.pro'
+                    ],
+                  },
+                ],
+              });
+            } catch (addError) {
+              console.error(addError);
+              throw new Error(addError);
+            }
+          }
+          console.error(error);
+          throw new Error(error);
+        }
+      } else {
+        // if no window.ethereum then MetaMask is not installed
+        alert('MetaMask is not installed. Please consider installing it: https://metamask.io/download.html');
+      }
+    },
     handleSign: async function (e) {
       console.log('Clicked the button')
       e.preventDefault()
