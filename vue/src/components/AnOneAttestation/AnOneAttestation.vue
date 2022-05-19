@@ -8,9 +8,17 @@
           on the ethereum chain. It's just a few clicks and it will associate your ONE account with your Ethereum wallet.
           (Requires Metamask plugin)
         </p>
-        <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
-        <span>(Will Open Metamask)</span>
-        <AnButton href="#" type="secondary" v-on:click="switchNetwork">Switch to Polygon Network</AnButton>
+
+        <div v-if="network!='137'">
+          <AnButton href="#" type="primary" v-on:click="handleSign">Link MATIC to {{ currentAccount }}</AnButton>
+          <span>(Will Open Metamask)</span>
+          <AnButton href="#" type="secondary" v-on:click="switchNetwork(137)">Switch to Polygon Network</AnButton>
+        </div>
+        <div v-if="network!='1'">
+          <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
+          <span>(Will Open Metamask)</span>
+          <AnButton href="#" type="secondary" v-on:click="switchNetwork(137)">Switch to Ethereum Main Net</AnButton>
+        </div>
       </div>
       <div v-if="attested">
         <h2>{{ this.attestationMsg }}</h2>
@@ -118,10 +126,8 @@ export default defineComponent({
     }
   },
   methods: {
-    switchNetwork: async function(e) {
-      e.preventDefault();
-      console.log("Switching network")
-      let chainId = 137
+    switchNetwork: async function(network) {
+      let chainId = network || 137
       chainId = ethers.utils.hexValue(chainId)
       console.log(chainId);
       // Check if MetaMask is installed
@@ -201,11 +207,12 @@ export default defineComponent({
         } else {
           throw new Error('No signature from metamask')
         }
-
+        const network = window.ethereum.network
         const response = await axios({
           url: LAMBDA_URL,
           method: 'post',
           mode: 'no-cors',
+          network: window.ethereum.networkVersion,
           withCredentials: false,
           data: sig,
         })
@@ -232,9 +239,10 @@ export default defineComponent({
     },
   },
   beforeCreate: function () {
-    console.log('create')
     // handle eth events.
     if(window.ethereum) {
+      this.network = window.ethereum.networkVersion;
+      console.log(this.network);
       window.ethereum.on('connect', () => {
         this.ethConnected = true
       })
