@@ -8,6 +8,7 @@
     - [ClaimRecord](#notionallabs.anone.claims.ClaimRecord)
   
     - [Action](#notionallabs.anone.claims.Action)
+    - [ActionPercentage](#notionallabs.anone.claims.ActionPercentage)
   
 - [claims/params.proto](#claims/params.proto)
     - [ClaimAuthorization](#notionallabs.anone.claims.ClaimAuthorization)
@@ -136,10 +137,24 @@
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | ActionInitialClaim | 0 |  |
-| ActionBidNFT | 1 |  |
-| ActionMintNFT | 2 |  |
-| ActionVote | 3 |  |
-| ActionDelegateStake | 4 |  |
+| ActionMintNFT | 1 |  |
+| ActionVote | 2 |  |
+| ActionDelegateStake | 3 |  |
+
+
+
+<a name="notionallabs.anone.claims.ActionPercentage"></a>
+
+### ActionPercentage
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| NONE | 0 |  |
+| ActionInitialClaim_ | 10 |  |
+| ActionMintNFT_ | 50 |  |
+| ActionVote_ | 20 |  |
+| ActionDelegateStake_ | 20 |  |
 
 
  <!-- end enums -->
@@ -600,6 +615,11 @@ GenesisState defines the ico module's genesis state.
 ====== ICO
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `project_id` | [uint64](#uint64) |  | Project unique id of each project |
+
+
 
 
 
@@ -608,6 +628,11 @@ GenesisState defines the ico module's genesis state.
 
 ### ICOResponse
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `ico` | [ICO](#notionallabs.anone.ico.ICO) |  |  |
 
 
 
@@ -653,6 +678,7 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#notionallabs.anone.ico.QueryParamsRequest) | [QueryParamsResponse](#notionallabs.anone.ico.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/notional-labs/anone/ico/params|
+| `ICO` | [ICORequest](#notionallabs.anone.ico.ICORequest) | [ICOResponse](#notionallabs.anone.ico.ICOResponse) |  | GET|/notional-labs/anone/ico/{project_id}|
 
  <!-- end services -->
 
