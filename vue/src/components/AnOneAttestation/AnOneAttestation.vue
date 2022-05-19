@@ -10,7 +10,7 @@
         </p>
         <AnButton href="#" type="primary" v-on:click="handleSign">Link ETH to {{ currentAccount }}</AnButton>
         <span>(Will Open Metamask)</span>
-        <AnButton href="3" type="secondary" v-on:click="switchToPolygon">Switch to Polygon Network</AnButton>
+        <AnButton href="#" type="secondary" v-on:click="switchNetwork">Switch to Polygon Network</AnButton>
       </div>
       <div v-if="attested">
         <h2>{{ this.attestationMsg }}</h2>
@@ -26,6 +26,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { ethers } from 'ethers'
+// import {utils} from 'web3';
 import AnButton from '../AnButton/AnButton'
 import ABI from './anone_abi.json'
 import axios from 'axios'
@@ -118,6 +119,11 @@ export default defineComponent({
   },
   methods: {
     switchNetwork: async function(e) {
+      e.preventDefault();
+      console.log("Switching network")
+      let chainId = 137
+      chainId = ethers.utils.hexValue(chainId)
+      console.log(chainId);
       // Check if MetaMask is installed
       // MetaMask injects the global API into window.ethereum
       if (window.ethereum) {
@@ -125,13 +131,18 @@ export default defineComponent({
           // check if the chain to connect to is installed
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x137' }], // chainId must be in hexadecimal numbers
-          });
+            params: [{ chainId: chainId }], // chainId must be in hexadecimal numbers
+          }).then((res)=>{
+            console.log("SWITCH");
+          })
         } catch (error) {
+          console.log("Polygon not installed, Adding network")
+          alert("Polygon not installed, adding network");
           // This error code indicates that the chain has not been added to MetaMask
           // if it is not, then install it into the user MetaMask
           if (error.code === 4902) {
             try {
+
               await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [
@@ -151,7 +162,7 @@ export default defineComponent({
                     ],
                   },
                 ],
-              });
+              }).then(res=>res);
             } catch (addError) {
               console.error(addError);
               throw new Error(addError);
@@ -230,7 +241,12 @@ export default defineComponent({
       window.ethereum.on('disconnect', () => {
         this.ethConnected = false
       })
-      window.ethereum.on('chainChanged', () => {window.location.reload()})
+      window.ethereum.on('chainChanged', (e) => {
+        if(e && e.preventDefault) {
+          e.preventDefault()
+        }
+        window.location.reload()
+      })
     }
     const vuexModule = ['common', 'wallet']
     for (let i = 1; i <= vuexModule.length; i++) {
