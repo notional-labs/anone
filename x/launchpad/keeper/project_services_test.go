@@ -24,6 +24,76 @@ func (suite *KeeperTestSuite) TestCreateProject() {
 	tests := []struct {
 		fn func()
 	}{
+		// check start time if it is before current time. If true --> error
+		{},
+		// check if project can contain token and return correctly the amount
+		{},
+	}
+
+	for _, test := range tests {
+		suite.SetupTest()
+
+		test.fn()
+	}
+}
+
+func (suite *KeeperTestSuite) TestModifyStartTime() {
+	tests := []struct {
+		fn func()
+	}{
+		// check owner
+		{},
+		// check if ID is still valid (if not existed before)
+		{},
+		// check if ID is still valid (if has been deleted)
+		{},
+		// check if modfication is before StartTime
+		{},
+	}
+
+	for _, test := range tests {
+		suite.SetupTest()
+
+		test.fn()
+	}
+}
+
+func (suite *KeeperTestSuite) TestModifyProjectInformation() {
+	tests := []struct {
+		fn func()
+	}{
+		// check owner
+		{},
+		// check if ID is still valid (if not existed before)
+		{},
+		// check if ID is still valid (if has been deleted)
+		{},
+		// check if modfication is before StartTime
+		{},
+	}
+
+	for _, test := range tests {
+		suite.SetupTest()
+
+		test.fn()
+	}
+}
+
+func (suite *KeeperTestSuite) TestDeleteProject() {
+	tests := []struct {
+		fn func()
+	}{
+		// check owner
+		{},
+		// check if ID is still valid (if not existed before)
+		{},
+		// check if ID is still valid (if has been deleted)
+		{},
+		// check if delete is before StartTime
+		{},
+		// check if project already has token, if not, then cannot delete
+		{},
+		// check if project address is still in AccountKeeper
 		{},
 	}
 
