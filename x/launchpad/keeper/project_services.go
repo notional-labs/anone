@@ -15,6 +15,14 @@ func validateCreateProjectMsg(ctx sdk.Context, msg *types.MsgCreateProjectReques
 	return nil
 }
 
+func validateModifyInformationMsg(ctx sdk.Context, msg *types.MsgModifyProjectInformationRequest) error {
+	return nil
+}
+
+func validateModifyStartTimeMsg(ctx sdk.Context, msg *types.MsgModifyStartTimeRequest) error {
+	return nil
+}
+
 // start time should after current time
 func validateStartTime(ctx sdk.Context, startTime time.Time) error {
 	currentTime := time.Now()
@@ -91,6 +99,10 @@ func (k Keeper) CreateProject(ctx sdk.Context, project_owner sdk.AccAddress, msg
 }
 
 func (k Keeper) ModifyProjectInformation(ctx sdk.Context, msg *types.MsgModifyProjectInformationRequest) (uint64, error) {
+	// validate Msg
+	if err := validateModifyInformationMsg(ctx, msg); err != nil {
+		return 0, err
+	}
 
 	// get project id
 	projectId := msg.GetProjectId()
@@ -98,6 +110,11 @@ func (k Keeper) ModifyProjectInformation(ctx sdk.Context, msg *types.MsgModifyPr
 	// get project by id
 	project, err := k.GetProjectById(ctx, projectId)
 	if(err != nil) {
+		return 0, err
+	}
+
+	// check if current time before start time
+	if err := validateStartTime(ctx, project.StartTime); err != nil {
 		return 0, err
 	}
 
@@ -122,11 +139,18 @@ func (k Keeper) ModifyProjectInformation(ctx sdk.Context, msg *types.MsgModifyPr
 		return 0, err
 	}
 
+	// after effect
+	k.hooks.AfterProjectModified(ctx, projectId)
+
 	return projectId, nil
 }
 
 func (k Keeper) ModifyStartTime(ctx sdk.Context, msg *types.MsgModifyStartTimeRequest) (uint64, error) {
 
+	// validate Msg
+	if err := validateModifyStartTimeMsg(ctx, msg); err != nil {
+		return 0, err
+	}
 	// get project id
 	projectId := msg.GetProjectId()
 	
@@ -139,6 +163,11 @@ func (k Keeper) ModifyStartTime(ctx sdk.Context, msg *types.MsgModifyStartTimeRe
 	// check if msg.Owner is current project owner
 	if(project.GetProjectOwner() != msg.GetOwner()) {
 		return 0, types.ErrNotProjecOwner
+	}
+
+	// check if current time before start time
+	if err := validateStartTime(ctx, project.StartTime); err != nil {
+		return 0, err
 	}
 
 	// validate start time
@@ -162,6 +191,9 @@ func (k Keeper) ModifyStartTime(ctx sdk.Context, msg *types.MsgModifyStartTimeRe
 		return 0, err
 	}
 
+	// after effect
+	k.hooks.AfterProjectModified(ctx, projectId)
+
 	return projectId, nil
 }
 
@@ -176,9 +208,19 @@ func (k Keeper) DeleteProject(ctx sdk.Context, msg *types.MsgDeleteProjectReques
 		return 0, err
 	}
 
+	// check if current time before start time
+	if err := validateStartTime(ctx, project.StartTime); err != nil {
+		return 0, err
+	}
+
 	// check if msg.Owner is current project owner
 	if(project.GetProjectOwner() != msg.GetOwner()) {
 		return 0, types.ErrNotProjecOwner
+	}
+
+	// check if the project has been deleted
+	if(project == types.Project{}) {
+		return 0, fmt.Errorf("Project has been deleted")
 	}
 
 	// Modify project as empty object
@@ -193,6 +235,9 @@ func (k Keeper) DeleteProject(ctx sdk.Context, msg *types.MsgDeleteProjectReques
 	if err := k.SetProject(ctx, newProject); err != nil {
 		return 0, err
 	}
+
+	// after effect
+	k.hooks.AfterProjectDeteted(ctx, projectId)
 
 	return projectId, nil
 }
