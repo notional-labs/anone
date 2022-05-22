@@ -29,10 +29,9 @@ type Action int32
 
 const (
 	ActionInitialClaim  Action = 0
-	ActionBidNFT        Action = 1
-	ActionMintNFT       Action = 2
-	ActionVote          Action = 3
-	ActionDelegateStake Action = 4
+	ActionMintNFT       Action = 1
+	ActionVote          Action = 2
+	ActionDelegateStake Action = 3
 )
 
 var Action_name = map[int32]string{

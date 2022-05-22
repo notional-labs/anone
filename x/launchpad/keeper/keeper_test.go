@@ -2,29 +2,23 @@ package keeper_test
 
 import (
 	"testing"
-	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/notional-labs/anone/app"
-	"github.com/notional-labs/anone/testutil/simapp"
+	apptesing "github.com/notional-labs/anone/app/apptesting"
+	"github.com/notional-labs/anone/x/launchpad/types"
 	"github.com/stretchr/testify/suite"
-
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 type KeeperTestSuite struct {
-	suite.Suite
-
-	ctx sdk.Context
-	app *app.App
+	apptesing.KeeperTestHelper
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	// setup app
-	suite.app = simapp.New(false)
+	// setup KeeperTestSuite
+	suite.SetupKeeperTestHelper()
 
-	// setup ctx
-	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{Height: 1, ChainID: "anone-1", Time: time.Now().UTC()})
+	// set params of global_project_id
+	suite.App.LaunchpadKeeper.SetParams(suite.Ctx, types.Params{})
+	suite.App.LaunchpadKeeper.SetNextProjectID(suite.Ctx, 0)
 }
 
 func TestKeeperTestSuite(t *testing.T) {
