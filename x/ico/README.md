@@ -20,11 +20,13 @@ ICO needs a way to select people else a lot of people will buy like crazy.
 # Global params
 # Message Tx
 1. EnableICO: tx message to enable ico for a specific project id
+    * only allowed if the project is not active
 2. AddDistributionToken: tx message to add token for distribution to project
+    * only allowed if the project is not active
 3. WithdrawDistributionToken: tx message to withdraw token for distribution from project
-    * only allowed before the project starts
+    * only allowed if the project is not active
 4. ModifyTokenListingPrice: tx message to modify token listing price
-    * only allowed before the project starts
+    * only allowed if the project is not active
 5. CommitParticipation: tx message to buy tokens
     * token_commit: the amount of buy token to be commited
 

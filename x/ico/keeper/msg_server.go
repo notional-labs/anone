@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/notional-labs/anone/x/ico/types"
 )
 
@@ -18,8 +20,39 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-func (server msgServer) EnableICO(ctx context.Context, msg *types.MessageEnableICORequest) (*types.MessageEnableICOResponse, error) {
-	return &types.MessageEnableICOResponse{}, types.ErrNotImplemented
+func (server msgServer) EnableICO(goCtx context.Context, msg *types.MessageEnableICORequest) (*types.MessageEnableICOResponse, error) {
+	// get ctx SDK context
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// get project owner
+	project_owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	// invoke logic EnableICO
+	err = server.Keeper.EnableICO(ctx, project_owner, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// emit event
+	ctx.EventManager().EmitEvents(sdk.Events{
+		// an event to signify a project created
+		sdk.NewEvent(
+			types.TypeICOEnabled,
+			sdk.NewAttribute(types.AttributeProjectID, strconv.FormatUint(msg.ProjectId, 10)),
+		),
+		// an event to signify the event comes from which module and which signer
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner),
+		),
+	})
+
+	// return result to gRPC server
+	return &types.MessageEnableICOResponse{}, nil
 }
 
 func (server msgServer) AddDistributionToken(ctx context.Context, msg *types.MessageAddDistributionTokenRequest) (*types.MessageAddDistributionTokenResponse, error) {
