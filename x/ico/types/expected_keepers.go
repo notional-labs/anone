@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	launchpad "github.com/notional-labs/anone/x/launchpad/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -18,4 +19,5 @@ type BankKeeper interface {
 }
 
 type LaunchpadKeeper interface {
+	GetProjectByID(ctx sdk.Context, projectID uint64) (launchpad.Project, error)
 }
