@@ -93,6 +93,41 @@ func (k Keeper) GetProjectById(ctx sdk.Context, projectId uint64) (types.Project
 	return project, nil
 }
 
+func (k Keeper) GetProjectAddress(ctx sdk.Context, projectId uint64) (sdk.AccAddress, error) {
+	store := ctx.KVStore(k.storeKey)
+	projectKey := types.GetKeyPrefixProject(projectId)
+	if !store.Has(projectKey) {
+		fmt.Errorf("project with ID %d does not exist", projectKey)
+		return sdk.AccAddress{}, nil
+	}
+	project, err := k.UnmarshalProject(store.Get(projectKey))
+	if(err != nil) {
+		return sdk.AccAddress{}, err
+	}
+	projectAddress := k.accountKeeper.GetModuleAddress(project.ProjectAddress)
+	return projectAddress, nil
+}
+
+func (k Keeper) GetAllProjects(ctx sdk.Context) (res []types.Project, err error) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, types.KeyPrefixProject)
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		bz := iter.Value()
+
+		project, err := k.UnmarshalProject(bz)
+		if err != nil {
+			return nil, err
+		}
+
+		//only get projects that have not been deleted
+		if(project != types.Project{}) {
+			res = append(res, project)
+		}
+	}
+	return res, nil
+}
+
 // SetNextProjectID sets next project ID.
 func (k Keeper) SetNextProjectID(ctx sdk.Context, projectID uint64) {
 	store := ctx.KVStore(k.storeKey)
