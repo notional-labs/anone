@@ -12,14 +12,23 @@ import (
 )
 
 func validateCreateProjectMsg(ctx sdk.Context, msg *types.MsgCreateProjectRequest) error {
+	if(msg == &types.MsgCreateProjectRequest{}) {
+		return fmt.Errorf("Invalid msg: Empty object")
+	}
 	return nil
 }
 
 func validateModifyInformationMsg(ctx sdk.Context, msg *types.MsgModifyProjectInformationRequest) error {
+	if(msg == &types.MsgModifyProjectInformationRequest{}) {
+		return fmt.Errorf("Invalid msg: Empty object")
+	}
 	return nil
 }
 
 func validateModifyStartTimeMsg(ctx sdk.Context, msg *types.MsgModifyStartTimeRequest) error {
+	if(msg == &types.MsgModifyStartTimeRequest{}) {
+		return fmt.Errorf("Invalid msg: Empty object")
+	}
 	return nil
 }
 
