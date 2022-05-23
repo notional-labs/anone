@@ -21,6 +21,7 @@ type (
 		hooks      types.LaunchpadHooks
 
 		accountKeeper types.AccountKeeper
+		bankKeeper types.BankKeeper
 	}
 )
 

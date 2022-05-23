@@ -232,11 +232,18 @@ func (k Keeper) DeleteProject(ctx sdk.Context, msg *types.MsgDeleteProjectReques
 		return 0, fmt.Errorf("Project has been deleted")
 	}
 
+	projectModuleAddress := k.accountKeeper.GetModuleAddress(project.ProjectAddress)
+
+	// check if the project contains any amount of coins
+	balances := k.bankKeeper.GetAllBalances(ctx, projectModuleAddress)
+	if(balances != nil) {
+		return 0, fmt.Errorf("Can't delete project with coins inside")
+	}
+
 	// Modify project as empty object
 	newProject := types.Project{}
 
 	// delete project module address from the account keeper
-	projectModuleAddress := k.accountKeeper.GetModuleAddress(project.ProjectAddress)
 	account := k.accountKeeper.GetAccount(ctx, projectModuleAddress)
 	k.accountKeeper.RemoveAccount(ctx, account)
 
