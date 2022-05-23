@@ -56,13 +56,3 @@ func (k Keeper) GetProjectByID(ctx sdk.Context, projectID uint64) (types.Project
 
 	return project, nil
 }
-
-func (k Keeper) HasProjectByID(ctx sdk.Context, projectID uint64) error {
-	store := ctx.KVStore(k.storeKey)
-	projectKey := types.GetKeyPrefixProject(projectID)
-	if !store.Has(projectKey) {
-		return fmt.Errorf("project with ID %d does not exist", projectKey)
-	}
-
-	return nil
-}
