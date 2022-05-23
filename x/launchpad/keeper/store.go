@@ -42,9 +42,9 @@ func (k Keeper) DeletePool(ctx sdk.Context, projectID uint64) error {
 	return nil
 }
 
-func (k Keeper) GetProjectById(ctx sdk.Context, projectId uint64) (types.Project, error) {
+func (k Keeper) GetProjectByID(ctx sdk.Context, projectID uint64) (types.Project, error) {
 	store := ctx.KVStore(k.storeKey)
-	projectKey := types.GetKeyPrefixProject(projectId)
+	projectKey := types.GetKeyPrefixProject(projectID)
 	if !store.Has(projectKey) {
 		return types.Project{}, fmt.Errorf("project with ID %d does not exist", projectKey)
 	}
