@@ -7,7 +7,7 @@ CONTRACT_DIR="artifacts/anone_nft_marketplace.wasm"
 SLEEP_TIME="15s"
 
 INIT="{\"name\": \"Anone NFT Marketplace Contract\"}"
-INIT_JSON=$(anoned tx wasm instantiate "71" "$INIT" --from "$ACCOUNT" --label "anone-nft-marketplace" -y --chain-id "$CHAINID" --node "$NODE" --gas 180000 --fees 100000uan1 -o json)
+INIT_JSON=$(anoned tx wasm instantiate "81" "$INIT" --from "$ACCOUNT" --label "anone-nft-marketplace" -y --chain-id "$CHAINID" --node "$NODE" --gas 180000 --fees 100000uan1 -o json)
 
 echo "INIT_JSON = $INIT_JSON"
 
