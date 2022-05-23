@@ -1,8 +1,10 @@
 package keeper_test
 
-import(
-	"github.com/notional-labs/anone/x/launchpad/types"
+import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/notional-labs/anone/x/launchpad/types"
 ) 
 
 var (
@@ -95,22 +97,89 @@ func (suite *KeeperTestSuite) TestCreateProject() {
 
 func (suite *KeeperTestSuite) TestModifyStartTime() {
 	tests := []struct {
-		fn func()
+		fn func(projectId uint64, startTime time.Time)
 	}{
-		// check owner
-		{},
+		// ideal case
+		{
+			fn: func(projectId uint64, startTime time.Time) {
+				keeper := suite.App.LaunchpadKeeper
+				msg := types.MsgModifyStartTimeRequest{
+					Owner:              suite.TestAccs[0].String(),
+					ProjectId:       	projectId,
+					StartTime:          startTime.AddDate(0, 0, 1),
+				}
+				id, err := keeper.ModifyStartTime(suite.Ctx, &msg)
+				suite.Require().NoError(err)
+				suite.Require().Equal(id, projectId)
+
+				project, err := keeper.GetProjectById(suite.Ctx, projectId)
+				suite.Require().NoError(err)
+				suite.Require().Equal(project.StartTime, startTime.AddDate(0, 0, 1))
+			},
+		},
+		// Only project owner can modify
+		{
+			fn: func(projectId uint64, startTime time.Time) {
+				keeper := suite.App.LaunchpadKeeper
+				msg := types.MsgModifyStartTimeRequest{
+					Owner:              suite.TestAccs[1].String(),
+					ProjectId:       	projectId,
+					StartTime:          startTime.AddDate(0, 0, 1),
+				}
+				_, err := keeper.ModifyStartTime(suite.Ctx, &msg)
+				suite.Require().Error(err)
+			},
+		},
 		// check if ID is still valid (if not existed before)
-		{},
+		{
+			fn: func(projectId uint64, startTime time.Time) {
+				keeper := suite.App.LaunchpadKeeper
+				msg := types.MsgModifyStartTimeRequest{
+					Owner:              suite.TestAccs[0].String(),
+					ProjectId:       	uint64(projectId + 1),
+					StartTime:          startTime.AddDate(0, 0, 1),
+				}
+				_, err := keeper.ModifyStartTime(suite.Ctx, &msg)
+				suite.Require().Error(err)
+			},
+		},
 		// check if ID is still valid (if has been deleted)
-		{},
+		{
+			fn: func(projectId uint64, startTime time.Time) {
+				keeper := suite.App.LaunchpadKeeper
+				keeper.DeleteProject(suite.Ctx, &types.MsgDeleteProjectRequest{
+					Owner: suite.TestAccs[0].String(),
+					ProjectId: projectId,
+				})
+				msg := types.MsgModifyStartTimeRequest{
+					Owner:              suite.TestAccs[0].String(),
+					ProjectId:       	projectId,
+					StartTime:          startTime.AddDate(0, 0, 1),
+				}
+				_, err := keeper.ModifyStartTime(suite.Ctx, &msg)
+				suite.Require().Error(err)
+			},
+		},
 		// check if modfication is before StartTime
 		{},
 	}
 
 	for _, test := range tests {
 		suite.SetupTest()
+		// Mint some assets to the accounts.
+		for _, acc := range suite.TestAccs {
+			suite.FundAcc(acc, defaultAcctFunds)
+		}
+		defaultStartTime := suite.Ctx.BlockTime()
+		projectId, err := suite.App.LaunchpadKeeper.CreateProject(suite.Ctx, suite.TestAccs[0], &types.MsgCreateProjectRequest{
+			Owner:              suite.TestAccs[0].String(),
+			ProjectTitle:       "Project Title",
+			ProjectInformation: "Project Information",
+			StartTime:          defaultStartTime,
+		})
+		suite.Require().NoError(err)
 
-		test.fn()
+		test.fn(projectId, defaultStartTime)
 	}
 }
 
