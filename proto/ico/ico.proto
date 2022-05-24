@@ -18,9 +18,9 @@ message ICO {
         (gogoproto.nullable) = false
     ];
 
-    string distributed_amount = 3 [
+    string total_distributed_amount = 3 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.moretags) = "yaml:\"distributed_amount\"",
+        (gogoproto.moretags) = "yaml:\"total_distributed_amount\"",
         (gogoproto.nullable) = false
     ];
 

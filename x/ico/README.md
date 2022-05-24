@@ -30,7 +30,7 @@ a project can either add token through way 1 or way 2. Both is not allowed.
 1. project_id: the project id that this ICO is linked to
 2. token_for_distribution: the total amount of coins for distribution
     * keeping a local record here helps ICO executes logic directly on ICO without the need to retrieve assets information in launchpad. After logic is executed, balances in launchpad module's project will be updated accordingly
-3. distributed_amount: total amount distributed
+3. total_distributed_amount: total amount for distribution
 4. token_listing_price: the initial price of token (in US Dollar)
 
 # Global params

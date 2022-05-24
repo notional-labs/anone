@@ -44,7 +44,7 @@ func (k Keeper) EnableICO(ctx sdk.Context, owner sdk.AccAddress, msg *types.Mess
 		TokenListingPrice:    *msg.TokenListingPrice,
 	}
 
-	// check if
+	// check if user address has enough tokens to add to ico
 
 	// validate newly created ICO struct
 
