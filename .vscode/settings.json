@@ -1,0 +1,9 @@
+{
+    "protoc": {
+        
+        "path": "/usr/local/bin/protoc",
+        "options": [
+            "--proto_path=$HOME/go/pkg/mod/go.buf.build/protocolbuffers",
+        ]
+    }
+}
