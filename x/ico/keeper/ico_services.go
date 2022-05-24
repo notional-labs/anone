@@ -37,6 +37,14 @@ func (k Keeper) EnableICO(ctx sdk.Context, owner sdk.AccAddress, msg *types.Mess
 	}
 
 	// create ICO struct
+	ico := &types.ICO{
+		ProjectId:            msg.ProjectId,
+		TokenForDistribution: nil,
+		DistributedAmount:    sdk.ZeroInt(),
+		TokenListingPrice:    *msg.TokenListingPrice,
+	}
+
+	// check if
 
 	// validate newly created ICO struct
 
