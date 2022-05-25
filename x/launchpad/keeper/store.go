@@ -31,7 +31,7 @@ func (k Keeper) SetProject(ctx sdk.Context, project types.Project) error {
 	return nil
 }
 
-func (k Keeper) DeletePool(ctx sdk.Context, projectID uint64) error {
+func (k Keeper) DeleteProject(ctx sdk.Context, projectID uint64) error {
 	store := ctx.KVStore(k.storeKey)
 	projectKey := types.GetKeyPrefixProject(projectID)
 	if !store.Has(projectKey) {

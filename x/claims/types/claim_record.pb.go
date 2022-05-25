@@ -56,40 +56,6 @@ func (Action) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_c913fc5a92e5a73a, []int{0}
 }
 
-type ActionPercentage int32
-
-const (
-	ActionPercentage_NONE                 ActionPercentage = 0
-	ActionPercentage_ActionInitialClaim_  ActionPercentage = 10
-	ActionPercentage_ActionMintNFT_       ActionPercentage = 50
-	ActionPercentage_ActionVote_          ActionPercentage = 20
-	ActionPercentage_ActionDelegateStake_ ActionPercentage = 20
-)
-
-var ActionPercentage_name = map[int32]string{
-	0:  "NONE",
-	10: "ActionInitialClaim_",
-	50: "ActionMintNFT_",
-	20: "ActionVote_",
-	// Duplicate value: 20: "ActionDelegateStake_",
-}
-
-var ActionPercentage_value = map[string]int32{
-	"NONE":                 0,
-	"ActionInitialClaim_":  10,
-	"ActionMintNFT_":       50,
-	"ActionVote_":          20,
-	"ActionDelegateStake_": 20,
-}
-
-func (x ActionPercentage) String() string {
-	return proto.EnumName(ActionPercentage_name, int32(x))
-}
-
-func (ActionPercentage) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_c913fc5a92e5a73a, []int{1}
-}
-
 type ClaimRecord struct {
 	// address of claim user
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty" yaml:"address"`
@@ -156,7 +122,6 @@ func (m *ClaimRecord) GetActionCompleted() []bool {
 
 func init() {
 	proto.RegisterEnum("notionallabs.anone.claims.Action", Action_name, Action_value)
-	proto.RegisterEnum("notionallabs.anone.claims.ActionPercentage", ActionPercentage_name, ActionPercentage_value)
 	proto.RegisterType((*ClaimRecord)(nil), "notionallabs.anone.claims.ClaimRecord")
 }
 
