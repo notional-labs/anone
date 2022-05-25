@@ -57,7 +57,7 @@ message TotalProjectRequest {
 }
 
 message TotalProjectResponse {
-  repeated uint64 projects_id = 1;
+  repeated Project projects = 1 [ (gogoproto.nullable) = false ];
 
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
