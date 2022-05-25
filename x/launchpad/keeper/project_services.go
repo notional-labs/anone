@@ -102,7 +102,7 @@ func (k Keeper) CreateProject(ctx sdk.Context, project_owner sdk.AccAddress, msg
 	}
 
 	// after effect
-	k.hooks.AfterProjectCreated(ctx, project_owner, projectID)
+	// k.hooks.AfterProjectCreated(ctx, project_owner, projectID)
 
 	return projectID, nil
 }
@@ -149,7 +149,7 @@ func (k Keeper) ModifyProjectInformation(ctx sdk.Context, msg *types.MsgModifyPr
 	}
 
 	// after effect
-	k.hooks.AfterProjectModified(ctx, projectId)
+	// k.hooks.AfterProjectModified(ctx, projectId)
 
 	return projectId, nil
 }
@@ -201,7 +201,7 @@ func (k Keeper) ModifyStartTime(ctx sdk.Context, msg *types.MsgModifyStartTimeRe
 	}
 
 	// after effect
-	k.hooks.AfterProjectModified(ctx, projectId)
+	// k.hooks.AfterProjectModified(ctx, projectId)
 
 	return projectId, nil
 }
@@ -253,7 +253,7 @@ func (k Keeper) DeleteProject(ctx sdk.Context, msg *types.MsgDeleteProjectReques
 	}
 
 	// after effect
-	k.hooks.AfterProjectDeteted(ctx, projectId)
+	// k.hooks.AfterProjectDeteted(ctx, projectId)
 
 	return projectId, nil
 }
