@@ -141,24 +141,6 @@
 | ActionMintNFT | 1 |  |
 | ActionVote | 2 |  |
 | ActionDelegateStake | 3 |  |
-<<<<<<< HEAD
-
-
-
-<a name="notionallabs.anone.claims.ActionPercentage"></a>
-
-### ActionPercentage
-
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| NONE | 0 |  |
-| ActionInitialClaim_ | 10 |  |
-| ActionMintNFT_ | 50 |  |
-| ActionVote_ | 20 |  |
-| ActionDelegateStake_ | 20 |  |
-=======
->>>>>>> master
 
 
  <!-- end enums -->
