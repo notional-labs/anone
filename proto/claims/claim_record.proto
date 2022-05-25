@@ -13,6 +13,7 @@ enum Action {
   ActionMintNFT = 1;
   ActionVote = 2;
   ActionDelegateStake = 3;
+<<<<<<< HEAD
 }
 
 enum ActionPercentage {
@@ -22,6 +23,8 @@ enum ActionPercentage {
   ActionMintNFT_ = 50;
   ActionVote_ = 20;
   ActionDelegateStake_ = 20;
+=======
+>>>>>>> master
 }
 
 message ClaimRecord {

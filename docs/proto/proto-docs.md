@@ -13,6 +13,7 @@
 - [claims/params.proto](#claims/params.proto)
     - [ClaimAuthorization](#notionallabs.anone.claims.ClaimAuthorization)
     - [Params](#notionallabs.anone.claims.Params)
+    - [Params.ActionPercentageEntry](#notionallabs.anone.claims.Params.ActionPercentageEntry)
   
 - [claims/genesis.proto](#claims/genesis.proto)
     - [GenesisState](#notionallabs.anone.claims.GenesisState)
@@ -140,6 +141,7 @@
 | ActionMintNFT | 1 |  |
 | ActionVote | 2 |  |
 | ActionDelegateStake | 3 |  |
+<<<<<<< HEAD
 
 
 
@@ -155,6 +157,8 @@
 | ActionMintNFT_ | 50 |  |
 | ActionVote_ | 20 |  |
 | ActionDelegateStake_ | 20 |  |
+=======
+>>>>>>> master
 
 
  <!-- end enums -->
@@ -202,6 +206,23 @@ Params defines the parameters for the module.
 | `duration_of_decay` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 | `claim_denom` | [string](#string) |  | denom of claimable asset |
 | `allowed_claimers` | [ClaimAuthorization](#notionallabs.anone.claims.ClaimAuthorization) | repeated | list of contracts and their allowed claim actions |
+| `action_percentage` | [Params.ActionPercentageEntry](#notionallabs.anone.claims.Params.ActionPercentageEntry) | repeated |  |
+
+
+
+
+
+
+<a name="notionallabs.anone.claims.Params.ActionPercentageEntry"></a>
+
+### Params.ActionPercentageEntry
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [string](#string) |  |  |
+| `value` | [uint32](#uint32) |  |  |
 
 
 

@@ -1,8 +1,15 @@
 {
     "protoc": {
+<<<<<<< HEAD
         "path": "/usr/local/bin/protoc",
         "options": [
             "--proto_path=third_party",
+=======
+        
+        "path": "/usr/local/bin/protoc",
+        "options": [
+            "--proto_path=$HOME/go/pkg/mod/go.buf.build/protocolbuffers",
+>>>>>>> master
         ]
     }
 }
