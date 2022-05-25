@@ -2,9 +2,12 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 
-	"github.com/notional-labs/anone/x/launchpad/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/notional-labs/anone/x/launchpad/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -44,9 +47,42 @@ func (q Querier) TotalProject(ctx context.Context, req *types.TotalProjectReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	context := sdk.UnwrapSDKContext(ctx)
-	projectIds, err := q.Keeper.GetAllProjects(context)
-	if(err != nil) {
+	projects := []types.Project{}
+	store := context.KVStore(q.Keeper.storeKey)
+	valStore := prefix.NewStore(store, types.KeyPrefixProject)
+
+
+	pageRes, err := query.FilteredPaginate(valStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		newProject, err := q.getProjectFromIDJsonBytes(context, value)
+		if err != nil {
+			panic(err)
+		}
+		projects = append(projects, newProject...)
+
+		return true, nil
+	})
+
+	if err != nil {
 		return nil, err
 	}
-	return &types.TotalProjectResponse{ProjectsId: projectIds}, nil
+	return &types.TotalProjectResponse{ Projects: projects, Pagination: pageRes}, nil
+}
+
+func (q Querier) getProjectFromIDJsonBytes(ctx sdk.Context, refValue []byte) ([]types.Project, error) {
+	projects := []types.Project{}
+	projectIDs := []uint64{}
+
+	err := json.Unmarshal(refValue, &projectIDs)
+	if err != nil {
+		return projects, err
+	}
+
+	for _, gaugeID := range projectIDs {
+		project, _ := q.Keeper.GetProjectById(ctx, gaugeID)
+		if (project != types.Project{}) {
+			projects = append(projects, project)
+		}
+	}
+
+	return projects, nil
 }
