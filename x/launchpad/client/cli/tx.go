@@ -54,12 +54,12 @@ func CmdCreateProject() *cobra.Command {
 			projectTitle := args[0]
 			projectInformation := args[1]
 
-			startTime, err := time.Parse("2022-05-21T15:04:05Z", args[2])
+			startTime, err := time.Parse(time.RFC3339, args[2])
 			if(err != nil) {
 				return err
 			}
 
-			msg := types.NewMsgCreateProjectRequest(string(clientCtx.GetFromAddress()), projectTitle, projectInformation, startTime)
+			msg := types.NewMsgCreateProjectRequest(clientCtx.GetFromAddress().String(), projectTitle, projectInformation, startTime)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -92,7 +92,7 @@ func CmdModifyProjectInformation() *cobra.Command {
 
 			projectInformation := args[1]
 
-			msg := types.NewMsgModifyProjectInformationRequest(string(clientCtx.GetFromAddress()), projectId.Uint64(), projectInformation)
+			msg := types.NewMsgModifyProjectInformationRequest(clientCtx.GetFromAddress().String(), projectId.Uint64(), projectInformation)
 			
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -119,12 +119,12 @@ func CmdModifyProjectStartTime() *cobra.Command {
 				return err
 			}
 
-			startTime, err := time.Parse("2022-05-21T15:04:05Z", args[1])
+			startTime, err := time.Parse(time.RFC3339, args[1])
 			if(err != nil) {
 				return err
 			}
 
-			msg := types.NewMsgModifyStartTimeRequest(string(clientCtx.GetFromAddress()), projectId.Uint64(), startTime)
+			msg := types.NewMsgModifyStartTimeRequest(clientCtx.GetFromAddress().String(), projectId.Uint64(), startTime)
 			
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -151,7 +151,7 @@ func CmdDeleteProject() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeleteProjectRequest(string(clientCtx.GetFromAddress()), projectId.Uint64())
+			msg := types.NewMsgDeleteProjectRequest(clientCtx.GetFromAddress().String(), projectId.Uint64())
 			
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
