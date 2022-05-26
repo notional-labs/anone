@@ -3,7 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	gogotypes "github.com/gogo/protobuf/types"
 	"github.com/notional-labs/anone/v043_temp/address"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -21,6 +20,7 @@ type (
 		hooks      types.LaunchpadHooks
 
 		accountKeeper types.AccountKeeper
+		bankKeeper types.BankKeeper
 	}
 )
 
@@ -53,36 +53,6 @@ func (k Keeper) GetModuleAccountAddress(ctx sdk.Context) sdk.AccAddress {
 }
 
 // ============ Project Helper Logic
-
-// GetNextProjectIDAndIncrement returns the next project id, and increments the corresponding state entry.
-func (k Keeper) GetNextProjectIDAndIncrement(ctx sdk.Context) uint64 {
-	var projectID uint64
-	store := ctx.KVStore(k.storeKey)
-
-	bz := store.Get(types.KeyNextGlobalProjectID)
-	if bz == nil {
-		panic(fmt.Errorf("project has not been initialized -- Should have been done in InitGenesis"))
-	} else {
-		val := gogotypes.UInt64Value{}
-
-		err := k.cdc.Unmarshal(bz, &val)
-		if err != nil {
-			panic(err)
-		}
-
-		projectID = val.GetValue()
-	}
-
-	k.SetNextProjectID(ctx, projectID+1)
-	return projectID + 1
-}
-
-// SetNextProjectID sets next project ID.
-func (k Keeper) SetNextProjectID(ctx sdk.Context, projectID uint64) {
-	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&gogotypes.UInt64Value{Value: projectID})
-	store.Set(types.KeyNextGlobalProjectID, bz)
-}
 
 // Get new project address
 func (k Keeper) NewProjectAddress(projectID uint64) sdk.AccAddress {

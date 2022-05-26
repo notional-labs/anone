@@ -13,10 +13,13 @@ type AccountKeeper interface {
 
 	GetModuleAddress(name string) sdk.AccAddress
 	SetModuleAccount(ctx sdk.Context, macc authtypes.ModuleAccountI)
+	RemoveAccount(ctx sdk.Context, acc authtypes.AccountI)
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	// Methods imported from bank should be defined here
 }

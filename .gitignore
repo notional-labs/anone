@@ -5,3 +5,4 @@ release/
 debug.txt
 .DS_Store
 .idea
+.vscode
