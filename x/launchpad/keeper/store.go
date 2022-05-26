@@ -111,3 +111,18 @@ func (k Keeper) SetNextProjectID(ctx sdk.Context, projectID uint64) {
 	bz := k.cdc.MustMarshal(&gogotypes.UInt64Value{Value: projectID})
 	store.Set(types.KeyNextGlobalProjectID, bz)
 }
+
+func (k Keeper) GetProjectByID(ctx sdk.Context, projectID uint64) (types.Project, error) {
+	store := ctx.KVStore(k.storeKey)
+	projectKey := types.GetKeyPrefixProject(projectID)
+	if !store.Has(projectKey) {
+		return types.Project{}, fmt.Errorf("project with ID %d does not exist", projectKey)
+	}
+
+	project, err := k.UnmarshalProject(store.Get(projectKey))
+	if err != nil {
+		return types.Project{}, err
+	}
+
+	return project, nil
+}

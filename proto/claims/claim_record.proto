@@ -15,15 +15,6 @@ enum Action {
   ActionDelegateStake = 3;
 }
 
-enum ActionPercentage {
-  option allow_alias = true;
-  NONE = 0;
-  ActionInitialClaim_ = 10;
-  ActionMintNFT_ = 50;
-  ActionVote_ = 20;
-  ActionDelegateStake_ = 20;
-}
-
 message ClaimRecord {
   // address of claim user
   string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];

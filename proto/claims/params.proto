@@ -47,5 +47,10 @@ message Params {
     (gogoproto.jsontag) = "allowed_claimers",
     (gogoproto.moretags) = "yaml:\"allowed_claimers\""
   ];
+
+  map<string, uint32> action_percentage = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"action_percentage\""
+  ];
   
 }

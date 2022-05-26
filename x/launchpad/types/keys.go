@@ -32,6 +32,6 @@ func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-func GetKeyPrefixProject(poolId uint64) []byte {
-	return append(KeyPrefixProject, sdk.Uint64ToBigEndian(poolId)...)
+func GetKeyPrefixProject(projectId uint64) []byte {
+	return append(KeyPrefixProject, sdk.Uint64ToBigEndian(projectId)...)
 }
