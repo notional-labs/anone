@@ -102,6 +102,7 @@ type AppModule struct {
 	keeper         keeper.Keeper
 	accountKeeper  types.AccountKeeper
 	bankViewKeeper types.BankViewKeeper
+	launchpadKeeper types.LaunchpadKeeper
 }
 
 func NewAppModule(
@@ -109,12 +110,14 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankViewKeeper types.BankViewKeeper,
+	launchpadKeeper types.LaunchpadKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankViewKeeper: bankViewKeeper,
+		launchpadKeeper: launchpadKeeper,
 	}
 }
 
