@@ -37,7 +37,7 @@ func validateCreatedICO(ctx sdk.Context, ico types.ICO) error {
 
 func (k Keeper) EnableICO(ctx sdk.Context, owner sdk.AccAddress, msg *types.MessageEnableICORequest) error {
 	// get project
-	project, err := k.launchpadKeeper.GetProjectByID(ctx, msg.ProjectId)
+	project, err := k.launchpadKeeper.GetProjectById(ctx, msg.ProjectId)
 	if err != nil {
 		return err
 	}
@@ -70,6 +70,7 @@ func (k Keeper) EnableICO(ctx sdk.Context, owner sdk.AccAddress, msg *types.Mess
 	}
 
 	// after effect
+	k.hooks.EnableICO(ctx, owner, project.ProjectId)
 
 	return nil
 }

@@ -20,5 +20,5 @@ type BankViewKeeper interface {
 }
 
 type LaunchpadKeeper interface {
-	GetProjectByID(ctx sdk.Context, projectID uint64) (launchpad.Project, error)
+	GetProjectById(ctx sdk.Context, projectID uint64) (launchpad.Project, error)
 }

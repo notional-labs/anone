@@ -17,6 +17,7 @@ type (
 		storeKey   sdk.StoreKey
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
+		hooks      types.ICOHooks
 
 		launchpadKeeper types.LaunchpadKeeper
 		bankViewKeeper  types.BankViewKeeper
@@ -52,4 +53,17 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// ============ Hooks
+
+// Set the gamm hooks.
+func (k *Keeper) SetHooks(gh types.ICOHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set gamm hooks twice")
+	}
+
+	k.hooks = gh
+
+	return k
 }

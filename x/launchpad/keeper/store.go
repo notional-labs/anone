@@ -59,11 +59,10 @@ func (k Keeper) GetProjectById(ctx sdk.Context, projectId uint64) (types.Project
 	store := ctx.KVStore(k.storeKey)
 	projectKey := types.GetKeyPrefixProject(projectId)
 	if !store.Has(projectKey) {
-		fmt.Errorf("project with ID %d does not exist", projectKey)
-		return types.Project{}, nil
+		return types.Project{}, fmt.Errorf("project with ID %d does not exist", projectKey)
 	}
 	project, err := k.UnmarshalProject(store.Get(projectKey))
-	if(err != nil) {
+	if err != nil {
 		return types.Project{}, err
 	}
 
@@ -74,11 +73,10 @@ func (k Keeper) GetProjectAddress(ctx sdk.Context, projectId uint64) (sdk.AccAdd
 	store := ctx.KVStore(k.storeKey)
 	projectKey := types.GetKeyPrefixProject(projectId)
 	if !store.Has(projectKey) {
-		fmt.Errorf("project with ID %d does not exist", projectKey)
-		return sdk.AccAddress{}, nil
+		return sdk.AccAddress{}, fmt.Errorf("project with ID %d does not exist", projectKey)
 	}
 	project, err := k.UnmarshalProject(store.Get(projectKey))
-	if(err != nil) {
+	if err != nil {
 		return sdk.AccAddress{}, err
 	}
 	projectAddress := k.accountKeeper.GetModuleAddress(project.ProjectAddress)
@@ -98,7 +96,7 @@ func (k Keeper) GetAllProjects(ctx sdk.Context) (res []uint64, err error) {
 		}
 
 		//only get projects that have not been deleted
-		if(project != types.Project{}) {
+		if (project != types.Project{}) {
 			res = append(res, project.ProjectId)
 		}
 	}
