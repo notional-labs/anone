@@ -113,6 +113,10 @@ import (
 
 	sgwasm "github.com/notional-labs/anone/internal/wasm"
 	claimwasm "github.com/notional-labs/anone/x/claims/wasm"
+
+	ico "github.com/notional-labs/anone/x/ico"
+	icokeeper "github.com/notional-labs/anone/x/ico/keeper"
+	icotypes "github.com/notional-labs/anone/x/ico/types"
 )
 
 var (
@@ -206,6 +210,7 @@ var (
 		wasm.AppModuleBasic{},
 		claim.AppModuleBasic{},
 		launchpad.AppModuleBasic{},
+		ico.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -221,6 +226,7 @@ var (
 		wasm.ModuleName:           {authtypes.Burner},
 		claimtypes.ModuleName:     {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		launchpadtypes.ModuleName: nil,
+		icotypes.ModuleName: nil,
 	}
 )
 
@@ -274,6 +280,7 @@ type App struct {
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	ClaimKeeper      claimkeeper.Keeper
 	LaunchpadKeeper  launchpadkeeper.Keeper
+	IcoKeeper        icokeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -319,6 +326,7 @@ func New(
 		authzkeeper.StoreKey,
 		claimtypes.StoreKey,
 		launchpadtypes.StoreKey,
+		icotypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -386,6 +394,8 @@ func New(
 	app.LaunchpadKeeper = *launchpadkeeper.NewKeeper(appCodec, keys[launchpadtypes.StoreKey],
 		app.GetSubspace(launchpadtypes.ModuleName), app.AccountKeeper,
 	)
+
+	app.IcoKeeper = *icokeeper.NewKeeper(appCodec, keys[icotypes.StoreKey], app.GetSubspace(icotypes.ModuleName), app.LaunchpadKeeper, app.BankKeeper, app.AccountKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -521,6 +531,7 @@ func New(
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		claim.NewAppModule(appCodec, app.ClaimKeeper),
 		launchpad.NewAppModule(appCodec, app.LaunchpadKeeper, app.AccountKeeper),
+		ico.NewAppModule(appCodec, app.IcoKeeper, app.AccountKeeper, app.BankKeeper, app.LaunchpadKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -549,6 +560,7 @@ func New(
 		wasm.ModuleName,
 		claimtypes.ModuleName,
 		launchpadtypes.ModuleName,
+		icotypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -573,6 +585,7 @@ func New(
 		wasm.ModuleName,
 		claimtypes.ModuleName,
 		launchpadtypes.ModuleName,
+		icotypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -603,6 +616,7 @@ func New(
 		wasm.ModuleName,
 		claimtypes.ModuleName,
 		launchpadtypes.ModuleName,
+		icotypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -802,6 +816,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(claimtypes.ModuleName)
 	paramsKeeper.Subspace(launchpadtypes.ModuleName)
+	paramsKeeper.Subspace(icotypes.ModuleName)
 
 	return paramsKeeper
 }

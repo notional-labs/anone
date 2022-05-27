@@ -24,13 +24,17 @@ message MessageEnableICORequest {
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
-    repeated cosmos.base.v1beta1.Coin token_for_distribution = 3 [
+    cosmos.base.v1beta1.Coin token_for_distribution = 3 [
         (gogoproto.moretags) = "yaml:\"token_for_distribution\""
     ];
 
     string token_listing_price = 4 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
         (gogoproto.moretags) = "yaml:\"token_listing_price\""
+    ];
+
+    string price_token_denom = 5 [
+        (gogoproto.moretags) = "yaml:\"price_token_denom\""
     ];
 
 }
@@ -48,7 +52,7 @@ message MessageAddDistributionTokenRequest {
         (gogoproto.moretags) = "yaml:\"project_id\""
     ];
 
-    repeated cosmos.base.v1beta1.Coin token_for_distribution = 3 [
+    cosmos.base.v1beta1.Coin token_for_distribution = 3 [
         (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"token_for_distribution\""
     ];
@@ -83,7 +87,7 @@ message MessageCommitParticipationRequest {
 
     string participant = 1 [ (gogoproto.moretags) = "yaml:\"participant\"" ];
 
-    repeated cosmos.base.v1beta1.Coin token_commit = 2 [
+    cosmos.base.v1beta1.Coin token_commit = 2 [
         (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"token_commit\""
     ];

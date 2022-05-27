@@ -3,7 +3,6 @@ package notionallabs.anone.ico;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "ico/params.proto";
 import "ico/ico.proto";
 // this line is used by starport scaffolding # 1
