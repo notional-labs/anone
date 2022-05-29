@@ -8,6 +8,7 @@ export interface AttestationModel extends IAttestation {
     ethAddress: string,
     oneAddress: string,
     NFTs: string[],
+    burned: number,
     signature: string
 }
 
