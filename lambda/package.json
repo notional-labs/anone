@@ -100,7 +100,7 @@
     "find": "^0.3.0",
     "fs-extra": "^9.0.1",
     "jasmine": "^3.6.3",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.20",
     "supertest": "^6.0.0",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.9.0",
